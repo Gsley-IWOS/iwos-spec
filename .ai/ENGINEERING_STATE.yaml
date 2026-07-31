@@ -1,0 +1,32 @@
+version: 1.0.0
+status: active
+last_updated: "2026-07-31"
+repository:
+  name: iwos-spec
+  role: constitutional_specification_repository
+  phase: bootstrap
+active_work_package: EWP-0001
+completed_capabilities:
+  - founding_charter_present
+  - architecture_baseline_present
+  - ai_agent_contract_present
+  - work_package_directory_present
+  - ai_operational_memory_initialized
+known_gaps:
+  - governance_directory_missing
+  - architecture_directory_missing
+  - standards_directory_missing
+  - schemas_directory_missing
+  - templates_directory_missing
+  - examples_directory_missing
+  - adr_directory_missing
+  - aip_directory_missing
+  - engineering_constitution_missing
+  - engineering_playbook_missing
+  - code_review_playbook_missing
+  - project_genesis_missing
+quality_gates:
+  markdown_review: required
+  yaml_validation: required
+  architecture_compliance_review: required
+  git_clean_after_commit: required
