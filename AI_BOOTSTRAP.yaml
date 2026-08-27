@@ -1,0 +1,50 @@
+schema_version: "1.0.0"
+document:
+  title: "IWOS AI Bootstrap"
+  purpose: "Provide machine-readable onboarding for AI agents working in the IWOS specification repository."
+  authority: "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+  version: "1.0.0"
+  status: "ratified-bootstrap-baseline"
+  parent_document: "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+repository:
+  organization: "Gsley-IWOS"
+  name: "iwos-spec"
+  role: "constitutional-specification-repository"
+  implementation_repository: "IWOS"
+required_documents:
+  - path: "README.md"
+    reason: "Repository purpose and authority chain."
+  - path: "engineering-charter/00_FOUNDING_CHARTER.md"
+    reason: "Foundational mission and constitutional authority."
+  - path: "engineering-charter/01_PROJECT_GENESIS.md"
+    reason: "Project origin and scope boundaries."
+  - path: "engineering-charter/02_ARCHITECTURE_BASELINE.md"
+    reason: "Approved architectural baseline."
+  - path: "engineering-charter/03_ENGINEERING_PLAYBOOK.md"
+    reason: "Engineering operating model."
+  - path: "engineering-charter/04_CODE_REVIEW_PLAYBOOK.md"
+    reason: "Review expectations and quality gates."
+  - path: "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+    reason: "AI-agent behavioral contract."
+  - path: "engineering-charter/06_ENGINEERING_CONSTITUTION.md"
+    reason: "Repository governance and amendment authority."
+workflow:
+  sequence:
+    - "read_work_package"
+    - "read_required_documents"
+    - "verify_scope"
+    - "plan_changes"
+    - "execute_changes"
+    - "validate_yaml"
+    - "self_review"
+    - "commit_logically"
+    - "open_pull_request"
+engineering_state:
+  sprint: 0
+  baseline: "repository-bootstrap"
+  architecture_changes_allowed_without_governance: false
+  implementation_code_expected: false
+ratification:
+  status: "ratified"
+  ratified_for: "Sprint 0 repository bootstrap"
+  amendment_authority: "engineering-charter/06_ENGINEERING_CONSTITUTION.md"

@@ -1,213 +1,56 @@
-# ============================================================================
-# IWOS AI AGENT CONTRACT
-# ============================================================================
-#
-# Document ID: AAC-001
-# Version: 1.0.0 (Genesis)
-# Status: Ratified
-# Repository: iwos-spec
-# Classification: Constitutional
-#
-# This contract defines the mandatory behaviour of every AI agent
-# participating in the IWOS engineering ecosystem.
-#
-# Compliance with this contract is mandatory.
-#
-# ============================================================================
-
-contract:
-
-  id: AAC-001
-
+schema_version: "1.0.0"
+document:
+  title: "IWOS AI Agent Contract"
+  purpose: "Define mandatory behavior for AI agents participating in IWOS specification and engineering work."
+  authority: "engineering-charter/06_ENGINEERING_CONSTITUTION.md"
   version: "1.0.0"
-
-  name: IWOS AI Agent Contract
-
-  status: Ratified
-
-  authority: Constitutional
-
-project:
-
-  name: IWOS
-
-  organisation: Gsley-IWOS
-
-  specification_repository: iwos-spec
-
-  implementation_repository: IWOS
-
-mission:
-
-  statement: >
-    Transform human intent into reliable, explainable,
-    verifiable and continuously improving execution.
-
-roles:
-
-  mandatory:
-
-    - Systems Architect
-    - Software Engineer
-    - Technical Writer
-    - Reviewer
-    - Quality Engineer
-
-agent_requirements:
-
-  mandatory_reading:
-
-    - engineering-charter/00_FOUNDING_CHARTER.md
-    - engineering-charter/01_PROJECT_GENESIS.md
-    - engineering-charter/02_ARCHITECTURE_BASELINE.md
-    - engineering-charter/06_ENGINEERING_CONSTITUTION.md
-
-  optional_reading:
-
-    - ADR Index
-    - AIP Index
-    - Engineering Playbook
-
-execution_sequence:
-
-  - Load Mission
-  - Verify Constitution
-  - Load Architecture Baseline
-  - Verify Engineering State
-  - Load Current Task
-  - Validate Dependencies
-  - Produce Design
-  - Implement
-  - Execute Tests
-  - Perform Self Review
-  - Update Documentation
-  - Update Engineering Memory
-  - Produce Handoff
-
-mandatory_principles:
-
-  - Mission First
-  - Architecture Before Code
-  - Knowledge First
-  - Evidence Before Recommendation
-  - Verification Before Completion
-  - Human Authority
-  - Continuous Improvement
-
-quality_requirements:
-
-  implementation:
-
-    tests_required: true
-
-    documentation_required: true
-
-    static_analysis_required: true
-
-    review_required: true
-
-    traceability_required: true
-
-decision_rules:
-
-  architecture:
-
-    may_modify: false
-
-  implementation:
-
-    may_modify: true
-
-  standards:
-
-    may_modify: false
-
-  governance:
-
-    may_modify: false
-
-  documentation:
-
-    must_update: true
-
-prohibited_actions:
-
-  - Invent undocumented architecture
-  - Ignore constitutional documents
-  - Skip testing
-  - Skip documentation
-  - Commit broken code
-  - Introduce breaking changes without approval
-  - Bypass engineering workflow
-  - Delete engineering history
-  - Modify Architecture Baseline directly
-
-engineering_memory:
-
-  update_after_completion:
-
-    - Current State
-    - Changelog
-    - Knowledge Graph
-    - Decision Graph
-    - Engineering State
-
-review_checklist:
-
-  - Mission Alignment
-  - Constitutional Compliance
-  - Architecture Compliance
-  - Standards Compliance
-  - Contract Compliance
-  - Documentation Updated
-  - Tests Passing
-  - Security Reviewed
-  - Performance Considered
-  - Maintainability Verified
-
-definition_of_done:
-
-  required:
-
-    implementation_complete: true
-
-    tests_passing: true
-
-    documentation_updated: true
-
-    architecture_verified: true
-
-    review_completed: true
-
-    engineering_state_updated: true
-
-handoff:
-
-  mandatory_sections:
-
-    - Summary
-    - Files Changed
-    - Decisions
-    - Risks
-    - Outstanding Work
-    - Recommended Next Task
-
-success_metrics:
-
-  objectives:
-
-    - Architectural Integrity
-    - Engineering Quality
-    - Knowledge Growth
-    - Context Preservation
-    - Predictable Execution
-
-constitutional_acknowledgement:
-
-  statement: >
-    By participating in the IWOS engineering ecosystem,
-    every AI agent agrees to operate under the authority
-    of the Founding Charter, Engineering Constitution,
-    Architecture Baseline and all ratified standards.
-
-...
+  status: "ratified-bootstrap-baseline"
+  parent_document: "engineering-charter/06_ENGINEERING_CONSTITUTION.md"
+contract:
+  id: "AAC-001"
+  name: "IWOS AI Agent Contract"
+  applies_to:
+    - "AI coding agents"
+    - "AI documentation agents"
+    - "AI review agents"
+    - "AI planning agents"
+mandatory_reading_order:
+  - "README.md"
+  - "engineering-charter/00_FOUNDING_CHARTER.md"
+  - "engineering-charter/01_PROJECT_GENESIS.md"
+  - "engineering-charter/02_ARCHITECTURE_BASELINE.md"
+  - "engineering-charter/03_ENGINEERING_PLAYBOOK.md"
+  - "engineering-charter/04_CODE_REVIEW_PLAYBOOK.md"
+  - "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+  - "engineering-charter/06_ENGINEERING_CONSTITUTION.md"
+required_behaviors:
+  - "Read the active work package before making changes."
+  - "Create a plan before editing."
+  - "Execute only approved scope."
+  - "Preserve the authority chain."
+  - "Validate changed YAML files."
+  - "Self-review before handoff."
+  - "Open pull requests for human review when required."
+forbidden_behaviors:
+  - "Redefine architecture without approved governance."
+  - "Add unresolved draft markers or incomplete-action statements."
+  - "Merge pull requests on behalf of maintainers."
+  - "Represent examples as normative requirements."
+workflow:
+  - "load_repository_context"
+  - "read_required_documents"
+  - "read_active_work_package"
+  - "prepare_plan"
+  - "execute_changes"
+  - "validate_artifacts"
+  - "commit_logically"
+  - "prepare_pull_request"
+quality_gates:
+  markdown_metadata_required: true
+  yaml_validation_required: true
+  human_review_required_for_architecture: true
+  implementation_code_allowed_by_default: false
+ratification:
+  status: "ratified"
+  ratified_for: "Sprint 0 repository bootstrap"
+  amendment_authority: "engineering-charter/06_ENGINEERING_CONSTITUTION.md"
