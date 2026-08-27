@@ -1,0 +1,26 @@
+version: 1.0.0
+last_updated: "2026-07-31"
+decisions:
+  - id: DEC-0001
+    date: "2026-07-31"
+    status: accepted
+    title: Initialize AI operational memory
+    context: >
+      AI agents require a concise local context layer for mission, current state,
+      next task, roadmap, engineering state, knowledge relationships, and decisions.
+    decision: >
+      Create the `.ai/` directory with Markdown and YAML files that summarize
+      operational context without replacing constitutional repository documents.
+    consequences:
+      - Future agents can onboard faster.
+      - Engineering memory has a stable location.
+      - Constitutional documents remain the authority source.
+    related_files:
+      - .ai/MISSION.md
+      - .ai/CURRENT_STATE.md
+      - .ai/NEXT_TASK.md
+      - .ai/ROADMAP.md
+      - .ai/PROJECT_VISION.md
+      - .ai/ENGINEERING_STATE.yaml
+      - .ai/KNOWLEDGE_GRAPH.yaml
+      - .ai/DECISION_GRAPH.yaml

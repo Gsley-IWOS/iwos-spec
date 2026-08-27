@@ -1,0 +1,35 @@
+version: 1.0.0
+last_updated: "2026-07-31"
+workspace: .ai
+purpose: AI operational memory and execution context for iwos-spec
+files:
+  - path: .ai/MISSION.md
+    type: mission
+    required: true
+  - path: .ai/PROJECT_VISION.md
+    type: vision
+    required: true
+  - path: .ai/ROADMAP.md
+    type: roadmap
+    required: true
+  - path: .ai/CURRENT_STATE.md
+    type: current_state
+    required: true
+  - path: .ai/NEXT_TASK.md
+    type: next_task
+    required: true
+  - path: .ai/ENGINEERING_STATE.yaml
+    type: engineering_state
+    required: true
+  - path: .ai/KNOWLEDGE_GRAPH.yaml
+    type: knowledge_graph
+    required: true
+  - path: .ai/DECISION_GRAPH.yaml
+    type: decision_graph
+    required: true
+authority:
+  primary:
+    - engineering-charter/00_FOUNDING_CHARTER.md
+    - engineering-charter/02_ARCHITECTURE_BASELINE.md
+    - engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  note: .ai files summarize operational context and do not supersede ratified documents.
