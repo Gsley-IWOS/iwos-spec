@@ -1,0 +1,39 @@
+name: Defect
+description: Report an error, inconsistency, broken reference or security concern in the specification repository.
+title: "Defect: <summary>"
+labels: ["defect"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a security concern, read `SECURITY.md` first. Do not include secrets, exploit payloads or personal data.
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Classification
+      options:
+        - Correctness (a statement is wrong or contradicts a higher document)
+        - Consistency (a reference, identifier or version is inconsistent)
+        - Tooling (the validator or workflow misbehaves)
+        - Security
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: File paths and, where useful, the section or line.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is wrong, what the ratified documents say, and how to reproduce if tooling is involved.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed resolution
+      description: Optional. State the class of change under the Change Control Policy if known.

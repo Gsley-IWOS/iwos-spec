@@ -1,0 +1,13 @@
+# Illustrative. Minimal valid lock. The digest below is synthetic (sixty-four zeros) and is not the digest of any real file.
+schema_version: "1.0.0"
+document:
+  id: MEM-008
+  version: "1.0.0"
+  status: Active
+  authority: governance/change-control-policy.md
+  last_updated: "2026-10-31"
+algorithm: sha256
+generated_by: tools/validate/validate.py --write-lock
+entries:
+  - path: engineering-charter/00_FOUNDING_CHARTER.md
+    sha256: "0000000000000000000000000000000000000000000000000000000000000000"

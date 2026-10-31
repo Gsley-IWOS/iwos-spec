@@ -1,0 +1,36 @@
+name: Request for Comments
+description: Raise a question or concept for structured, non-binding feedback before a proposal is written.
+title: "RFC: <question>"
+labels: ["rfc"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An RFC is non-binding. A Maintainer converts a substantive RFC into `governance/rfc/RFC-####.md` using `templates/rfc-template.md`. See `governance/decision-process.md`.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Stated so a reader can answer yes, no or choose among options.
+    validations:
+      required: true
+  - type: textarea
+    id: background
+    attributes:
+      label: Background and constraints
+      description: What is already decided and may not change, with the ratified documents that decide it. What evidence exists.
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Options known so far
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Requested feedback
+      description: The specific questions reviewers should answer.
+    validations:
+      required: true

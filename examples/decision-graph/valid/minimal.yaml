@@ -1,0 +1,20 @@
+# Illustrative. Minimal valid decision graph with one accepted decision.
+schema_version: "1.0.0"
+document:
+  id: MEM-007
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+decisions:
+  - id: DEC-0001
+    date: "2026-10-31"
+    status: accepted
+    title: Example decision
+    authority: engineering-charter/06_ENGINEERING_CONSTITUTION.md
+    context: An example situation that required a decision to be recorded.
+    decision: The example option was selected and future work follows it.
+    consequences:
+      - Example consequence.
+    related_files: [README.md]
+    related_records: [adr/ADR-0001-architecture-decision-records.md]

@@ -1,0 +1,21 @@
+# Illustrative. INVALID: workspace must be .ai.
+# expect: workspace
+schema_version: "1.0.0"
+document:
+  id: MEM-002
+  version: "1.0.0"
+  status: Ratified
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+workspace: memory
+purpose: Example manifest.
+files:
+  - { path: .ai/README.md, type: index, required: true }
+  - { path: .ai/ENGINEERING_STATE.yaml, type: engineering_state, schema: schemas/engineering-state.schema.json, required: true }
+  - { path: .ai/CURRENT_STATE.md, type: current_state, required: true }
+  - { path: .ai/NEXT_TASK.md, type: next_task, required: true }
+  - { path: .ai/KNOWLEDGE_GRAPH.yaml, type: knowledge_graph, schema: schemas/knowledge-graph.schema.json, required: true }
+  - { path: .ai/DECISION_GRAPH.yaml, type: decision_graph, schema: schemas/decision-graph.schema.json, required: true }
+authority:
+  primary: [engineering-charter/00_FOUNDING_CHARTER.md]
+  note: Memory never supersedes ratified documents.

@@ -1,0 +1,55 @@
+name: Engineering Work Package
+description: Propose a bounded unit of work (EWP). A Maintainer approves it before implementation begins.
+title: "EWP-????: <name>"
+labels: ["work-package"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A work package authorises exactly the work it names. See `engineering-charter/01_PROJECT_GENESIS.md` Section 4 and `templates/work-package-template.md`.
+  - type: input
+    id: milestone
+    attributes:
+      label: Milestone
+      description: M0, M1, M2 or M3 as defined in Project Genesis.
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: The single outcome this package delivers.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and non-scope
+      description: Artefact families and files authorised; what is explicitly excluded, especially protected documents.
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs
+      description: Ratified documents, accepted records or existing artefacts this package depends on.
+    validations:
+      required: true
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Outputs and acceptance
+      description: Each output with its path and what makes it acceptable.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation criteria and completion evidence
+      value: |
+        - `make validate` passes.
+        - `make test` passes.
+        - Pull request with every handoff section.
+        - Engineering memory updated.
+    validations:
+      required: true

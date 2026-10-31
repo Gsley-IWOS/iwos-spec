@@ -1,0 +1,42 @@
+# Schema bindings: which schema validates which governed YAML artefact and which example directory.
+# Schema: schemas/bindings.schema.json (the validator applies it to this file before any other binding).
+schema_version: "1.0.0"
+document:
+  id: SCH-010
+  version: "1.0.0"
+  status: Ratified
+  authority: standards/testing-standard.md
+  last_updated: "2026-10-31"
+bindings:
+  - schema: schemas/ai-bootstrap.schema.json
+    artefacts:
+      - AI_BOOTSTRAP.yaml
+    examples: examples/ai-bootstrap
+  - schema: schemas/ai-agent-contract.schema.json
+    artefacts:
+      - engineering-charter/05_AI_AGENT_CONTRACT.yaml
+    examples: examples/ai-agent-contract
+  - schema: schemas/engineering-state.schema.json
+    artefacts:
+      - .ai/ENGINEERING_STATE.yaml
+    examples: examples/engineering-state
+  - schema: schemas/knowledge-graph.schema.json
+    artefacts:
+      - .ai/KNOWLEDGE_GRAPH.yaml
+    examples: examples/knowledge-graph
+  - schema: schemas/decision-graph.schema.json
+    artefacts:
+      - .ai/DECISION_GRAPH.yaml
+    examples: examples/decision-graph
+  - schema: schemas/memory-manifest.schema.json
+    artefacts:
+      - .ai/MANIFEST.yaml
+    examples: examples/memory-manifest
+  - schema: schemas/constitution-lock.schema.json
+    artefacts:
+      - .ai/CONSTITUTION_LOCK.yaml
+    examples: examples/constitution-lock
+  - schema: schemas/bindings.schema.json
+    artefacts:
+      - schemas/bindings.yaml
+    examples: examples/bindings

@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gsley-IWOS/iwos-spec/schemas/ai-agent-contract/1.0.0",
+  "title": "IWOS AI Agent Contract",
+  "description": "Contract for engineering-charter/05_AI_AGENT_CONTRACT.yaml. The schema is derived from the ratified contract (AAC-001) and does not change it.",
+  "x-iwos-document": {
+    "id": "SCH-003",
+    "version": "1.0.0",
+    "status": "Ratified",
+    "authority": "standards/testing-standard.md",
+    "parent_document": "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract", "project", "mission", "roles", "agent_requirements", "execution_sequence",
+    "mandatory_principles", "quality_requirements", "decision_rules", "prohibited_actions",
+    "engineering_memory", "review_checklist", "definition_of_done", "handoff", "success_metrics",
+    "constitutional_acknowledgement"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "name", "status", "authority"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^AAC-[0-9]{3}$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["Ratified", "Proposed", "Draft", "Superseded"] },
+        "authority": { "type": "string", "minLength": 1 }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "organisation", "specification_repository", "implementation_repository"],
+      "properties": {
+        "name": { "const": "IWOS" },
+        "organisation": { "type": "string", "minLength": 1 },
+        "specification_repository": { "const": "iwos-spec" },
+        "implementation_repository": { "type": "string", "minLength": 1 }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement"],
+      "properties": { "statement": { "type": "string", "minLength": 1 } }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mandatory"],
+      "properties": { "mandatory": { "$ref": "#/$defs/nonEmptyStringList" } }
+    },
+    "agent_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mandatory_reading"],
+      "properties": {
+        "mandatory_reading": { "$ref": "#/$defs/nonEmptyStringList" },
+        "optional_reading": { "$ref": "#/$defs/nonEmptyStringList" }
+      }
+    },
+    "execution_sequence": { "$ref": "#/$defs/nonEmptyStringList", "minItems": 13 },
+    "mandatory_principles": { "$ref": "#/$defs/nonEmptyStringList" },
+    "quality_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation"],
+      "properties": {
+        "implementation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tests_required", "documentation_required", "static_analysis_required", "review_required", "traceability_required"],
+          "properties": {
+            "tests_required": { "const": true },
+            "documentation_required": { "const": true },
+            "static_analysis_required": { "const": true },
+            "review_required": { "const": true },
+            "traceability_required": { "const": true }
+          }
+        }
+      }
+    },
+    "decision_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["architecture", "implementation", "standards", "governance", "documentation"],
+      "properties": {
+        "architecture": { "$ref": "#/$defs/mayModifyFalse" },
+        "implementation": { "$ref": "#/$defs/mayModify" },
+        "standards": { "$ref": "#/$defs/mayModifyFalse" },
+        "governance": { "$ref": "#/$defs/mayModifyFalse" },
+        "documentation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["must_update"],
+          "properties": { "must_update": { "const": true } }
+        }
+      }
+    },
+    "prohibited_actions": { "$ref": "#/$defs/nonEmptyStringList" },
+    "engineering_memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["update_after_completion"],
+      "properties": { "update_after_completion": { "$ref": "#/$defs/nonEmptyStringList" } }
+    },
+    "review_checklist": { "$ref": "#/$defs/nonEmptyStringList" },
+    "definition_of_done": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required"],
+      "properties": {
+        "required": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": { "^[a-z_]+$": { "const": true } },
+          "minProperties": 1
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mandatory_sections"],
+      "properties": { "mandatory_sections": { "$ref": "#/$defs/nonEmptyStringList" } }
+    },
+    "success_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objectives"],
+      "properties": { "objectives": { "$ref": "#/$defs/nonEmptyStringList" } }
+    },
+    "constitutional_acknowledgement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement"],
+      "properties": { "statement": { "type": "string", "minLength": 1 } }
+    }
+  },
+  "$defs": {
+    "nonEmptyStringList": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "mayModify": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_modify"],
+      "properties": { "may_modify": { "type": "boolean" } }
+    },
+    "mayModifyFalse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_modify"],
+      "properties": { "may_modify": { "const": false } }
+    }
+  }
+}

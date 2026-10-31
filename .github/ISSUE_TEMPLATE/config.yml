@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Governance and decision process
+    url: https://github.com/Gsley-IWOS/iwos-spec/blob/main/governance/decision-process.md
+    about: Read how Requests for Comments, Architecture Improvement Proposals and Architecture Decision Records work before opening an issue.

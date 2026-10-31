@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gsley-IWOS/iwos-spec/schemas/engineering-state/1.0.0",
+  "title": "IWOS Engineering State",
+  "description": "Contract for .ai/ENGINEERING_STATE.yaml: the single machine-readable engineering state required by the Architecture Baseline state model.",
+  "x-iwos-document": {
+    "id": "SCH-004",
+    "version": "1.0.0",
+    "status": "Ratified",
+    "authority": "standards/testing-standard.md",
+    "parent_document": "engineering-charter/02_ARCHITECTURE_BASELINE.md"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "document", "repository", "state", "work_packages", "quality_gates"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "document": { "$ref": "#/$defs/memoryDocument" },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "phase"],
+      "properties": {
+        "name": { "const": "iwos-spec" },
+        "role": { "const": "constitutional-specification-repository" },
+        "phase": { "enum": ["foundation", "governance", "specification", "implementation-readiness", "maintenance"] }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_release", "current_milestone", "current_sprint", "current_epic",
+                   "current_story", "current_task", "current_risks", "current_decisions"],
+      "properties": {
+        "current_release": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "name", "status", "description"],
+          "properties": {
+            "version": { "$ref": "#/$defs/semver" },
+            "name": { "type": "string", "minLength": 1 },
+            "status": { "enum": ["in-preparation", "release-candidate", "released", "superseded"] },
+            "description": { "type": "string", "minLength": 1 }
+          }
+        },
+        "current_milestone": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name", "status"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^M[0-9]+$" },
+            "name": { "type": "string", "minLength": 1 },
+            "status": { "$ref": "#/$defs/progressStatus" }
+          }
+        },
+        "current_sprint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["number", "name", "status"],
+          "properties": {
+            "number": { "type": "integer", "minimum": 0 },
+            "name": { "type": "string", "minLength": 1 },
+            "status": { "$ref": "#/$defs/progressStatus" }
+          }
+        },
+        "current_epic": { "$ref": "#/$defs/identifiedItem" },
+        "current_story": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name", "work_package", "status"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^STORY-[0-9]{4}$" },
+            "name": { "type": "string", "minLength": 1 },
+            "work_package": { "$ref": "#/$defs/ewpId" },
+            "status": { "$ref": "#/$defs/progressStatus" }
+          }
+        },
+        "current_task": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name", "status"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^TASK-[0-9]{4}-[0-9]{2}$" },
+            "name": { "type": "string", "minLength": 1 },
+            "status": { "$ref": "#/$defs/progressStatus" }
+          }
+        },
+        "current_risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "severity", "description", "mitigation", "status"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^RISK-[0-9]{4}$" },
+              "severity": { "enum": ["low", "medium", "high", "critical"] },
+              "description": { "type": "string", "minLength": 1 },
+              "mitigation": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["open", "mitigated", "accepted", "closed"] }
+            }
+          }
+        },
+        "current_decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "status", "record"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^(ADR-[0-9]{4}|DEC-[0-9]{4})$" },
+              "title": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["Proposed", "Accepted", "Rejected", "Deprecated", "Superseded", "proposed", "accepted", "rejected", "superseded"] },
+              "record": { "$ref": "#/$defs/relativePath" }
+            }
+          }
+        }
+      }
+    },
+    "work_packages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status"],
+        "properties": {
+          "id": { "$ref": "#/$defs/ewpId" },
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["Proposed", "Approved", "In Progress", "Complete", "Superseded"] }
+        }
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "additionalProperties": { "enum": ["required", "optional", "not-applicable"] },
+      "required": ["structural_checks", "schema_checks", "consistency_checks", "example_checks", "integrity_check", "human_review"],
+      "properties": {
+        "structural_checks": { "const": "required" },
+        "schema_checks": { "const": "required" },
+        "consistency_checks": { "const": "required" },
+        "example_checks": { "const": "required" },
+        "integrity_check": { "const": "required" },
+        "human_review": { "const": "required" }
+      }
+    }
+  },
+  "$defs": {
+    "memoryDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "status", "authority", "last_updated"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^MEM-[0-9]{3}$" },
+        "version": { "$ref": "#/$defs/semver" },
+        "status": { "enum": ["Active", "Superseded"] },
+        "authority": { "$ref": "#/$defs/relativePath" },
+        "last_updated": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "identifiedItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^EPIC-[0-9]{4}$" },
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "$ref": "#/$defs/progressStatus" }
+      }
+    },
+    "progressStatus": { "enum": ["not-started", "in-progress", "in-review", "awaiting-review", "blocked", "complete"] },
+    "ewpId": { "type": "string", "pattern": "^EWP-[0-9]{4}$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.]+)?$" },
+    "relativePath": { "type": "string", "pattern": "^(\\.ai/|\\.github/)?[A-Za-z0-9_./-]+$", "not": { "pattern": "^/|\\.\\./" } }
+  }
+}
