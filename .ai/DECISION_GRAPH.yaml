@@ -1,0 +1,153 @@
+# Decision graph: decisions that constrain future work and are not Architecture Decision Records.
+# Architectural decisions live in adr/ and are referenced here by record path.
+# Schema: schemas/decision-graph.schema.json
+schema_version: "1.0.0"
+document:
+  id: MEM-007
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+
+decisions:
+  - id: DEC-0001
+    date: "2026-10-31"
+    status: accepted
+    title: Incorporate drafts from pull requests 2, 3 and 4; do not adopt pull request 1
+    authority: work-packages/EWP-0001.md
+    context: >
+      Four unmerged pull requests held drafts of the bootstrap. Pull request 1 rewrote
+      the ratified Founding Charter and Architecture Baseline, removing most of their
+      content, which the AI Agent Contract prohibits. Pull requests 2, 3 and 4 held
+      usable drafts of the charter pack, engineering memory and governance policies
+      but placed decision records in governance/ instead of adr/ and aip/, omitted
+      required metadata and recorded state that was already stale.
+    decision: >
+      Build the repository on main as it stands. Reuse the structure and substance of
+      pull requests 2, 3 and 4 where they conform to the standards, correct their
+      locations and metadata, and leave the ratified constitutional documents
+      unchanged. Recommend that pull requests 1 to 4 be closed as superseded.
+    consequences:
+      - The Founding Charter, Architecture Baseline and AI Agent Contract remain byte-for-byte as ratified.
+      - Decision records live in adr/ and aip/ as the Repository Standard requires.
+      - Pull requests 1 to 4 conflict with this build-out and should be closed rather than merged.
+    related_files:
+      - engineering-charter/01_PROJECT_GENESIS.md
+      - engineering-charter/03_ENGINEERING_PLAYBOOK.md
+      - engineering-charter/04_CODE_REVIEW_PLAYBOOK.md
+      - engineering-charter/06_ENGINEERING_CONSTITUTION.md
+      - governance/README.md
+      - .ai/README.md
+    related_records: []
+
+  - id: DEC-0002
+    date: "2026-10-31"
+    status: accepted
+    title: Ratification is the act of merging to main by an authorised human maintainer
+    authority: engineering-charter/06_ENGINEERING_CONSTITUTION.md
+    context: >
+      Documents in this repository carry a Status field. Earlier drafts marked documents
+      Ratified while unmerged, which left the meaning of the field undefined and let an
+      AI agent appear to ratify its own work.
+    decision: >
+      For documents whose lifecycle ends in Ratified or Approved, the Status field states
+      the status the document holds once merged to main, and merge by an authorised human
+      maintainer is the act of ratification or approval. ADRs and AIPs follow their own
+      lifecycles: they are submitted as Proposed or Draft and the deciding authority sets
+      Accepted. Until merge, every such status is a request. Every ratification section
+      states this explicitly.
+    consequences:
+      - Human authority over ratification is preserved and visible in every document.
+      - No post-merge edit is needed to flip a status field.
+      - Pull request descriptions must not describe unmerged documents as ratified.
+    related_files:
+      - engineering-charter/06_ENGINEERING_CONSTITUTION.md
+      - governance/change-control-policy.md
+      - CONTRIBUTING.md
+    related_records: []
+
+  - id: DEC-0003
+    date: "2026-10-31"
+    status: proposed
+    title: Use provisional identifier families pending AIP-0001
+    authority: standards/naming-standard.md
+    context: >
+      The Naming Standard registers identifier families for the Founding Charter,
+      Architecture Baseline, standards, work packages, ADRs and AIPs only. Governance
+      policies, architecture reference documents, schemas, templates, examples,
+      onboarding files, memory files and tooling need identifiers, and an AI agent
+      may not modify the Naming Standard.
+    decision: >
+      Assign identifiers from the families proposed in AIP-0001 (GOV, AS, SCH, TPL, EX,
+      ROOT, AIO, MEM, TOOL, RFC and the INDEX suffix) and treat them as provisional until
+      the proposal is accepted or rejected by a human maintainer. The constitutional
+      families PG, EC, EP and CRP follow the practice of the ratified FC-001, AB-001 and
+      AAC-001 identifiers and are not provisional.
+    consequences:
+      - Every new document has a unique, searchable identifier today.
+      - If AIP-0001 is rejected, a follow-up work package re-identifies the affected documents with a migration note.
+    related_files:
+      - standards/naming-standard.md
+    related_records:
+      - aip/AIP-0001-identifier-families.md
+
+  - id: DEC-0004
+    date: "2026-10-31"
+    status: proposed
+    title: Author EWP-0002 and EWP-0003 as Proposed work packages for the build-out
+    authority: engineering-charter/01_PROJECT_GENESIS.md
+    context: >
+      EWP-0002.md and EWP-0003.md existed on main as empty files. The Engineering
+      Constitution requires every change to be traceable to an authorising artefact,
+      and the build-out extends beyond EWP-0001 into every area the Repository
+      Standard mandates.
+    decision: >
+      Write EWP-0002 (governance, decision records, templates) and EWP-0003 (schemas,
+      examples, validation tooling, engineering memory) with status Proposed so that
+      every file in the build-out is traceable, and ask the maintainer to approve,
+      amend or reject them at review.
+    consequences:
+      - Full traceability for the build-out.
+      - The maintainer retains authority over the scope of both packages.
+    related_files:
+      - work-packages/EWP-0002.md
+      - work-packages/EWP-0003.md
+    related_records: []
+
+  - id: DEC-0005
+    date: "2026-10-31"
+    status: accepted
+    title: Remove the empty, misnamed bootstrap file from engineering-charter/
+    authority: governance/change-control-policy.md
+    context: >
+      engineering-charter/ contained a one-byte file whose name was the list of files
+      EWP-0001 asked for. It held no content, violated the Naming Standard and the
+      Engineering Standard, and was clearly created by accident.
+    decision: >
+      Remove the file under the Change Control Policy rule that an artefact with no content
+      is not a document. Its existence remains traceable through git history, CHANGELOG.md
+      and this record.
+    consequences:
+      - engineering-charter/ contains only the seven constitutional documents.
+    related_files:
+      - CHANGELOG.md
+    related_records: []
+
+  - id: DEC-0006
+    date: "2026-10-31"
+    status: accepted
+    title: Exempt the legacy EWP-0001 format from structural checks
+    authority: standards/testing-standard.md
+    context: >
+      EWP-0001 was written in a plain-text banner format before the Documentation
+      Standard existed. It is referenced by merged history and must not be rewritten.
+    decision: >
+      Record a structural exemption for work-packages/EWP-0001.md in the validator
+      configuration with its reason. Later work packages use the template.
+    consequences:
+      - The validator passes without weakening checks for new documents.
+      - Each exemption is explicit and reviewable.
+    related_files:
+      - tools/validate/config.yaml
+      - work-packages/EWP-0001.md
+    related_records: []

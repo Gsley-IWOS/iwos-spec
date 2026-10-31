@@ -1,0 +1,343 @@
+# Knowledge graph of the IWOS specification repository.
+# Nodes are documents and concepts; edges are authority and dependency relationships.
+# Schema: schemas/knowledge-graph.schema.json
+schema_version: "1.0.0"
+document:
+  id: MEM-006
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+
+nodes:
+  - id: iwos
+    type: system
+    label: Intelligent Work Orchestration System
+  - id: iwos_spec
+    type: repository
+    label: iwos-spec (constitutional repository)
+  - id: iwos_impl
+    type: repository
+    label: IWOS (implementation repository)
+
+  - id: founding_charter
+    type: constitutional_document
+    label: Founding Charter
+    document_id: FC-001
+    path: engineering-charter/00_FOUNDING_CHARTER.md
+  - id: engineering_constitution
+    type: constitutional_document
+    label: Engineering Constitution
+    document_id: EC-001
+    path: engineering-charter/06_ENGINEERING_CONSTITUTION.md
+  - id: project_genesis
+    type: programme_document
+    label: Project Genesis
+    document_id: PG-001
+    path: engineering-charter/01_PROJECT_GENESIS.md
+  - id: architecture_baseline
+    type: architecture_document
+    label: Architecture Baseline AB-1.0
+    document_id: AB-001
+    path: engineering-charter/02_ARCHITECTURE_BASELINE.md
+  - id: engineering_playbook
+    type: constitutional_document
+    label: Engineering Playbook
+    document_id: EP-001
+    path: engineering-charter/03_ENGINEERING_PLAYBOOK.md
+  - id: code_review_playbook
+    type: constitutional_document
+    label: Code Review Playbook
+    document_id: CRP-001
+    path: engineering-charter/04_CODE_REVIEW_PLAYBOOK.md
+  - id: ai_agent_contract
+    type: contract
+    label: AI Agent Contract
+    document_id: AAC-001
+    path: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+
+  - id: readme
+    type: onboarding_document
+    label: Repository README
+    document_id: ROOT-001
+    path: README.md
+  - id: contributing
+    type: onboarding_document
+    label: Contributing guide
+    document_id: ROOT-002
+    path: CONTRIBUTING.md
+  - id: security_policy
+    type: onboarding_document
+    label: Security policy
+    document_id: ROOT-003
+    path: SECURITY.md
+  - id: changelog
+    type: memory
+    label: Change log
+    document_id: ROOT-004
+    path: CHANGELOG.md
+  - id: claude_md
+    type: onboarding_document
+    label: Claude onboarding instructions
+    document_id: AIO-001
+    path: CLAUDE.md
+  - id: agents_md
+    type: onboarding_document
+    label: Agent operating guide
+    document_id: AIO-002
+    path: AGENTS.md
+  - id: ai_bootstrap
+    type: onboarding_document
+    label: AI bootstrap manifest
+    document_id: AIO-003
+    path: AI_BOOTSTRAP.yaml
+
+  - id: gov_index
+    type: governance_document
+    label: Governance index
+    document_id: GOV-001
+    path: governance/README.md
+  - id: roles_and_authority
+    type: governance_document
+    label: Roles and Authority
+    document_id: GOV-002
+    path: governance/roles-and-authority.md
+  - id: decision_process
+    type: governance_document
+    label: Decision Process
+    document_id: GOV-003
+    path: governance/decision-process.md
+  - id: change_control_policy
+    type: governance_document
+    label: Change Control Policy
+    document_id: GOV-004
+    path: governance/change-control-policy.md
+  - id: versioning_policy
+    type: governance_document
+    label: Versioning Policy
+    document_id: GOV-005
+    path: governance/versioning-policy.md
+  - id: rfc_register
+    type: governance_document
+    label: Request for Comments register
+    document_id: GOV-006
+    path: governance/rfc/README.md
+
+  - id: std_index
+    type: standard
+    label: Standards index
+    document_id: STD-INDEX
+    path: standards/README.md
+  - id: std_architecture
+    type: standard
+    label: Architecture Standard
+    document_id: STD-ARCH-001
+    path: standards/architecture-standard.md
+  - id: std_documentation
+    type: standard
+    label: Documentation Standard
+    document_id: STD-DOC-001
+    path: standards/documentation-standard.md
+  - id: std_engineering
+    type: standard
+    label: Engineering Standard
+    document_id: STD-ENG-001
+    path: standards/engineering-standard.md
+  - id: std_naming
+    type: standard
+    label: Naming Standard
+    document_id: STD-NAME-001
+    path: standards/naming-standard.md
+  - id: std_repository
+    type: standard
+    label: Repository Standard
+    document_id: STD-REPO-001
+    path: standards/repository-standard.md
+  - id: std_security
+    type: standard
+    label: Security Standard
+    document_id: STD-SEC-001
+    path: standards/security-standard.md
+  - id: std_testing
+    type: standard
+    label: Testing Standard
+    document_id: STD-TEST-001
+    path: standards/testing-standard.md
+
+  - id: arch_index
+    type: architecture_document
+    label: Architecture reference index
+    document_id: AS-001
+    path: architecture/README.md
+  - id: glossary
+    type: architecture_document
+    label: Glossary
+    document_id: AS-002
+    path: architecture/glossary.md
+  - id: component_catalogue
+    type: architecture_document
+    label: Component catalogue
+    document_id: AS-003
+    path: architecture/component-catalogue.md
+
+  - id: adr_index
+    type: decision_record
+    label: ADR index
+    document_id: ADR-INDEX
+    path: adr/README.md
+  - id: adr_0001
+    type: decision_record
+    label: ADR-0001 Architecture Decision Records
+    document_id: ADR-0001
+    path: adr/ADR-0001-architecture-decision-records.md
+  - id: adr_0002
+    type: decision_record
+    label: ADR-0002 Repository validation tooling
+    document_id: ADR-0002
+    path: adr/ADR-0002-repository-validation-tooling.md
+  - id: adr_0003
+    type: decision_record
+    label: ADR-0003 Machine-readable engineering memory
+    document_id: ADR-0003
+    path: adr/ADR-0003-machine-readable-engineering-memory.md
+  - id: aip_index
+    type: proposal
+    label: AIP index
+    document_id: AIP-INDEX
+    path: aip/README.md
+  - id: aip_0001
+    type: proposal
+    label: AIP-0001 Identifier families
+    document_id: AIP-0001
+    path: aip/AIP-0001-identifier-families.md
+
+  - id: ewp_index
+    type: work_package
+    label: Work package index
+    document_id: EWP-INDEX
+    path: work-packages/README.md
+  - id: ewp_0001
+    type: work_package
+    label: EWP-0001 Bootstrap the Constitutional Repository (legacy format, no Document ID)
+    path: work-packages/EWP-0001.md
+  - id: ewp_0002
+    type: work_package
+    label: EWP-0002 Governance Processes, Decision Records and Templates
+    document_id: EWP-0002
+    path: work-packages/EWP-0002.md
+  - id: ewp_0003
+    type: work_package
+    label: EWP-0003 Schemas, Examples, Validation Tooling and Engineering Memory
+    document_id: EWP-0003
+    path: work-packages/EWP-0003.md
+
+  - id: schemas_index
+    type: schema
+    label: Schemas index
+    document_id: SCH-001
+    path: schemas/README.md
+  - id: schema_bindings
+    type: schema
+    label: Schema bindings
+    document_id: SCH-010
+    path: schemas/bindings.yaml
+  - id: templates_index
+    type: template
+    label: Templates index
+    document_id: TPL-001
+    path: templates/README.md
+  - id: examples_index
+    type: template
+    label: Examples index
+    document_id: EX-001
+    path: examples/README.md
+  - id: validator
+    type: tooling
+    label: Repository validator
+    document_id: TOOL-001
+    path: tools/validate/README.md
+  - id: ci_workflow
+    type: tooling
+    label: Continuous-integration workflow
+    path: .github/workflows/validate.yml
+
+  - id: memory_workspace
+    type: memory
+    label: Engineering memory workspace
+    document_id: MEM-001
+    path: .ai/README.md
+  - id: engineering_state
+    type: memory
+    label: Engineering state
+    document_id: MEM-003
+    path: .ai/ENGINEERING_STATE.yaml
+  - id: constitution_lock
+    type: memory
+    label: Constitutional integrity lock
+    document_id: MEM-008
+    path: .ai/CONSTITUTION_LOCK.yaml
+
+edges:
+  - { from: iwos_spec, to: iwos, relationship: specifies }
+  - { from: iwos_impl, to: iwos_spec, relationship: implements }
+  - { from: founding_charter, to: iwos_spec, relationship: governs }
+  - { from: engineering_constitution, to: founding_charter, relationship: derives_from }
+  - { from: project_genesis, to: founding_charter, relationship: derives_from }
+  - { from: project_genesis, to: engineering_constitution, relationship: derives_from }
+  - { from: architecture_baseline, to: founding_charter, relationship: derives_from }
+  - { from: architecture_baseline, to: project_genesis, relationship: derives_from }
+  - { from: ai_agent_contract, to: founding_charter, relationship: enforces }
+  - { from: engineering_playbook, to: engineering_constitution, relationship: derives_from }
+  - { from: code_review_playbook, to: engineering_playbook, relationship: derives_from }
+  - { from: code_review_playbook, to: engineering_constitution, relationship: derives_from }
+  - { from: code_review_playbook, to: project_genesis, relationship: derives_from }
+  - { from: code_review_playbook, to: architecture_baseline, relationship: derives_from }
+  - { from: engineering_playbook, to: project_genesis, relationship: derives_from }
+  - { from: engineering_playbook, to: architecture_baseline, relationship: derives_from }
+  - { from: readme, to: engineering_constitution, relationship: derives_from }
+  - { from: contributing, to: engineering_constitution, relationship: derives_from }
+  - { from: security_policy, to: std_security, relationship: derives_from }
+  - { from: claude_md, to: ai_agent_contract, relationship: derives_from }
+  - { from: agents_md, to: ai_agent_contract, relationship: derives_from }
+  - { from: ai_bootstrap, to: ai_agent_contract, relationship: derives_from }
+  - { from: gov_index, to: engineering_constitution, relationship: derives_from }
+  - { from: roles_and_authority, to: engineering_constitution, relationship: derives_from }
+  - { from: decision_process, to: engineering_constitution, relationship: derives_from }
+  - { from: decision_process, to: architecture_baseline, relationship: derives_from }
+  - { from: change_control_policy, to: engineering_constitution, relationship: derives_from }
+  - { from: versioning_policy, to: engineering_constitution, relationship: derives_from }
+  - { from: rfc_register, to: decision_process, relationship: derives_from }
+  - { from: std_index, to: engineering_constitution, relationship: derives_from }
+  - { from: std_architecture, to: architecture_baseline, relationship: derives_from }
+  - { from: std_documentation, to: engineering_constitution, relationship: derives_from }
+  - { from: std_engineering, to: engineering_constitution, relationship: derives_from }
+  - { from: std_naming, to: engineering_constitution, relationship: derives_from }
+  - { from: std_repository, to: engineering_constitution, relationship: derives_from }
+  - { from: std_security, to: engineering_constitution, relationship: derives_from }
+  - { from: std_testing, to: engineering_constitution, relationship: derives_from }
+  - { from: arch_index, to: architecture_baseline, relationship: summarises }
+  - { from: glossary, to: architecture_baseline, relationship: summarises }
+  - { from: component_catalogue, to: architecture_baseline, relationship: summarises }
+  - { from: adr_index, to: std_architecture, relationship: derives_from }
+  - { from: adr_0001, to: std_architecture, relationship: derives_from }
+  - { from: adr_0002, to: std_repository, relationship: derives_from }
+  - { from: adr_0002, to: std_testing, relationship: derives_from }
+  - { from: adr_0003, to: architecture_baseline, relationship: derives_from }
+  - { from: aip_index, to: decision_process, relationship: derives_from }
+  - { from: aip_0001, to: std_naming, relationship: proposes_change_to }
+  - { from: ewp_index, to: project_genesis, relationship: derives_from }
+  - { from: ewp_0001, to: ewp_index, relationship: part_of }
+  - { from: ewp_0002, to: ewp_index, relationship: part_of }
+  - { from: ewp_0003, to: ewp_index, relationship: part_of }
+  - { from: schemas_index, to: std_testing, relationship: derives_from }
+  - { from: schema_bindings, to: schemas_index, relationship: part_of }
+  - { from: templates_index, to: std_documentation, relationship: derives_from }
+  - { from: examples_index, to: std_testing, relationship: derives_from }
+  - { from: validator, to: std_testing, relationship: implements }
+  - { from: validator, to: schema_bindings, relationship: depends_on }
+  - { from: validator, to: constitution_lock, relationship: validates }
+  - { from: ci_workflow, to: validator, relationship: depends_on }
+  - { from: memory_workspace, to: ai_agent_contract, relationship: derives_from }
+  - { from: engineering_state, to: architecture_baseline, relationship: implements }
+  - { from: constitution_lock, to: engineering_constitution, relationship: enforces }
+  - { from: changelog, to: engineering_constitution, relationship: records }
