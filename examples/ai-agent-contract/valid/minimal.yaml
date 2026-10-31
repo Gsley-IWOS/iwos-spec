@@ -1,0 +1,60 @@
+# Illustrative. Minimal valid AI agent contract with the structure of AAC-001 and synthetic text.
+contract:
+  id: AAC-001
+  version: "1.0.0"
+  name: Example Contract
+  status: Draft
+  authority: Constitutional
+project:
+  name: IWOS
+  organisation: Example-Org
+  specification_repository: iwos-spec
+  implementation_repository: IWOS
+mission:
+  statement: Transform intent into verified execution.
+roles:
+  mandatory: [Systems Architect, Reviewer]
+agent_requirements:
+  mandatory_reading:
+    - engineering-charter/00_FOUNDING_CHARTER.md
+execution_sequence:
+  - Load Mission
+  - Verify Constitution
+  - Load Architecture Baseline
+  - Verify Engineering State
+  - Load Current Task
+  - Validate Dependencies
+  - Produce Design
+  - Implement
+  - Execute Tests
+  - Perform Self Review
+  - Update Documentation
+  - Update Engineering Memory
+  - Produce Handoff
+mandatory_principles: [Mission First]
+quality_requirements:
+  implementation:
+    tests_required: true
+    documentation_required: true
+    static_analysis_required: true
+    review_required: true
+    traceability_required: true
+decision_rules:
+  architecture: { may_modify: false }
+  implementation: { may_modify: true }
+  standards: { may_modify: false }
+  governance: { may_modify: false }
+  documentation: { must_update: true }
+prohibited_actions: [Skip testing]
+engineering_memory:
+  update_after_completion: [Current State]
+review_checklist: [Mission Alignment]
+definition_of_done:
+  required:
+    implementation_complete: true
+handoff:
+  mandatory_sections: [Summary]
+success_metrics:
+  objectives: [Architectural Integrity]
+constitutional_acknowledgement:
+  statement: Agents operate under the Founding Charter.

@@ -1,0 +1,120 @@
+# Machine-readable engineering state, as required by the Architecture Baseline state model.
+# Schema: schemas/engineering-state.schema.json
+schema_version: "1.0.0"
+document:
+  id: MEM-003
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
+  last_updated: "2026-10-31"
+
+repository:
+  name: iwos-spec
+  role: constitutional-specification-repository
+  phase: foundation
+
+state:
+  current_release:
+    version: "1.0.0"
+    name: Genesis
+    status: in-preparation
+    description: First ratified release of the constitutional repository. Tagged when milestones M0 and M1 are complete.
+  current_milestone:
+    id: M1
+    name: Governance and Standards
+    status: in-progress
+  current_sprint:
+    number: 1
+    name: Governance, schemas and validation
+    status: in-progress
+  current_epic:
+    id: EPIC-0001
+    name: Constitutional repository build-out
+    status: in-progress
+  current_story:
+    id: STORY-0001
+    name: Founding release pull request (EWP-0001, EWP-0002, EWP-0003)
+    work_package: EWP-0003
+    status: in-review
+  current_task:
+    id: TASK-0001-01
+    name: Human review and ratification of the founding release
+    status: awaiting-review
+  current_risks:
+    - id: RISK-0001
+      severity: medium
+      description: EWP-0002 and EWP-0003 were authored as Proposed work packages by an AI agent to give the build-out traceability. Their scope has not yet been approved by a human maintainer. ADR-0001 to ADR-0003 are Proposed and AIP-0001 is in Review for the same reason.
+      mitigation: Maintainer reviews both packages and either sets status Approved or amends scope before merge.
+      status: open
+    - id: RISK-0002
+      severity: medium
+      description: AIP-0001 proposes new identifier families used by documents in this repository. Until it is accepted the identifiers outside the constitutional families are provisional.
+      mitigation: Accept, amend or reject AIP-0001 at review; if rejected, re-identify the affected documents under the Naming Standard families.
+      status: open
+    - id: RISK-0003
+      severity: low
+      description: Open pull requests 1 to 4 on the repository overlap with this build-out. Pull request 1 rewrites ratified constitutional documents and must not be merged.
+      mitigation: Close pull requests 1 to 4 as superseded after this build-out is merged.
+      status: open
+    - id: RISK-0004
+      severity: low
+      description: No CODEOWNERS file exists because the maintainer team is not yet named in the repository.
+      mitigation: Maintainers add .github/CODEOWNERS naming the authorities defined in governance/roles-and-authority.md. Until then the interim self-approval rule in that policy applies.
+      status: open
+  current_decisions:
+    - id: ADR-0001
+      title: Record architecture decisions as ADRs in adr/
+      status: Proposed
+      record: adr/ADR-0001-architecture-decision-records.md
+    - id: ADR-0002
+      title: Repository validation tooling in Python under tools/validate/
+      status: Proposed
+      record: adr/ADR-0002-repository-validation-tooling.md
+    - id: ADR-0003
+      title: Machine-readable engineering memory with JSON Schema contracts
+      status: Proposed
+      record: adr/ADR-0003-machine-readable-engineering-memory.md
+    - id: DEC-0001
+      title: Build-out incorporates drafts from pull requests 2, 3 and 4 and rejects pull request 1
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0002
+      title: Ratification is merge to main by an authorised human maintainer
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0003
+      title: Provisional identifier families pending AIP-0001
+      status: proposed
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0004
+      title: EWP-0002 and EWP-0003 authored as Proposed work packages
+      status: proposed
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0005
+      title: Remove the empty, misnamed bootstrap file
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0006
+      title: Exempt the legacy EWP-0001 format from structural checks
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+
+work_packages:
+  - id: EWP-0001
+    name: Bootstrap the Constitutional Repository
+    status: In Progress
+  - id: EWP-0002
+    name: Governance Processes, Decision Records and Templates
+    status: Proposed
+  - id: EWP-0003
+    name: Schemas, Examples, Validation Tooling and Engineering Memory
+    status: Proposed
+
+quality_gates:
+  structural_checks: required
+  schema_checks: required
+  consistency_checks: required
+  example_checks: required
+  integrity_check: required
+  validator_unit_tests: required
+  human_review: required

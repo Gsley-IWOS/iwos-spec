@@ -1,0 +1,112 @@
+# Configuration for tools/validate/validate.py.
+# Every exemption carries a reason and is reviewed like any other change.
+schema_version: "1.0.0"
+
+markdown:
+  exclude_dirs: [".git", ".github", "__pycache__", ".pytest_cache", ".venv"]
+  exclude_files: ["LICENSE"]
+  required_metadata: ["Document ID", "Version", "Status", "Authority", "Last Updated"]
+  parent_metadata_keys: ["Parent Document", "Parent Documents"]
+  # A document whose Authority is exactly one of these values is the root of a hierarchy and needs no parent.
+  parent_exempt_authorities: ["Supreme"]
+  required_headings: ["Purpose"]
+  ratification_heading: "Ratification"
+  ratification_line_pattern: "^\\*\\*Document Status:\\*\\*"
+  allowed_statuses:
+    - Ratified
+    - Accepted
+    - Approved
+    - Proposed
+    - Draft
+    - Review
+    - Active
+    - Open
+    - Closed
+    - Converted
+    - Withdrawn
+    - Deferred
+    - Rejected
+    - Deprecated
+    - Superseded
+    - Complete
+    - In Progress
+  version_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.]+)?( \\([A-Za-z0-9 ]+\\))?$"
+  date_pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+  families:
+    - match: "adr/ADR-*.md"
+      headings: ["Context", "Decision Drivers", "Options Considered", "Decision", "Consequences"]
+      metadata: ["Date"]
+    - match: "aip/AIP-*.md"
+      headings: ["Summary", "Motivation", "Specification", "Impact", "Compatibility", "Alternatives", "Governance Outcome"]
+      metadata: ["Date"]
+    - match: "governance/rfc/RFC-*.md"
+      headings: ["Question", "Background and Constraints", "Options", "Requested Feedback", "Review Period", "Disposition"]
+      metadata: ["Date"]
+    - match: "work-packages/EWP-*.md"
+      headings: ["Objective", "Scope", "Non-Scope", "Inputs", "Outputs", "Validation Criteria", "Completion Evidence"]
+      metadata: ["Sprint", "Milestone"]
+    - match: "standards/*-standard.md"
+      headings: ["Scope", "Requirements"]
+      metadata: []
+  # Metadata keys a specific ratified document may lack, with the reason. Narrower than a structural exemption.
+  metadata_exemptions:
+    - path: engineering-charter/02_ARCHITECTURE_BASELINE.md
+      keys: ["Last Updated"]
+      reason: >
+        Ratified 2026-07-31 without a Last Updated field, before the Documentation Standard existed.
+        Protected document; may be corrected only through an accepted proposal.
+  structural_exemptions:
+    - path: work-packages/EWP-0001.md
+      reason: >
+        Legacy Sprint 0 plain-text work package ratified before the Documentation Standard
+        existed. Referenced by merged history; retained unchanged for traceability (DEC-0006).
+
+identifiers:
+  pattern: "^[A-Z]+(-[A-Z]+)*-([0-9]{3,4}|INDEX)(-[0-9]{3})?$"
+
+content:
+  # Matched as whole words, case-sensitive. Scanned in Markdown and YAML outside tools/.
+  drafting_markers: ["TODO", "TBD", "FIXME", "XXX", "lorem ipsum", "PLACEHOLDER"]
+  drafting_marker_exclude_dirs: [".git", "tools"]
+  # Common credential shapes. Values that match fail validation. Scanned in every text file outside .git.
+  secret_patterns:
+    - "AKIA[0-9A-Z]{16}"
+    - "-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    - "ghp_[A-Za-z0-9]{36}"
+    - "github_pat_[A-Za-z0-9_]{22,}"
+    - "xox[baprs]-[A-Za-z0-9-]{10,}"
+    - "sk-[A-Za-z0-9]{32,}"
+    - "AIza[0-9A-Za-z_-]{35}"
+  secret_scan_exclude_files: ["tools/validate/config.yaml"]
+
+protected_documents:
+  lock_file: .ai/CONSTITUTION_LOCK.yaml
+  patterns:
+    - "engineering-charter/*"
+    - "standards/*-standard.md"
+    - "governance/*.md"
+
+bindings_file: schemas/bindings.yaml
+bindings_schema: schemas/bindings.schema.json
+
+# Governed YAML and JSON artefacts whose document identifiers join the uniqueness check.
+identifier_sources:
+  yaml_document_id:
+    - AI_BOOTSTRAP.yaml
+    - .ai/MANIFEST.yaml
+    - .ai/ENGINEERING_STATE.yaml
+    - .ai/KNOWLEDGE_GRAPH.yaml
+    - .ai/DECISION_GRAPH.yaml
+    - .ai/CONSTITUTION_LOCK.yaml
+    - schemas/bindings.yaml
+  contract_id:
+    - engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  json_schema_glob: "schemas/*.schema.json"
+
+cross_references:
+  ai_bootstrap: AI_BOOTSTRAP.yaml
+  ai_agent_contract: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  knowledge_graph: .ai/KNOWLEDGE_GRAPH.yaml
+  decision_graph: .ai/DECISION_GRAPH.yaml
+  engineering_state: .ai/ENGINEERING_STATE.yaml
+  memory_manifest: .ai/MANIFEST.yaml

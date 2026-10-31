@@ -1,0 +1,13 @@
+# Illustrative. INVALID: the schema path must end in .schema.json.
+# expect: bindings/0/schema
+schema_version: "1.0.0"
+document:
+  id: SCH-010
+  version: "1.0.0"
+  status: Ratified
+  authority: standards/testing-standard.md
+  last_updated: "2026-10-31"
+bindings:
+  - schema: schemas/engineering-state.json
+    artefacts: [.ai/ENGINEERING_STATE.yaml]
+    examples: examples/engineering-state

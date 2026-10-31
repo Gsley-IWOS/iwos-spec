@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gsley-IWOS/iwos-spec/schemas/bindings/1.0.0",
+  "title": "IWOS Schema Bindings",
+  "description": "Contract for schemas/bindings.yaml: the mapping from governed YAML artefacts and example directories to schemas.",
+  "x-iwos-document": {
+    "id": "SCH-009",
+    "version": "1.0.0",
+    "status": "Ratified",
+    "authority": "standards/testing-standard.md",
+    "parent_document": "standards/testing-standard.md"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "document", "bindings"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "status", "authority", "last_updated"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^SCH-[0-9]{3}$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.]+)?$" },
+        "status": { "enum": ["Ratified", "Proposed", "Draft", "Superseded"] },
+        "authority": { "type": "string", "minLength": 1 },
+        "last_updated": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["schema", "artefacts", "examples"],
+        "properties": {
+          "schema": { "type": "string", "pattern": "^schemas/[a-z-]+\\.schema\\.json$" },
+          "artefacts": { "type": "array", "items": { "type": "string", "pattern": "^(\\.ai/|\\.github/)?[A-Za-z0-9_./-]+\\.ya?ml$" } },
+          "examples": { "type": "string", "pattern": "^examples/[a-z-]+$" }
+        }
+      }
+    }
+  }
+}

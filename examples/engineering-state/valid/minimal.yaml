@@ -1,0 +1,30 @@
+# Illustrative. Minimal valid engineering state with every element of the Architecture Baseline state model.
+schema_version: "1.0.0"
+document:
+  id: MEM-003
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
+  last_updated: "2026-10-31"
+repository:
+  name: iwos-spec
+  role: constitutional-specification-repository
+  phase: foundation
+state:
+  current_release: { version: "1.0.0", name: Example, status: in-preparation, description: Example release. }
+  current_milestone: { id: M0, name: Example milestone, status: in-progress }
+  current_sprint: { number: 0, name: Example sprint, status: in-progress }
+  current_epic: { id: EPIC-0001, name: Example epic, status: in-progress }
+  current_story: { id: STORY-0001, name: Example story, work_package: EWP-0001, status: in-progress }
+  current_task: { id: TASK-0001-01, name: Example task, status: in-progress }
+  current_risks: []
+  current_decisions: []
+work_packages:
+  - { id: EWP-0001, name: Example package, status: Approved }
+quality_gates:
+  structural_checks: required
+  schema_checks: required
+  consistency_checks: required
+  example_checks: required
+  integrity_check: required
+  human_review: required

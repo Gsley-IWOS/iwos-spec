@@ -1,0 +1,13 @@
+# Illustrative. Minimal valid knowledge graph: two nodes and one edge.
+schema_version: "1.0.0"
+document:
+  id: MEM-006
+  version: "1.0.0"
+  status: Active
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+nodes:
+  - { id: iwos, type: system, label: IWOS }
+  - { id: founding_charter, type: constitutional_document, label: Founding Charter, document_id: FC-001, path: engineering-charter/00_FOUNDING_CHARTER.md }
+edges:
+  - { from: founding_charter, to: iwos, relationship: governs }

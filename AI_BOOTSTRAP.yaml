@@ -1,0 +1,173 @@
+# IWOS AI Bootstrap
+# Machine-readable onboarding manifest for AI agents.
+# Schema: schemas/ai-bootstrap.schema.json
+schema_version: "1.0.0"
+
+document:
+  id: AIO-003
+  title: IWOS AI Bootstrap
+  purpose: >
+    Provide machine-readable onboarding for AI agents working in the IWOS
+    specification repository: repository metadata, mandatory reading, the
+    onboarding sequence, protected documents, engineering memory locations,
+    validation commands and the hierarchy of authority.
+  version: "1.0.0"
+  status: Ratified
+  authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  parent_document: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+  last_updated: "2026-10-31"
+
+repository:
+  organisation: Gsley-IWOS
+  name: iwos-spec
+  role: constitutional-specification-repository
+  implementation_repository: IWOS
+  default_branch: main
+  implementation_code_expected: false
+  architecture_changes_allowed_without_governance: false
+
+# The four documents the ratified AI Agent Contract makes mandatory. The validator checks this list
+# against agent_requirements.mandatory_reading in the Contract.
+contract_mandatory_reading:
+  - path: engineering-charter/00_FOUNDING_CHARTER.md
+    reason: Mission and the seven founding principles.
+  - path: engineering-charter/01_PROJECT_GENESIS.md
+    reason: Programme structure, milestones and units of delivery.
+  - path: engineering-charter/02_ARCHITECTURE_BASELINE.md
+    reason: Immutable architectural foundation.
+  - path: engineering-charter/06_ENGINEERING_CONSTITUTION.md
+    reason: Supreme engineering law and hierarchy of authority.
+
+# Further reading this repository requires of agents before any change, in reading order (CLAUDE.md).
+repository_onboarding_reading:
+  - path: README.md
+    reason: Repository purpose, hierarchy and authority chain.
+  - path: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+    reason: Mandatory behaviour of every AI agent.
+  - path: engineering-charter/03_ENGINEERING_PLAYBOOK.md
+    reason: Day-to-day operating sequence.
+  - path: engineering-charter/04_CODE_REVIEW_PLAYBOOK.md
+    reason: Review gates and merge criteria.
+  - path: CLAUDE.md
+    reason: Agent rules and forbidden actions.
+  - path: AGENTS.md
+    reason: Agent workflows.
+  - path: .ai/CURRENT_STATE.md
+    reason: Current engineering state in prose.
+  - path: .ai/NEXT_TASK.md
+    reason: Recommended next task.
+
+recommended_reading:
+  - path: governance/README.md
+    reason: Index of governance policies.
+  - path: standards/README.md
+    reason: Index of ratified standards.
+  - path: adr/README.md
+    reason: Index of Architecture Decision Records.
+  - path: aip/README.md
+    reason: Index of Architecture Improvement Proposals.
+  - path: architecture/glossary.md
+    reason: Definitions of IWOS terms and abbreviations.
+
+# Mirrors execution_sequence in the AI Agent Contract; steps 1 to 7 are the onboarding steps of AGENTS.md.
+execution_sequence:
+  - step: 1
+    action: Load Mission
+    evidence: Founding Charter read; mission stated in handoff.
+  - step: 2
+    action: Verify Constitution
+    evidence: Integrity check in `make validate` passes against .ai/CONSTITUTION_LOCK.yaml.
+  - step: 3
+    action: Load Architecture Baseline
+    evidence: Architecture Baseline read; architectural alignment stated in handoff.
+  - step: 4
+    action: Verify Engineering State
+    evidence: .ai/ENGINEERING_STATE.yaml and .ai/CURRENT_STATE.md read.
+  - step: 5
+    action: Load Current Task
+    evidence: Authorising artefact cited in pull request.
+  - step: 6
+    action: Validate Dependencies
+    evidence: Validator consistency checks pass; inputs confirmed present.
+  - step: 7
+    action: Produce Design
+    evidence: Plan of artefacts and authorities recorded.
+  - step: 8
+    action: Implement
+    evidence: Diff matches plan.
+  - step: 9
+    action: Execute Tests
+    evidence: Output of `make validate` and `make test` summarised in handoff.
+  - step: 10
+    action: Perform Self Review
+    evidence: Eight review gates assessed in handoff.
+  - step: 11
+    action: Update Documentation
+    evidence: Affected documents updated.
+  - step: 12
+    action: Update Engineering Memory
+    evidence: CHANGELOG.md and .ai/ files updated.
+  - step: 13
+    action: Produce Handoff
+    evidence: Pull request contains every mandatory handoff section.
+
+protected_documents:
+  lock_file: .ai/CONSTITUTION_LOCK.yaml
+  change_authority: Accepted Architecture Improvement Proposal and human maintainer.
+  path_patterns:
+    - engineering-charter/*
+    - standards/*-standard.md
+    - governance/*.md
+
+engineering_memory:
+  changelog: CHANGELOG.md
+  current_state: .ai/CURRENT_STATE.md
+  next_task: .ai/NEXT_TASK.md
+  engineering_state: .ai/ENGINEERING_STATE.yaml
+  knowledge_graph: .ai/KNOWLEDGE_GRAPH.yaml
+  decision_graph: .ai/DECISION_GRAPH.yaml
+  manifest: .ai/MANIFEST.yaml
+
+validation:
+  commands:
+    - make validate
+    - make test
+  requirements:
+    - Python 3.10 or later
+    - PyYAML
+    - jsonschema
+  continuous_integration: .github/workflows/validate.yml
+
+handoff:
+  template: .github/pull_request_template.md
+  # The six sections of the AI Agent Contract plus Validation, added by Code Review Playbook Section 6.
+  mandatory_sections:
+    - Summary
+    - Files Changed
+    - Decisions
+    - Validation
+    - Risks
+    - Outstanding Work
+    - Recommended Next Task
+
+# Summary of Article 1 of the Engineering Constitution, which is canonical.
+authority_chain:
+  - Founding Charter
+  - Engineering Constitution
+  - Project Genesis
+  - Architecture Baseline
+  - Constitutional operating documents (AI Agent Contract, Engineering Playbook, Code Review Playbook)
+  - Accepted Architecture Decision Records
+  - Ratified governance policies and standards
+  - Published specifications, schemas and templates
+  - Approved work packages
+  - Implementation
+  - Verification evidence and release artefacts
+  - Engineering memory
+
+prohibited_actions_source: engineering-charter/05_AI_AGENT_CONTRACT.yaml
+
+ratification:
+  status: Ratified
+  effective_on: Merge to main by an authorised human maintainer.
+  amendment_authority: engineering-charter/06_ENGINEERING_CONSTITUTION.md

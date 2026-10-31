@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gsley-IWOS/iwos-spec/schemas/memory-manifest/1.0.0",
+  "title": "IWOS Engineering Memory Manifest",
+  "description": "Contract for .ai/MANIFEST.yaml: the register of engineering memory files and their schemas.",
+  "x-iwos-document": {
+    "id": "SCH-007",
+    "version": "1.0.0",
+    "status": "Ratified",
+    "authority": "standards/testing-standard.md",
+    "parent_document": "engineering-charter/05_AI_AGENT_CONTRACT.yaml"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "document", "workspace", "purpose", "files", "authority"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "status", "authority", "last_updated"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^MEM-[0-9]{3}$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.]+)?$" },
+        "status": { "enum": ["Ratified", "Active", "Superseded"] },
+        "authority": { "type": "string", "minLength": 1 },
+        "last_updated": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "workspace": { "const": ".ai" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "files": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "type", "required"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^\\.ai/[A-Za-z0-9_.-]+$" },
+          "type": { "enum": ["index", "engineering_state", "current_state", "next_task", "knowledge_graph", "decision_graph", "constitution_lock"] },
+          "schema": { "type": "string", "pattern": "^schemas/[a-z-]+\\.schema\\.json$" },
+          "required": { "type": "boolean" },
+          "generated_by": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "note"],
+      "properties": {
+        "primary": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^engineering-charter/[A-Za-z0-9_.-]+$" } },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
