@@ -1,0 +1,44 @@
+name: IWOS Guard
+description: Verify a repository against its constitution and gate pull requests changed by AI agents. Locks protected documents, requires authority citations and reports agent attribution.
+author: Gsley-IWOS
+branding:
+  icon: shield
+  color: blue
+inputs:
+  mode:
+    description: "validate, gate or both"
+    required: false
+    default: both
+  base:
+    description: "Base revision for the gate (defaults to the pull request base)"
+    required: false
+    default: ""
+  head:
+    description: "Head revision for the gate (defaults to the pull request head)"
+    required: false
+    default: ""
+  python-version:
+    description: "Python version to set up"
+    required: false
+    default: "3.12"
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install IWOS Guard
+      shell: bash
+      run: python -m pip install --quiet "${{ github.action_path }}/tools/iwos"
+    - name: Validate the constitution
+      if: inputs.mode == 'validate' || inputs.mode == 'both'
+      shell: bash
+      run: iwos validate
+    - name: Gate the change
+      if: (inputs.mode == 'gate' || inputs.mode == 'both') && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        PR_BODY: ${{ github.event.pull_request.body }}
+        BASE: ${{ inputs.base != '' && inputs.base || github.event.pull_request.base.sha }}
+        HEAD: ${{ inputs.head != '' && inputs.head || github.event.pull_request.head.sha }}
+      run: iwos gate --base "$BASE" --head "$HEAD" --body-env PR_BODY --format both --output iwos-gate-report.md --summary

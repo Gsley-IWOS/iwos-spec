@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iwos-guard"
+version = "0.1.0"
+description = "IWOS Guard: constitution-as-code for repositories changed by AI agents. Lock protected documents, gate agent pull requests, record decisions, and let any agent ask for authority before acting."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = ["PyYAML>=6.0", "jsonschema>=4.18"]
+
+[project.scripts]
+iwos = "iwos.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+packages = ["iwos"]
+
+[tool.setuptools.package-data]
+iwos = ["*.json"]

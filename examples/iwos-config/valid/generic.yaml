@@ -1,0 +1,16 @@
+# Illustrative. A generic repository constitution: two protected globs, one architecture glob, default authority patterns.
+schema_version: "1.0.0"
+profile: generic
+name: example-service
+constitution:
+  protected: ["docs/architecture/**", "GOVERNANCE.md"]
+  architecture: ["src/core/**"]
+  lock_file: .iwos/lock.yaml
+  decision_ledger: .iwos/decisions.yaml
+authority:
+  proposal_pattern: "AIP-\\d{4}"
+  decision_pattern: "ADR-\\d{4}"
+  traceability_patterns: ["EWP-\\d{4}", "ADR-\\d{4}", "AIP-\\d{4}", "#\\d+"]
+  traceability_required: true
+agents:
+  files: [AGENTS.md]

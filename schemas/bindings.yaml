@@ -6,7 +6,7 @@ document:
   version: "1.0.0"
   status: Ratified
   authority: standards/testing-standard.md
-  last_updated: "2026-10-31"
+  last_updated: "2026-11-09"
 bindings:
   - schema: schemas/ai-bootstrap.schema.json
     artefacts:
@@ -40,3 +40,7 @@ bindings:
     artefacts:
       - schemas/bindings.yaml
     examples: examples/bindings
+  - schema: schemas/iwos-config.schema.json
+    artefacts:
+      - iwos.yaml
+    examples: examples/iwos-config

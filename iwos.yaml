@@ -1,0 +1,18 @@
+# IWOS constitution file for the specification repository itself (dogfood).
+# Profile iwos-spec: protected patterns and the lock come from tools/validate/config.yaml, and `iwos validate`
+# runs the repository's own validator as its engine. Schema: schemas/iwos-config.schema.json
+schema_version: "1.0.0"
+profile: iwos-spec
+name: iwos-spec
+constitution:
+  architecture:
+    - "architecture/**"
+    - "schemas/*.schema.json"
+authority:
+  proposal_pattern: "AIP-\\d{4}"
+  decision_pattern: "ADR-\\d{4}"
+  traceability_patterns: ["EWP-\\d{4}", "ADR-\\d{4}", "AIP-\\d{4}", "RFC-\\d{4}", "#\\d+"]
+  traceability_required: true
+  lock_must_change_with_protected: true
+agents:
+  files: [AGENTS.md]

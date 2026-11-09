@@ -1,11 +1,11 @@
 # Schemas
 
 **Document ID:** SCH-001  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Ratified  
 **Authority:** STD-TEST-001 Testing Standard  
 **Parent Documents:** standards/testing-standard.md, adr/ADR-0003-machine-readable-engineering-memory.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-09
 
 ## Purpose
 
@@ -23,6 +23,7 @@ This directory holds the machine-readable contracts of the IWOS specification re
 | `memory-manifest.schema.json` | SCH-007 | `.ai/MANIFEST.yaml` | `examples/memory-manifest/` |
 | `constitution-lock.schema.json` | SCH-008 | `.ai/CONSTITUTION_LOCK.yaml` | `examples/constitution-lock/` |
 | `bindings.schema.json` | SCH-009 | `schemas/bindings.yaml` | `examples/bindings/` |
+| `iwos-config.schema.json` | SCH-011 | `iwos.yaml`, the constitution file of a repository governed by IWOS Guard. A byte-identical copy ships inside `tools/iwos/`. | `examples/iwos-config/` |
 | `bindings.yaml` | SCH-010 | The binding file itself: maps artefacts and example directories to schemas. | |
 
 ## Conventions
