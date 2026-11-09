@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-10-31"
+  last_updated: "2026-11-09"
 
 decisions:
   - id: DEC-0001
@@ -151,3 +151,32 @@ decisions:
       - tools/validate/config.yaml
       - work-packages/EWP-0001.md
     related_records: []
+
+  - id: DEC-0007
+    date: "2026-11-09"
+    status: proposed
+    title: Pivot the programme to the governance layer first, formalised through AIP-0002
+    authority: engineering-charter/00_FOUNDING_CHARTER.md
+    context: >
+      The frontier model providers now ship managed agent runtimes, agent identity and protocols
+      under neutral governance, overlapping the intent and runtime layers of the Architecture
+      Baseline. Vendor-neutral accountability, institutional memory and mechanical enforcement of
+      governance remain open, and this repository already demonstrates all three. The repository
+      owner accepted this direction on 2026-11-09.
+    decision: >
+      Specify and ship the Verification Engine and Decision Ledger first, in the domain of
+      AI-assisted engineering, as the IWOS Guard toolchain, and defer the Intelligent Work Language,
+      Compiler, Kernel and Bytecode. Because this re-sequences Project Genesis, a protected document,
+      the change is proposed as AIP-0002 rather than applied, so that the pivot itself follows the
+      Decision Process the toolchain enforces.
+    consequences:
+      - AIP-0002 awaits the Constitutional Authority; Project Genesis is unchanged until then.
+      - SPEC-ENGGOV-001 is a Draft and EWP-0004 is Proposed; the toolchain ships as validation tooling under ADR-0004.
+      - The Founding Charter's commitment to an open engineering standard and a governance framework for AI-native development is served first.
+    related_files:
+      - aip/AIP-0002-governance-layer-first.md
+      - architecture/engineering-governance/SPEC-ENGGOV-001.md
+      - work-packages/EWP-0004.md
+    related_records:
+      - aip/AIP-0002-governance-layer-first.md
+      - adr/ADR-0004-governance-toolchain-distribution.md

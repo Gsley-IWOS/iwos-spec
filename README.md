@@ -1,11 +1,11 @@
 # IWOS Specification Repository
 
 **Document ID:** ROOT-001  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Ratified  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-09
 
 ## Purpose
 
@@ -28,6 +28,7 @@ The repository exists so that intent, architecture and decisions outlive any sin
 | `aip/` | Architecture Improvement Proposals. | governance/decision-process.md |
 | `work-packages/` | Engineering Work Packages (EWP) that authorise bounded units of work. | engineering-charter/01_PROJECT_GENESIS.md |
 | `tools/validate/` | Repository validator and its unit tests. | STD-TEST-001, STD-REPO-001 |
+| `tools/iwos/` | IWOS Guard: the reference toolchain for SPEC-ENGGOV-001 (constitution file, lock, gate, agent block, Model Context Protocol server). | EWP-0004, ADR-0004 |
 | `.github/` | Pull request template, issue forms and the continuous-integration workflow. | STD-REPO-001 |
 | `.ai/` | Engineering memory: machine-readable engineering state, knowledge graph, decision graph, current state, next task and the constitutional integrity lock. | engineering-charter/05_AI_AGENT_CONTRACT.yaml |
 
@@ -68,11 +69,24 @@ Everything is verifiable. The validator in `tools/validate/` enforces the Testin
 
 Human authority is absolute. AI agents draft, verify and propose. Humans ratify by merging to `main`.
 
+## IWOS Guard
+
+The first product of the programme is the governance layer itself. IWOS Guard turns a repository's constitution into something an agent cannot talk its way past: protected documents are digest-locked, pull requests that touch them without an accepted proposal fail, architecture changes need a decision record, and every agent that speaks the Model Context Protocol can ask `check_authority` before it edits. This repository runs it on itself (`iwos.yaml`, `action.yml`).
+
+```bash
+pip install ./tools/iwos
+iwos init --protected "docs/architecture/**"     # in your own repository
+iwos validate && iwos gate --base origin/main
+```
+
+See `tools/iwos/README.md`, the Draft specification `architecture/engineering-governance/SPEC-ENGGOV-001.md`, and the proposal that re-sequences the programme around it, `aip/AIP-0002-governance-layer-first.md`.
+
 ## Validating the Repository
 
 ```bash
 make validate   # structural, schema, consistency, example and integrity checks
-make test       # unit tests for the validator itself
+make test       # unit tests for the validator and for IWOS Guard
+make guard      # iwos validate: the repository against its own constitution
 make lock       # regenerate .ai/CONSTITUTION_LOCK.yaml after a ratified constitutional change
 ```
 

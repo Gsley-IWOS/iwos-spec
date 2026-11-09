@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** AAC-001 AI Agent Contract  
 **Parent Document:** engineering-charter/05_AI_AGENT_CONTRACT.yaml  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-09
 
 ## Purpose
 
@@ -17,7 +17,7 @@ Milestone M0 Constitutional Foundation has every output EWP-0001 required: the s
 
 Milestone M1 Governance and Standards is in progress. The seven standards are ratified. Governance policies, the first Architecture Decision Records, the first Architecture Improvement Proposal, templates, schemas, examples, the validator and continuous integration exist and are awaiting human review under work packages EWP-0002 and EWP-0003.
 
-Milestones M2 Specification and M3 Reference Implementation Readiness have not started. No component or engine of the Architecture Baseline has a published specification yet; `architecture/component-catalogue.md` records this.
+The founding release was merged on 2026-10-31 (pull request 6). On 2026-11-09 the repository owner accepted a strategic pivot: specify and ship the Verification Engine and Decision Ledger first, in the domain of AI-assisted engineering. The pivot is proposed as AIP-0002 because it re-sequences Project Genesis, a protected document. Its first specification, SPEC-ENGGOV-001, is a Draft, and its reference toolchain, IWOS Guard, is built under EWP-0004 (Proposed) and runs against this repository on every pull request. No component has a ratified specification yet; `architecture/component-catalogue.md` records this.
 
 ## Protected Documents
 
@@ -25,11 +25,11 @@ The Founding Charter, Architecture Baseline and AI Agent Contract are unchanged 
 
 ## Open Risks
 
-See `current_risks` in `ENGINEERING_STATE.yaml`. In summary: EWP-0002 and EWP-0003 are proposed, not approved; ADR-0001 to ADR-0003 are proposed and AIP-0001 is in review, not accepted; pull requests 1 to 4 overlap with the build-out and pull request 1 must not be merged; no CODEOWNERS file exists yet.
+See `current_risks` in `ENGINEERING_STATE.yaml`. In summary: EWP-0002 to EWP-0004 are proposed, not approved; ADR-0001 to ADR-0004 are proposed; AIP-0001 and AIP-0002 are in review, not accepted; the pivot has no constitutional force until AIP-0002 is accepted; IWOS Guard enters a field where GitHub Spec Kit and AGENTS.md already have adoption; pull requests 1 to 4 overlap with the build-out and pull request 1 must not be merged; no CODEOWNERS file exists yet.
 
 ## Validation State
 
-`make validate` and `make test` pass on this revision. Continuous integration runs the same checks on every pull request.
+`make validate`, `make test` and `make guard` pass on this revision. Continuous integration runs the same checks on every pull request.
 
 ## Ratification
 

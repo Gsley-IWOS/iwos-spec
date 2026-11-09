@@ -5,13 +5,32 @@
 **Status:** Active  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-09
 
 ## Purpose
 
 This log records every artefact added, changed, superseded or removed in the IWOS specification repository, grouped by release and by the work package, decision record or proposal that authorised it. It is the Release Memory required by the Architecture Baseline and the Changelog named in the AI Agent Contract. Entries follow the class of change defined in `governance/change-control-policy.md`.
 
 ## Unreleased (target: 1.0.0 Genesis)
+
+### EWP-0004 IWOS Guard Reference Toolchain (Normative, Proposed) and AIP-0002 (Review)
+
+Added:
+
+- `aip/AIP-0002-governance-layer-first.md` (Review): re-sequence milestone M2 toward the Verification Engine and Decision Ledger in the domain of AI-assisted engineering; defer IWL, IWC, IWK and IKB.
+- `architecture/engineering-governance/SPEC-ENGGOV-001.md` (Draft): Engineering Governance Verification specification.
+- `adr/ADR-0004-governance-toolchain-distribution.md` (Proposed): the toolchain ships from `tools/` until a dedicated repository exists.
+- `work-packages/EWP-0004.md` (Proposed).
+- `tools/iwos/`: the `iwos` package (init, validate, lock, gate, agents, mcp), 24 end-to-end tests, README (TOOL-002).
+- `iwos.yaml`: this repository's constitution (profile `iwos-spec`); `action.yml`: composite GitHub Action `Gsley-IWOS/iwos-spec`.
+- `schemas/iwos-config.schema.json` (SCH-011), `examples/iwos-config/`, binding added.
+- `AGENTS.md`: generated constitution block maintained by `iwos agents`.
+- `.github/workflows/validate.yml`: runs the toolchain tests, `iwos validate` and `iwos gate` on pull requests.
+- `Makefile`: `test-validator`, `test-iwos`, `guard` targets.
+
+Changed (Clarifying): `README.md` gains an IWOS Guard section; registers in `aip/`, `adr/`, `work-packages/`, `architecture/` and `schemas/` list the new documents.
+
+Unchanged, by design: every protected document. Project Genesis changes only when AIP-0002 is accepted by the Constitutional Authority.
 
 ### EWP-0001 Bootstrap the Constitutional Repository (Normative)
 
