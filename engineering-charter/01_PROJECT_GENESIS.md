@@ -2,7 +2,7 @@
 
 **Document ID:** PG-001
 
-**Version:** 1.0.0 (Genesis)
+**Version:** 1.1.0
 
 **Status:** Ratified
 
@@ -17,7 +17,7 @@
 - 00_FOUNDING_CHARTER.md
 - 06_ENGINEERING_CONSTITUTION.md
 
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-10
 
 ---
 
@@ -59,8 +59,8 @@ Delivery proceeds through controlled milestones. Each milestone is complete only
 | --- | --- | --- |
 | M0 Constitutional Foundation | Establish authority. | Founding Charter, Engineering Constitution, Project Genesis, Architecture Baseline, playbooks, AI Agent Contract, onboarding files, engineering memory. |
 | M1 Governance and Standards | Establish how change happens and what quality means. | Governance policies, standards, decision records, proposals, templates, schemas, examples, validation tooling. |
-| M2 Specification | Specify each constitutional component and engine of the Architecture Baseline. | Component and engine specifications, contracts, schemas. |
-| M3 Reference Implementation Readiness | Prepare the implementation repository to build against ratified specifications. | Compliance criteria, certification criteria, SDK contracts. |
+| M2 Specification | Specify the Verification Engine and Decision Ledger of the Architecture Baseline in the domain of AI-assisted engineering, publish the first specification and ship its reference toolchain. | `SPEC-ENGGOV-001`, the IWOS Guard toolchain (command-line interface, continuous-integration action, Model Context Protocol server), conformance criteria. |
+| M3 Platform Specification | Specify the remaining constitutional components and engines, beginning with the Enterprise Asset Registry and Knowledge Graph, then the Intelligent Work Language, Compiler, Kernel and Bytecode. | Component and engine specifications, contracts, schemas, compliance and certification criteria. |
 
 Milestones M2 and M3 are sequenced here for programme planning. Their detailed scope is authorised by future work packages and proposals, not by this document.
 
@@ -151,6 +151,6 @@ It is effective on merge to `main` by an authorised human maintainer and remains
 
 **Document Status:** Ratified
 
-**Version:** 1.0.0 (Genesis)
+**Version:** 1.1.0
 
-**Release:** PG-1.0
+**Release:** PG-1.1 (amended by AIP-0002)

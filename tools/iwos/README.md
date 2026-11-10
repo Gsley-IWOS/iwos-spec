@@ -3,9 +3,9 @@
 **Document ID:** TOOL-002  
 **Version:** 0.1.0  
 **Status:** Draft  
-**Authority:** EWP-0004 (Proposed); specification SPEC-ENGGOV-001 (Draft)  
+**Authority:** EWP-0004 (Approved); specification SPEC-ENGGOV-001 (Draft)  
 **Parent Documents:** work-packages/EWP-0004.md, architecture/engineering-governance/SPEC-ENGGOV-001.md, adr/ADR-0004-governance-toolchain-distribution.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
@@ -108,4 +108,4 @@ make guard        # iwos validate against this repository
 
 ## Ratification
 
-This document is a Draft under EWP-0004. It becomes Ratified when EWP-0004 is approved and SPEC-ENGGOV-001 is ratified.
+This document is a Draft under EWP-0004 (Approved). It becomes Ratified when SPEC-ENGGOV-001 is ratified.

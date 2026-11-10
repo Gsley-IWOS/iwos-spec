@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
@@ -13,7 +13,15 @@ This log records every artefact added, changed, superseded or removed in the IWO
 
 ## Unreleased (target: 1.0.0 Genesis)
 
-### EWP-0004 IWOS Guard Reference Toolchain (Normative, Proposed) and AIP-0002 (Review)
+### AIP-0002 accepted: Project Genesis 1.1.0 (Constitutional)
+
+Changed:
+
+- `engineering-charter/01_PROJECT_GENESIS.md`: Section 2 milestone table, M2 and M3 rows replaced as AIP-0002 specifies; version 1.1.0; release PG-1.1. Applied at the Constitutional Authority's direction on 2026-11-10.
+- `.ai/CONSTITUTION_LOCK.yaml`: regenerated for the amended Project Genesis.
+- `aip/AIP-0002-governance-layer-first.md`: Review to Accepted. `work-packages/EWP-0004.md`: Proposed to Approved (authorised by AIP-0002 item 3). `architecture/component-catalogue.md`: Verification Engine and Decision Ledger marked Authorised.
+
+### EWP-0004 IWOS Guard Reference Toolchain (Normative, Approved) and AIP-0002 (Accepted)
 
 Added:
 
@@ -30,7 +38,7 @@ Added:
 
 Changed (Clarifying): `README.md` gains an IWOS Guard section; registers in `aip/`, `adr/`, `work-packages/`, `architecture/` and `schemas/` list the new documents.
 
-Unchanged, by design: every protected document. Project Genesis changes only when AIP-0002 is accepted by the Constitutional Authority.
+Protected documents: only Project Genesis changed, under accepted AIP-0002. Every other protected document is unchanged.
 
 ### EWP-0001 Bootstrap the Constitutional Repository (Normative)
 

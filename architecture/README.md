@@ -23,7 +23,7 @@ New architecture enters the baseline only through the Decision Process in `gover
 | --- | --- | --- |
 | [Glossary](glossary.md) | AS-002 | Definitions of IWOS terms and abbreviations used across the repository. |
 | [Component Catalogue](component-catalogue.md) | AS-003 | Every constitutional component and intelligence engine named in the baseline, with purpose and specification status. |
-| [Engineering Governance Verification](engineering-governance/SPEC-ENGGOV-001.md) | SPEC-ENGGOV-001 | Draft specification of the Verification Engine and Decision Ledger for AI-assisted engineering; authorised for ratification by AIP-0002 (Review). |
+| [Engineering Governance Verification](engineering-governance/SPEC-ENGGOV-001.md) | SPEC-ENGGOV-001 | Draft specification of the Verification Engine and Decision Ledger for AI-assisted engineering; authorised by AIP-0002 (Accepted) to proceed to ratification. |
 
 ## The Seven Layers
 

@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** AAC-001 AI Agent Contract  
 **Parent Document:** engineering-charter/05_AI_AGENT_CONTRACT.yaml  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
@@ -13,18 +13,19 @@ This document names the single recommended next task so that the next contributo
 
 ## Recommended Next Task
 
-**Decide AIP-0002 and launch IWOS Guard.** The Constitutional Authority reviews the pivot pull request and decides:
+**Launch IWOS Guard.** With AIP-0002 accepted and EWP-0004 approved:
 
-1. whether AIP-0002 is accepted; on acceptance, apply its Specification to Project Genesis, regenerate the lock and set the proposal to Accepted in the same change;
-2. whether EWP-0004 is approved and ADR-0004 accepted, and whether the earlier open items (EWP-0002, EWP-0003, ADR-0001 to ADR-0003, AIP-0001) are approved or accepted;
-3. whether to name the toolchain, tag `v0.1.0` so the Action can be pinned, and publish the launch: the pull request 1 story, a Show HN, and plugins for the agent ecosystems.
+1. name the toolchain (IWOS Guard is provisional) and tag `v0.1.0` so consumers can pin `Gsley-IWOS/iwos-spec@v0.1.0`;
+2. require the `IWOS Guard` check in branch protection and add `.github/CODEOWNERS` (RISK-0004);
+3. publish the launch: the pull request 1 story, a Show HN, and plugins for the agent ecosystems;
+4. decide the remaining open items: ADR-0001 to ADR-0004 (Proposed), AIP-0001 (Review), EWP-0002 and EWP-0003 (Proposed); and ratify SPEC-ENGGOV-001 once its Draft is complete.
 
 ## Acceptance Criteria
 
-- The pull request is merged to `main` by an authorised human maintainer, or returned with findings labelled by review gate.
-- `work-packages/README.md`, `aip/README.md`, `adr/README.md` and `ENGINEERING_STATE.yaml` reflect the decisions taken.
-- If AIP-0002 is accepted, Project Genesis 1.1.0 is on `main` with a regenerated lock and SPEC-ENGGOV-001 proceeds to ratification.
-- A release tag exists so consumers can reference `Gsley-IWOS/iwos-spec@v0.1.0`.
+- A release tag `v0.1.0` exists and the README quickstart references it.
+- Branch protection requires the gate; `CODEOWNERS` names the authorities in `governance/roles-and-authority.md`.
+- The launch post is published and its traction is measured by repositories running the Action, not stars.
+- Registers and `ENGINEERING_STATE.yaml` reflect every decision taken.
 
 ## After That
 

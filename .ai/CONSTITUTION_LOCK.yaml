@@ -7,14 +7,14 @@ document:
   version: 1.0.0
   status: Active
   authority: governance/change-control-policy.md
-  last_updated: '2026-10-31'
+  last_updated: '2026-11-10'
 algorithm: sha256
 generated_by: tools/validate/validate.py --write-lock
 entries:
 - path: engineering-charter/00_FOUNDING_CHARTER.md
   sha256: e267d09723c505c2a6a716bdada7a64c4351c500325a4cb9fd6354dc7207beb4
 - path: engineering-charter/01_PROJECT_GENESIS.md
-  sha256: 087736b2e8ba9af47923c3988796a478298249957217ca261253e47e2802653f
+  sha256: e5f99686cfddc2334d73ecc1004a086bccf54de9bda66f4897f8f6bbd10714a9
 - path: engineering-charter/02_ARCHITECTURE_BASELINE.md
   sha256: e062afc36000f81581f462291cce83714dabe981eab77528baf6f1341fc4890c
 - path: engineering-charter/03_ENGINEERING_PLAYBOOK.md

@@ -2,11 +2,11 @@
 
 **Document ID:** AIP-0002  
 **Version:** 1.0.0  
-**Status:** Review  
+**Status:** Accepted  
 **Date:** 2026-11-09  
 **Authority:** Constitutional Authority under GOV-002 (affects Project Genesis, a protected document)  
 **Parent Documents:** governance/decision-process.md, engineering-charter/01_PROJECT_GENESIS.md, engineering-charter/02_ARCHITECTURE_BASELINE.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
@@ -68,8 +68,8 @@ Additive and re-sequencing only. No published artefact changes meaning. MINOR in
 
 ## Governance Outcome
 
-Review. Awaiting decision by the Constitutional Authority. On acceptance the Constitutional Authority applies the Specification section to Project Genesis, regenerates the lock and sets this proposal to `Accepted` in the same change.
+Accepted on 2026-11-10 by the Constitutional Authority (the repository owner), who directed the application of the Specification section. Project Genesis was amended to version 1.1.0 and the constitutional integrity lock regenerated in the same change.
 
 ## Ratification
 
-This proposal carries no authority until a holder of Constitutional Authority merges it with status `Accepted`. Its acceptance authorises exactly the change in the Specification section.
+This proposal was accepted by a holder of Constitutional Authority and merged with status `Accepted`. Its acceptance authorises exactly the change in the Specification section.

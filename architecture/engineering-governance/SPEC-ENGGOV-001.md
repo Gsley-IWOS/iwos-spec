@@ -3,15 +3,15 @@
 **Document ID:** SPEC-ENGGOV-001  
 **Version:** 0.1.0-draft.1  
 **Status:** Draft  
-**Authority:** AIP-0002 (Review); ratification requires its acceptance  
+**Authority:** AIP-0002 (Accepted); ratification by the Architecture Authority pending  
 **Parent Documents:** engineering-charter/02_ARCHITECTURE_BASELINE.md, aip/AIP-0002-governance-layer-first.md, standards/architecture-standard.md, standards/security-standard.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
 The Architecture Baseline requires every compliant implementation to include a Verification Engine and a Decision Ledger. This specification defines both for the domain of AI-assisted engineering: a repository in which humans and AI agents change governed documents and code. It defines what a conforming toolchain must verify, what it must record, and how any agent may consult it. The reference implementation is the IWOS Guard toolchain built under EWP-0004.
 
-This is a Draft. It becomes normative only when AIP-0002 is accepted and the Architecture Authority ratifies this document.
+This is a Draft authorised by AIP-0002. It becomes normative when the Architecture Authority ratifies it.
 
 ## Scope
 
@@ -103,4 +103,4 @@ This specification is versioned under the Versioning Policy. The constitution fi
 
 ## Ratification
 
-This specification is ratified under the Architecture Standard on merge to `main` with status `Ratified` by the Architecture Authority, after AIP-0002 is accepted. Until then it is a Draft and carries no authority.
+This specification is ratified under the Architecture Standard on merge to `main` with status `Ratified` by the Architecture Authority, now that AIP-0002 is accepted. Until then it is a Draft and carries no authority.

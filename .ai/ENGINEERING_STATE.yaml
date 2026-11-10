@@ -6,7 +6,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
-  last_updated: "2026-11-09"
+  last_updated: "2026-11-10"
 
 repository:
   name: iwos-spec
@@ -20,8 +20,8 @@ state:
     status: in-preparation
     description: First ratified release of the constitutional repository. Tagged when milestones M0 and M1 are complete.
   current_milestone:
-    id: M1
-    name: Governance and Standards
+    id: M2
+    name: Specification (governance layer first, per AIP-0002)
     status: in-progress
   current_sprint:
     number: 2
@@ -35,11 +35,11 @@ state:
     id: STORY-0002
     name: Pivot to the governance layer (AIP-0002) and ship IWOS Guard v0.1 (EWP-0004)
     work_package: EWP-0004
-    status: in-review
+    status: complete
   current_task:
-    id: TASK-0002-01
-    name: Human review of AIP-0002, EWP-0004 and the IWOS Guard pull request
-    status: awaiting-review
+    id: TASK-0002-02
+    name: Name the toolchain, tag v0.1.0 and publish the launch
+    status: not-started
   current_risks:
     - id: RISK-0001
       severity: medium
@@ -65,7 +65,7 @@ state:
       severity: medium
       description: The strategic pivot to the governance layer is accepted by the repository owner but AIP-0002 is in Review. Until it is accepted, Project Genesis still sequences M2 around the Intelligent Work Language, and SPEC-ENGGOV-001 is a Draft without authority.
       mitigation: Constitutional Authority decides AIP-0002; on acceptance applies its Specification to Project Genesis and regenerates the lock.
-      status: open
+      status: closed
     - id: RISK-0006
       severity: medium
       description: IWOS Guard competes for attention with GitHub Spec Kit and AGENTS.md conventions that have large existing adoption. Differentiation rests on enforcement, the lock, the gate and the authority interface, which are easy to imitate.
@@ -90,7 +90,7 @@ state:
       record: adr/ADR-0004-governance-toolchain-distribution.md
     - id: DEC-0007
       title: Strategic pivot to the governance layer, formalised through AIP-0002
-      status: proposed
+      status: accepted
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0001
       title: Build-out incorporates drafts from pull requests 2, 3 and 4 and rejects pull request 1
@@ -129,7 +129,7 @@ work_packages:
     status: Proposed
   - id: EWP-0004
     name: IWOS Guard Reference Toolchain
-    status: Proposed
+    status: Approved
 
 quality_gates:
   structural_checks: required
