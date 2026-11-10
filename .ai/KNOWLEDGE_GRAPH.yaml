@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-10-31"
+  last_updated: "2026-11-09"
 
 nodes:
   - id: iwos
@@ -210,6 +210,39 @@ nodes:
     label: AIP-0001 Identifier families
     document_id: AIP-0001
     path: aip/AIP-0001-identifier-families.md
+  - id: aip_0002
+    type: proposal
+    label: AIP-0002 Governance layer first
+    document_id: AIP-0002
+    path: aip/AIP-0002-governance-layer-first.md
+  - id: adr_0004
+    type: decision_record
+    label: ADR-0004 Governance toolchain distribution
+    document_id: ADR-0004
+    path: adr/ADR-0004-governance-toolchain-distribution.md
+  - id: spec_enggov
+    type: architecture_document
+    label: SPEC-ENGGOV-001 Engineering Governance Verification
+    document_id: SPEC-ENGGOV-001
+    path: architecture/engineering-governance/SPEC-ENGGOV-001.md
+  - id: ewp_0004
+    type: work_package
+    label: EWP-0004 IWOS Guard Reference Toolchain
+    document_id: EWP-0004
+    path: work-packages/EWP-0004.md
+  - id: iwos_guard
+    type: tooling
+    label: IWOS Guard toolchain
+    document_id: TOOL-002
+    path: tools/iwos/README.md
+  - id: constitution_file
+    type: schema
+    label: Repository constitution file
+    path: iwos.yaml
+  - id: guard_action
+    type: tooling
+    label: IWOS Guard GitHub Action
+    path: action.yml
 
   - id: ewp_index
     type: work_package
@@ -325,6 +358,19 @@ edges:
   - { from: adr_0003, to: architecture_baseline, relationship: derives_from }
   - { from: aip_index, to: decision_process, relationship: derives_from }
   - { from: aip_0001, to: std_naming, relationship: proposes_change_to }
+  - { from: aip_0002, to: project_genesis, relationship: proposes_change_to }
+  - { from: aip_0002, to: architecture_baseline, relationship: derives_from }
+  - { from: spec_enggov, to: architecture_baseline, relationship: derives_from }
+  - { from: spec_enggov, to: aip_0002, relationship: depends_on }
+  - { from: adr_0004, to: std_repository, relationship: derives_from }
+  - { from: adr_0004, to: adr_0002, relationship: derives_from }
+  - { from: ewp_0004, to: ewp_index, relationship: part_of }
+  - { from: ewp_0004, to: aip_0002, relationship: depends_on }
+  - { from: iwos_guard, to: spec_enggov, relationship: implements }
+  - { from: iwos_guard, to: validator, relationship: depends_on }
+  - { from: constitution_file, to: iwos_guard, relationship: binds }
+  - { from: guard_action, to: iwos_guard, relationship: depends_on }
+  - { from: ci_workflow, to: iwos_guard, relationship: depends_on }
   - { from: ewp_index, to: project_genesis, relationship: derives_from }
   - { from: ewp_0001, to: ewp_index, relationship: part_of }
   - { from: ewp_0002, to: ewp_index, relationship: part_of }

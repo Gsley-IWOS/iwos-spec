@@ -1,0 +1,186 @@
+"""Model Context Protocol server over standard input and output.
+
+Exposes the authority interface of SPEC-ENGGOV-001 so that any agent runtime that speaks MCP can ask,
+before acting, what it may change and under which process. JSON-RPC 2.0, one message per line.
+The server never listens on a network port and never writes to a protected artefact.
+"""
+from __future__ import annotations
+
+import datetime as _dt
+import json
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+from . import __version__, checks
+from .config import Config
+from .lock import check_lock, matches_architecture, matches_protected, protected_files, rel
+
+PROTOCOL_VERSIONS = ("2025-06-18", "2025-03-26", "2024-11-05")
+
+TOOLS = [
+    {"name": "check_authority",
+     "description": "Ask whether a repository path is protected or architectural, which process authorises a change to it, and whether the integrity lock currently matches. Call this before editing any file.",
+     "inputSchema": {"type": "object", "required": ["path"], "properties": {"path": {"type": "string", "description": "Repository-relative path"}}, "additionalProperties": False}},
+    {"name": "list_protected",
+     "description": "List every protected artefact and the patterns that protect it.",
+     "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "read_state",
+     "description": "Read the repository's constitution summary: profile, protected patterns, lock status, decision ledger size and, when present, the machine-readable engineering state.",
+     "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "record_decision",
+     "description": "Append a decision that constrains future work to the decision ledger. Never modifies or deletes an existing entry.",
+     "inputSchema": {"type": "object", "required": ["title", "context", "decision", "consequences", "authority"],
+                     "properties": {"title": {"type": "string"}, "context": {"type": "string"}, "decision": {"type": "string"},
+                                    "consequences": {"type": "array", "items": {"type": "string"}},
+                                    "authority": {"type": "string", "description": "Repository path of the document that authorises the decision"},
+                                    "related_files": {"type": "array", "items": {"type": "string"}}},
+                     "additionalProperties": False}},
+    {"name": "validate",
+     "description": "Run every constitutional check on the repository and return the findings.",
+     "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+]
+
+
+class Server:
+    def __init__(self, cfg: Config):
+        self.cfg = cfg
+
+    # ----- tool implementations
+    def check_authority(self, path: str) -> dict:
+        path = path.strip().lstrip("./")
+        protected = matches_protected(self.cfg, path)
+        architecture = matches_architecture(self.cfg, path)
+        lock_findings = check_lock(self.cfg)
+        if protected:
+            process = (f"Protected artefact. A change requires an accepted proposal cited in the pull request or commit message "
+                       f"(pattern {self.cfg.proposal_pattern}) and `iwos lock` regenerated in the same change. "
+                       f"An AI agent must not make this change unless a human maintainer directed it under that proposal.")
+        elif architecture:
+            process = f"Architecture. A change requires a decision record cited in the pull request or commit message (pattern {self.cfg.decision_pattern})."
+        else:
+            process = ("Ordinary artefact. A change requires an authority citation for traceability "
+                       f"({', '.join(self.cfg.traceability_patterns)}) and must pass `iwos validate`.")
+        return {"path": path, "exists": (self.cfg.root / path).exists(), "protected": bool(protected), "protected_by": protected,
+                "architecture": bool(architecture), "architecture_by": architecture, "required_process": process,
+                "lock_matches": not lock_findings, "lock_findings": lock_findings}
+
+    def list_protected(self) -> dict:
+        return {"patterns": self.cfg.protected, "lock_file": self.cfg.lock_file,
+                "files": [{"path": rel(self.cfg, p), "protected_by": matches_protected(self.cfg, rel(self.cfg, p))} for p in protected_files(self.cfg)]}
+
+    def read_state(self) -> dict:
+        ledger_path = self.cfg.root / self.cfg.decision_ledger
+        decisions = []
+        if ledger_path.exists():
+            try:
+                decisions = (yaml.safe_load(ledger_path.read_text(encoding="utf-8")) or {}).get("decisions", []) or []
+            except yaml.YAMLError:
+                decisions = []
+        state = None
+        state_path = self.cfg.root / ".ai" / "ENGINEERING_STATE.yaml"
+        if state_path.exists():
+            try:
+                state = yaml.safe_load(state_path.read_text(encoding="utf-8"))
+            except yaml.YAMLError:
+                state = None
+        lock_findings = check_lock(self.cfg)
+        return {"name": self.cfg.name, "profile": self.cfg.profile, "protected_patterns": self.cfg.protected,
+                "architecture_patterns": self.cfg.architecture, "lock_file": self.cfg.lock_file, "lock_matches": not lock_findings,
+                "decision_ledger": self.cfg.decision_ledger, "decisions": len(decisions),
+                "latest_decisions": [{"id": d.get("id"), "title": d.get("title"), "status": d.get("status")} for d in decisions[-5:]],
+                "engineering_state": state}
+
+    def record_decision(self, title: str, context: str, decision: str, consequences: list[str], authority: str, related_files: list[str] | None = None) -> dict:
+        if matches_protected(self.cfg, self.cfg.decision_ledger):
+            raise ValueError("the decision ledger is a protected artefact; refusing to write")
+        path = self.cfg.root / self.cfg.decision_ledger
+        header_lines: list[str] = []
+        data: dict = {"schema_version": "1.0.0", "decisions": []}
+        if path.exists():
+            text = path.read_text(encoding="utf-8")
+            header_lines = [l for l in text.splitlines() if l.startswith("#")][:10]
+            loaded = yaml.safe_load(text) or {}
+            if not isinstance(loaded, dict) or not isinstance(loaded.get("decisions", []), list):
+                raise ValueError(f"{self.cfg.decision_ledger} is not a decision ledger")
+            data = loaded
+            data.setdefault("decisions", [])
+        existing = [d.get("id", "") for d in data["decisions"] if isinstance(d, dict)]
+        numbers = [int(m.group(1)) for i in existing for m in [re.match(r"DEC-(\d{4})$", str(i))] if m]
+        new_id = f"DEC-{(max(numbers) + 1) if numbers else 1:04d}"
+        entry = {"id": new_id, "date": _dt.date.today().isoformat(), "status": "proposed", "title": title.strip(),
+                 "authority": authority.strip(), "context": context.strip(), "decision": decision.strip(),
+                 "consequences": [c.strip() for c in consequences if c.strip()], "related_files": list(related_files or []), "related_records": []}
+        data["decisions"].append(entry)
+        if "document" in data and isinstance(data["document"], dict):
+            data["document"]["last_updated"] = entry["date"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        head = ("\n".join(header_lines) + "\n") if header_lines else "# Decision ledger maintained by IWOS Guard. Append-only.\n"
+        path.write_text(head + yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=100), encoding="utf-8")
+        return {"recorded": entry, "ledger": self.cfg.decision_ledger, "note": "Status is 'proposed'. A maintainer accepts it by review."}
+
+    def validate(self) -> dict:
+        findings, summary = checks.validate(self.cfg)
+        return {"passed": not findings, "summary": summary.splitlines()[0], "findings": [str(f) for f in findings]}
+
+    # ----- JSON-RPC
+    def handle(self, msg: dict) -> dict | None:
+        method, msg_id, params = msg.get("method"), msg.get("id"), msg.get("params") or {}
+        if method == "initialize":
+            requested = params.get("protocolVersion")
+            version = requested if requested in PROTOCOL_VERSIONS else PROTOCOL_VERSIONS[0]
+            return self._result(msg_id, {"protocolVersion": version, "capabilities": {"tools": {"listChanged": False}},
+                                         "serverInfo": {"name": "iwos", "version": __version__},
+                                         "instructions": "Call check_authority with a path before editing it. Protected artefacts require an accepted proposal and a regenerated lock; architecture requires a decision record. Record decisions with record_decision."})
+        if method == "notifications/initialized" or (method or "").startswith("notifications/"):
+            return None
+        if method == "ping":
+            return self._result(msg_id, {})
+        if method == "tools/list":
+            return self._result(msg_id, {"tools": TOOLS})
+        if method == "tools/call":
+            name, args = params.get("name"), params.get("arguments") or {}
+            try:
+                fn = {"check_authority": self.check_authority, "list_protected": self.list_protected, "read_state": self.read_state,
+                      "record_decision": self.record_decision, "validate": self.validate}.get(name)
+                if fn is None:
+                    return self._error(msg_id, -32602, f"unknown tool {name}")
+                payload = fn(**args)
+                return self._result(msg_id, {"content": [{"type": "text", "text": json.dumps(payload, indent=2, default=str)}], "isError": False})
+            except TypeError as exc:
+                return self._result(msg_id, {"content": [{"type": "text", "text": f"invalid arguments: {exc}"}], "isError": True})
+            except Exception as exc:  # the agent sees the failure as a tool error, never as a dead server
+                return self._result(msg_id, {"content": [{"type": "text", "text": f"{type(exc).__name__}: {exc}"}], "isError": True})
+        if msg_id is None:
+            return None
+        return self._error(msg_id, -32601, f"method not found: {method}")
+
+    @staticmethod
+    def _result(msg_id, result):
+        return {"jsonrpc": "2.0", "id": msg_id, "result": result}
+
+    @staticmethod
+    def _error(msg_id, code, message):
+        return {"jsonrpc": "2.0", "id": msg_id, "error": {"code": code, "message": message}}
+
+
+def serve(cfg: Config, stdin=None, stdout=None) -> None:
+    stdin = stdin or sys.stdin
+    stdout = stdout or sys.stdout
+    server = Server(cfg)
+    for line in stdin:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            msg = json.loads(line)
+        except json.JSONDecodeError:
+            stdout.write(json.dumps({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}}) + "\n")
+            stdout.flush()
+            continue
+        response = server.handle(msg)
+        if response is not None:
+            stdout.write(json.dumps(response) + "\n")
+            stdout.flush()

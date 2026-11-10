@@ -6,7 +6,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
-  last_updated: "2026-10-31"
+  last_updated: "2026-11-10"
 
 repository:
   name: iwos-spec
@@ -20,26 +20,26 @@ state:
     status: in-preparation
     description: First ratified release of the constitutional repository. Tagged when milestones M0 and M1 are complete.
   current_milestone:
-    id: M1
-    name: Governance and Standards
+    id: M2
+    name: Specification (governance layer first, per AIP-0002)
     status: in-progress
   current_sprint:
-    number: 1
-    name: Governance, schemas and validation
+    number: 2
+    name: Governance layer first; IWOS Guard reference toolchain
     status: in-progress
   current_epic:
     id: EPIC-0001
     name: Constitutional repository build-out
     status: in-progress
   current_story:
-    id: STORY-0001
-    name: Founding release pull request (EWP-0001, EWP-0002, EWP-0003)
-    work_package: EWP-0003
-    status: in-review
+    id: STORY-0002
+    name: Pivot to the governance layer (AIP-0002) and ship IWOS Guard v0.1 (EWP-0004)
+    work_package: EWP-0004
+    status: complete
   current_task:
-    id: TASK-0001-01
-    name: Human review and ratification of the founding release
-    status: awaiting-review
+    id: TASK-0002-02
+    name: Name the toolchain, tag v0.1.0 and publish the launch
+    status: not-started
   current_risks:
     - id: RISK-0001
       severity: medium
@@ -61,6 +61,16 @@ state:
       description: No CODEOWNERS file exists because the maintainer team is not yet named in the repository.
       mitigation: Maintainers add .github/CODEOWNERS naming the authorities defined in governance/roles-and-authority.md. Until then the interim self-approval rule in that policy applies.
       status: open
+    - id: RISK-0005
+      severity: medium
+      description: The strategic pivot to the governance layer is accepted by the repository owner but AIP-0002 is in Review. Until it is accepted, Project Genesis still sequences M2 around the Intelligent Work Language, and SPEC-ENGGOV-001 is a Draft without authority.
+      mitigation: Constitutional Authority decides AIP-0002; on acceptance applies its Specification to Project Genesis and regenerates the lock.
+      status: closed
+    - id: RISK-0006
+      severity: medium
+      description: IWOS Guard competes for attention with GitHub Spec Kit and AGENTS.md conventions that have large existing adoption. Differentiation rests on enforcement, the lock, the gate and the authority interface, which are easy to imitate.
+      mitigation: Ship early, publish the specification as an open standard, and build rule packs and a hosted portal that accumulate value.
+      status: open
   current_decisions:
     - id: ADR-0001
       title: Record architecture decisions as ADRs in adr/
@@ -74,6 +84,14 @@ state:
       title: Machine-readable engineering memory with JSON Schema contracts
       status: Proposed
       record: adr/ADR-0003-machine-readable-engineering-memory.md
+    - id: ADR-0004
+      title: Distribute the governance toolchain from tools/ until a dedicated repository exists
+      status: Proposed
+      record: adr/ADR-0004-governance-toolchain-distribution.md
+    - id: DEC-0007
+      title: Strategic pivot to the governance layer, formalised through AIP-0002
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0001
       title: Build-out incorporates drafts from pull requests 2, 3 and 4 and rejects pull request 1
       status: accepted
@@ -109,6 +127,9 @@ work_packages:
   - id: EWP-0003
     name: Schemas, Examples, Validation Tooling and Engineering Memory
     status: Proposed
+  - id: EWP-0004
+    name: IWOS Guard Reference Toolchain
+    status: Approved
 
 quality_gates:
   structural_checks: required
@@ -117,4 +138,6 @@ quality_gates:
   example_checks: required
   integrity_check: required
   validator_unit_tests: required
+  guard_unit_tests: required
+  guard_gate: required
   human_review: required

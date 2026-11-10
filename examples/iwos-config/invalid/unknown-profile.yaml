@@ -1,0 +1,4 @@
+# Illustrative. INVALID: profile must be generic or iwos-spec.
+# expect: profile
+schema_version: "1.0.0"
+profile: enterprise

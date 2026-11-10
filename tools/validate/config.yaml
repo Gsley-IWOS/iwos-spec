@@ -77,7 +77,7 @@ content:
     - "xox[baprs]-[A-Za-z0-9-]{10,}"
     - "sk-[A-Za-z0-9]{32,}"
     - "AIza[0-9A-Za-z_-]{35}"
-  secret_scan_exclude_files: ["tools/validate/config.yaml"]
+  secret_scan_exclude_files: ["tools/validate/config.yaml", "tools/iwos/src/iwos/config.py"]
 
 protected_documents:
   lock_file: .ai/CONSTITUTION_LOCK.yaml

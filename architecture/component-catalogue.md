@@ -1,11 +1,11 @@
 # Component Catalogue
 
 **Document ID:** AS-003  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Ratified  
 **Authority:** STD-ARCH-001 Architecture Standard  
 **Parent Document:** engineering-charter/02_ARCHITECTURE_BASELINE.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-10
 
 ## Purpose
 
@@ -22,7 +22,7 @@ This document is a summary. Purposes are quoted or condensed from the baseline a
 | Intelligent Work Kernel | IWK | Runtime execution engine; coordinates workflows, schedules execution, maintains context. | Not yet authorised |
 | Intelligent Kernel Bytecode | IKB | Portable execution representation independent of implementation language. | Not yet authorised |
 | Enterprise Asset Registry | EAR | Canonical registry of systems, people, processes, knowledge, policies and resources. | Not yet authorised |
-| Decision Ledger | | Immutable record of significant decisions; supports explainability and auditing. | Not yet authorised |
+| Decision Ledger | | Immutable record of significant decisions; supports explainability and auditing. | Authorised (AIP-0002); Draft SPEC-ENGGOV-001 |
 | Knowledge Graph | | Organisational knowledge as connected entities; supports reasoning, discovery and context reconstruction. | Not yet authorised |
 | Mission Graph | | Strategic objectives and execution dependencies. | Not yet authorised |
 | Digital Twin | | Executable representation of organisational reality. | Not yet authorised |
@@ -35,7 +35,7 @@ The baseline requires each engine to expose well-defined contracts.
 | --- | --- |
 | Strategy Intelligence Engine | Not yet authorised |
 | Decision Intelligence Engine | Not yet authorised |
-| Verification Engine | Not yet authorised |
+| Verification Engine | Authorised (AIP-0002); Draft SPEC-ENGGOV-001 |
 | Knowledge Intelligence Engine | Not yet authorised |
 | Execution Intelligence Engine | Not yet authorised |
 | Evolution Intelligence Engine | Not yet authorised |

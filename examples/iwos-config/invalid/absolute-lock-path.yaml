@@ -1,0 +1,6 @@
+# Illustrative. INVALID: the lock path must be repository-relative and end in .yaml or .yml.
+# expect: constitution/lock_file
+schema_version: "1.0.0"
+profile: generic
+constitution:
+  lock_file: /etc/iwos/lock.yaml

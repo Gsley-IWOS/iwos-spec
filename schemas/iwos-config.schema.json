@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gsley-IWOS/iwos-spec/schemas/iwos-config/1.0.0",
+  "title": "IWOS Constitution File",
+  "description": "Contract for iwos.yaml: the constitution of a repository governed by IWOS Guard (SPEC-ENGGOV-001).",
+  "x-iwos-document": {
+    "id": "SCH-011",
+    "version": "1.0.0",
+    "status": "Ratified",
+    "authority": "standards/testing-standard.md",
+    "parent_document": "architecture/engineering-governance/SPEC-ENGGOV-001.md"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "profile": { "enum": ["generic", "iwos-spec"] },
+    "name": { "type": "string", "minLength": 1 },
+    "constitution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protected": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "architecture": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "lock_file": { "type": "string", "pattern": "^[^/][A-Za-z0-9_./-]*\\.ya?ml$" },
+        "decision_ledger": { "type": "string", "pattern": "^[^/][A-Za-z0-9_./-]*\\.ya?ml$" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposal_pattern": { "type": "string", "minLength": 1 },
+        "decision_pattern": { "type": "string", "minLength": 1 },
+        "traceability_patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "traceability_required": { "type": "boolean" },
+        "lock_must_change_with_protected": { "type": "boolean" }
+      }
+    },
+    "agents": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "known_agent_markers": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "drafting_markers": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "secret_patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "exclude_dirs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "exclude_files": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}
