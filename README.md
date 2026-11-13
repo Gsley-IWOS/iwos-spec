@@ -5,7 +5,7 @@
 **Status:** Ratified  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -29,7 +29,7 @@ The repository exists so that intent, architecture and decisions outlive any sin
 | `work-packages/` | Engineering Work Packages (EWP) that authorise bounded units of work. | engineering-charter/01_PROJECT_GENESIS.md |
 | `tools/validate/` | Repository validator and its unit tests. | STD-TEST-001, STD-REPO-001 |
 | `tools/iwos/` | IWOS Guard: the reference toolchain for SPEC-ENGGOV-001 (constitution file, lock, gate, agent block, Model Context Protocol server). | EWP-0004, ADR-0004 |
-| `.github/` | Pull request template, issue forms and the continuous-integration workflow. | STD-REPO-001 |
+| `.github/` | Pull request template, issue forms, code owners and the continuous-integration workflow. | STD-REPO-001 |
 | `.ai/` | Engineering memory: machine-readable engineering state, knowledge graph, decision graph, current state, next task and the constitutional integrity lock. | engineering-charter/05_AI_AGENT_CONTRACT.yaml |
 
 Root files: `CLAUDE.md` and `AGENTS.md` onboard AI agents, `AI_BOOTSTRAP.yaml` is the machine-readable onboarding manifest, `CONTRIBUTING.md` and `SECURITY.md` apply to every contributor, and `CHANGELOG.md` records every ratified change.
@@ -79,7 +79,7 @@ iwos init --protected "docs/architecture/**"     # in your own repository
 iwos validate && iwos gate --base origin/main
 ```
 
-See `tools/iwos/README.md`, the Draft specification `architecture/engineering-governance/SPEC-ENGGOV-001.md`, and the proposal that re-sequences the programme around it, `aip/AIP-0002-governance-layer-first.md`.
+Start with the case study, `tools/iwos/CASE-STUDY.md`: the pull request in this repository's own history in which an agent replaced the ratified constitution, and the gate report that now fails it. Then see `tools/iwos/README.md`, the Draft specification `architecture/engineering-governance/SPEC-ENGGOV-001.md`, and the accepted proposal that re-sequenced the programme around it, `aip/AIP-0002-governance-layer-first.md`.
 
 ## Validating the Repository
 

@@ -41,9 +41,14 @@ jobs:
       - name: Verify the repository against its own constitution
         run: make guard
 
-      - name: Gate the pull request
-        if: github.event_name == 'pull_request'
-        env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-          PYTHONPATH: tools/iwos/src
-        run: python -m iwos.cli gate --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}" --body-env PR_BODY --format both --output iwos-gate-report.md --summary
+  guard-action:
+    name: IWOS Guard composite action (dogfood)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run the action from this revision
+        uses: ./

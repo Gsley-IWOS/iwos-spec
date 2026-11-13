@@ -5,7 +5,7 @@
 **Status:** Draft  
 **Authority:** EWP-0004 (Approved); specification SPEC-ENGGOV-001 (Draft)  
 **Parent Documents:** work-packages/EWP-0004.md, architecture/engineering-governance/SPEC-ENGGOV-001.md, adr/ADR-0004-governance-toolchain-distribution.md  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -15,12 +15,13 @@ It is the reference implementation of the Verification Engine and Decision Ledge
 
 ## Why
 
-Coding agents from every provider read `AGENTS.md` and then do what they think best. They rewrite architecture documents, skip decision records and lose the reason a choice was made. This repository's own history holds a pull request in which an agent would have deleted most of the ratified Founding Charter and Architecture Baseline. The integrity check here fails that change in seconds. Advice tells an agent the rules. A gate proves they were followed.
+Coding agents from every provider read `AGENTS.md` and then do what they think best. They rewrite architecture documents, skip decision records and lose the reason a choice was made. This repository's own history holds a pull request in which an agent replaced the ratified Founding Charter and Architecture Baseline with summaries, removing 1,266 lines, and sat mergeable for 92 days. The gate fails that change in seconds. Read the [case study](CASE-STUDY.md); the report in it is reproducible. Advice tells an agent the rules. A gate proves they were followed.
 
 ## Install
 
 ```bash
-pip install ./tools/iwos          # from a checkout of Gsley-IWOS/iwos-spec
+pip install "git+https://github.com/Gsley-IWOS/iwos-spec.git#subdirectory=tools/iwos"
+pip install ./tools/iwos          # or, from a checkout of Gsley-IWOS/iwos-spec
 iwos --version
 ```
 
@@ -61,7 +62,7 @@ Point agents at the authority interface. For a Model Context Protocol client, re
 | `iwos init` | Write the constitution, the first lock and the agent block. | 0, or 1 if a constitution exists (use `--force`). |
 | `iwos validate` | Integrity of every protected artefact against the lock; decision-ledger structure; drafting markers and credential shapes; freshness of the agent block. In the `iwos-spec` profile, runs the repository's own validator as the engine. | 0 pass, 1 findings, 2 cannot run. |
 | `iwos lock` | Regenerate the lock. Deterministic: unchanged artefacts produce an unchanged lock. Run only under valid authority, in the same change as the protected edit. | 0. |
-| `iwos gate --base REF [--head REF] [--body FILE \| --body-env NAME]` | Evaluate a revision range: protected changes need a proposal citation and a lock change; architecture changes need a decision citation; every change needs a traceability citation; agent attribution is reported. `--format both --output report.md` writes Markdown and JSON; `--summary` appends to the GitHub step summary. | 0 pass, 1 blocking findings, 2 cannot run. |
+| `iwos gate --base REF [--head REF] [--body FILE \| --body-env NAME] [--label L \| --labels-env NAME]` | Evaluate a revision range: protected changes need a proposal citation and a lock change; architecture changes need a decision citation; every change needs a traceability citation. Agents disclosed in commit identity, trailers, the description or labels are reported with their evidence source; reports print no e-mail addresses. `--format both --output report.md` writes Markdown and JSON; `--summary` appends to the GitHub step summary. | 0 pass, 1 blocking findings, 2 cannot run. |
 | `iwos agents [--check]` | Regenerate the block between `<!-- iwos:begin -->` and `<!-- iwos:end -->` in each agent file, or fail if stale. | 0, or 1 when stale with `--check`. |
 | `iwos mcp` | Serve the authority interface over standard input and output. | Runs until input closes. |
 
@@ -99,10 +100,12 @@ The server speaks JSON-RPC 2.0, one message per line, protocol versions 2025-06-
 
 The gate fails a pull request; it cannot stop a merge. Configure branch protection so the `IWOS Guard` check is required and so that `CODEOWNERS` review covers protected paths. The integrity check proves that protected artefacts and the lock agree; it cannot tell an authorised regeneration from an unauthorised one, so the lock diff is reviewed by a human like any other diff.
 
+Attribution rests on disclosure (ADR-0005). An agent that commits under a human identity and says nothing in the description or labels is invisible to the report, and the report says so. The blocking rules do not depend on who made the change.
+
 ## Development
 
 ```bash
-make test-iwos    # 24 end-to-end tests in throwaway git repositories
+make test-iwos    # end-to-end tests in throwaway git repositories
 make guard        # iwos validate against this repository
 ```
 

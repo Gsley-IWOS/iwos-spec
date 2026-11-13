@@ -6,7 +6,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
-  last_updated: "2026-11-10"
+  last_updated: "2026-11-13"
 
 repository:
   name: iwos-spec
@@ -24,22 +24,22 @@ state:
     name: Specification (governance layer first, per AIP-0002)
     status: in-progress
   current_sprint:
-    number: 2
-    name: Governance layer first; IWOS Guard reference toolchain
+    number: 3
+    name: Launch readiness for IWOS Guard
     status: in-progress
   current_epic:
     id: EPIC-0001
     name: Constitutional repository build-out
     status: in-progress
   current_story:
-    id: STORY-0002
-    name: Pivot to the governance layer (AIP-0002) and ship IWOS Guard v0.1 (EWP-0004)
-    work_package: EWP-0004
-    status: complete
+    id: STORY-0003
+    name: Launch readiness (case study, disclosure-based attribution, code owners, action dogfood)
+    work_package: EWP-0005
+    status: in-review
   current_task:
-    id: TASK-0002-02
-    name: Name the toolchain, tag v0.1.0 and publish the launch
-    status: not-started
+    id: TASK-0003-01
+    name: Owner decisions for launch (name, release tag, branch protection, announcement)
+    status: awaiting-review
   current_risks:
     - id: RISK-0001
       severity: medium
@@ -58,8 +58,8 @@ state:
       status: open
     - id: RISK-0004
       severity: low
-      description: No CODEOWNERS file exists because the maintainer team is not yet named in the repository.
-      mitigation: Maintainers add .github/CODEOWNERS naming the authorities defined in governance/roles-and-authority.md. Until then the interim self-approval rule in that policy applies.
+      description: .github/CODEOWNERS names the repository owner for every protected path, but a single owner cannot review their own change and branch protection does not yet require the gate or code-owner review.
+      mitigation: Owner enables branch protection on main (require the validate and IWOS Guard checks and code-owner review) and names a second Maintainer; the interim self-approval rule applies until then.
       status: open
     - id: RISK-0005
       severity: medium
@@ -70,6 +70,11 @@ state:
       severity: medium
       description: IWOS Guard competes for attention with GitHub Spec Kit and AGENTS.md conventions that have large existing adoption. Differentiation rests on enforcement, the lock, the gate and the authority interface, which are easy to imitate.
       mitigation: Ship early, publish the specification as an open standard, and build rule packs and a hosted portal that accumulate value.
+      status: open
+    - id: RISK-0007
+      severity: medium
+      description: Agent attribution rests on disclosure. The agent in pull request 1 committed under the owner's identity; had it disclosed nothing, the report would have named no agent.
+      mitigation: ADR-0005 makes the report state its evidence and its limits; blocking rules never depend on attribution. Revisit when a cross-provider agent identity standard exists.
       status: open
   current_decisions:
     - id: ADR-0001
@@ -88,6 +93,10 @@ state:
       title: Distribute the governance toolchain from tools/ until a dedicated repository exists
       status: Proposed
       record: adr/ADR-0004-governance-toolchain-distribution.md
+    - id: ADR-0005
+      title: Agent attribution rests on disclosure, and reports print no addresses
+      status: Proposed
+      record: adr/ADR-0005-agent-attribution-by-disclosure.md
     - id: DEC-0007
       title: Strategic pivot to the governance layer, formalised through AIP-0002
       status: accepted
@@ -130,6 +139,9 @@ work_packages:
   - id: EWP-0004
     name: IWOS Guard Reference Toolchain
     status: Approved
+  - id: EWP-0005
+    name: Launch Readiness for IWOS Guard
+    status: Proposed
 
 quality_gates:
   structural_checks: required

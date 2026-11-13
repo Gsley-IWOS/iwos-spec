@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-11-09"
+  last_updated: "2026-11-13"
 
 nodes:
   - id: iwos
@@ -235,6 +235,25 @@ nodes:
     label: IWOS Guard toolchain
     document_id: TOOL-002
     path: tools/iwos/README.md
+  - id: ewp_0005
+    type: work_package
+    label: EWP-0005 Launch Readiness for IWOS Guard
+    document_id: EWP-0005
+    path: work-packages/EWP-0005.md
+  - id: adr_0005
+    type: decision_record
+    label: ADR-0005 Agent attribution by disclosure
+    document_id: ADR-0005
+    path: adr/ADR-0005-agent-attribution-by-disclosure.md
+  - id: guard_case_study
+    type: tooling
+    label: Case study of pull request 1
+    document_id: TOOL-003
+    path: tools/iwos/CASE-STUDY.md
+  - id: code_owners
+    type: governance_document
+    label: Code owners
+    path: .github/CODEOWNERS
   - id: constitution_file
     type: schema
     label: Repository constitution file
@@ -371,6 +390,14 @@ edges:
   - { from: constitution_file, to: iwos_guard, relationship: binds }
   - { from: guard_action, to: iwos_guard, relationship: depends_on }
   - { from: ci_workflow, to: iwos_guard, relationship: depends_on }
+  - { from: ci_workflow, to: guard_action, relationship: depends_on }
+  - { from: ewp_0005, to: ewp_index, relationship: part_of }
+  - { from: ewp_0005, to: ewp_0004, relationship: depends_on }
+  - { from: adr_0005, to: spec_enggov, relationship: derives_from }
+  - { from: adr_0005, to: std_security, relationship: derives_from }
+  - { from: guard_case_study, to: iwos_guard, relationship: part_of }
+  - { from: guard_case_study, to: adr_0005, relationship: depends_on }
+  - { from: code_owners, to: roles_and_authority, relationship: implements }
   - { from: ewp_index, to: project_genesis, relationship: derives_from }
   - { from: ewp_0001, to: ewp_index, relationship: part_of }
   - { from: ewp_0002, to: ewp_index, relationship: part_of }

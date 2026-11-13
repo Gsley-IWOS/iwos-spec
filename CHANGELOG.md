@@ -5,13 +5,32 @@
 **Status:** Active  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
 This log records every artefact added, changed, superseded or removed in the IWOS specification repository, grouped by release and by the work package, decision record or proposal that authorised it. It is the Release Memory required by the Architecture Baseline and the Changelog named in the AI Agent Contract. Entries follow the class of change defined in `governance/change-control-policy.md`.
 
 ## Unreleased (target: 1.0.0 Genesis)
+
+### EWP-0005 Launch Readiness for IWOS Guard (Normative, Proposed)
+
+Added:
+
+- `tools/iwos/CASE-STUDY.md` (TOOL-003): pull request 1 replayed through the gate, with a reproducible report.
+- `adr/ADR-0005-agent-attribution-by-disclosure.md` (Proposed).
+- `.github/CODEOWNERS`: the repository owner owns protected paths, the lock, the constitution file, the validator configuration and automation.
+- `.mcp.json`: registers `iwos mcp` for Model Context Protocol clients opened on this repository.
+- `work-packages/EWP-0005.md` (Proposed).
+
+Changed:
+
+- `tools/iwos/src/iwos/gate.py`, `cli.py`: agents disclosed in the pull request description or labels are reported with their evidence source; reports print no e-mail addresses; revisions are shown resolved; report version 1.1.0; `--label` and `--labels-env` options. Tests extended.
+- `architecture/engineering-governance/SPEC-ENGGOV-001.md` (Draft, 0.1.0-draft.2): attribution and data-handling clauses clarified per ADR-0005.
+- `action.yml`: passes pull request labels to the gate. `.github/workflows/validate.yml`: a second job runs the composite action from the working tree; the hand-written gate step is removed.
+- `README.md`, `tools/iwos/README.md`: case study, install from a git URL, attribution limits.
+
+Unchanged: every protected document.
 
 ### AIP-0002 accepted: Project Genesis 1.1.0 (Constitutional)
 
