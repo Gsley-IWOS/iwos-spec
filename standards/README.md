@@ -5,7 +5,7 @@
 **Status:** Ratified  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -27,11 +27,11 @@ This index lists the ratified engineering standards of IWOS and states what each
 
 Standards are protected documents. A standard changes only through an accepted Architecture Improvement Proposal, merge by the Constitutional Authority and regeneration of the constitutional integrity lock in the same change. See `governance/change-control-policy.md`.
 
-## Proposed Changes
+## Proposals Affecting Standards
 
 | Proposal | Affects | Status |
 | --- | --- | --- |
-| [AIP-0001 Identifier Families](../aip/AIP-0001-identifier-families.md) | STD-NAME-001 | Review |
+| [AIP-0001 Identifier Families](../aip/AIP-0001-identifier-families.md) | STD-NAME-001 | Accepted 2026-11-13; applied in version 1.1.0 |
 
 ## Ratification
 

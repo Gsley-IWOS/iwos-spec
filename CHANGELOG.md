@@ -13,6 +13,13 @@ This log records every artefact added, changed, superseded or removed in the IWO
 
 ## Unreleased (target: 1.0.0 Genesis)
 
+### Owner decisions of 2026-11-13 (Constitutional and Normative)
+
+- **AIP-0001 accepted.** `standards/naming-standard.md`: Identifier Families section replaced as the proposal specifies; version 1.1.0. `.ai/CONSTITUTION_LOCK.yaml` regenerated in the same change.
+- **Accepted:** ADR-0001, ADR-0002, ADR-0003, ADR-0005. **Approved:** EWP-0002, EWP-0003, EWP-0005. EWP-0001 recorded Complete.
+- **Named:** the product is IWOS Guard (DEC-0008).
+- **Held:** ADR-0004 and the first release tag, until the home of the toolchain is decided (DEC-0009).
+
 ### EWP-0005 Launch Readiness for IWOS Guard (Normative, Proposed)
 
 Added:

@@ -35,22 +35,22 @@ state:
     id: STORY-0003
     name: Launch readiness (case study, disclosure-based attribution, code owners, action dogfood)
     work_package: EWP-0005
-    status: in-review
+    status: complete
   current_task:
     id: TASK-0003-01
-    name: Owner decisions for launch (name, release tag, branch protection, announcement)
+    name: Decide where IWOS Guard lives before the first release tag (DEC-0009)
     status: awaiting-review
   current_risks:
     - id: RISK-0001
       severity: medium
       description: EWP-0002 and EWP-0003 were authored as Proposed work packages by an AI agent to give the build-out traceability. Their scope has not yet been approved by a human maintainer. ADR-0001 to ADR-0003 are Proposed and AIP-0001 is in Review for the same reason.
       mitigation: Maintainer reviews both packages and either sets status Approved or amends scope before merge.
-      status: open
+      status: closed
     - id: RISK-0002
       severity: medium
       description: AIP-0001 proposes new identifier families used by documents in this repository. Until it is accepted the identifiers outside the constitutional families are provisional.
       mitigation: Accept, amend or reject AIP-0001 at review; if rejected, re-identify the affected documents under the Naming Standard families.
-      status: open
+      status: closed
     - id: RISK-0003
       severity: low
       description: Open pull requests 1 to 4 on the repository overlap with this build-out. Pull request 1 rewrites ratified constitutional documents and must not be merged.
@@ -79,15 +79,15 @@ state:
   current_decisions:
     - id: ADR-0001
       title: Record architecture decisions as ADRs in adr/
-      status: Proposed
+      status: Accepted
       record: adr/ADR-0001-architecture-decision-records.md
     - id: ADR-0002
       title: Repository validation tooling in Python under tools/validate/
-      status: Proposed
+      status: Accepted
       record: adr/ADR-0002-repository-validation-tooling.md
     - id: ADR-0003
       title: Machine-readable engineering memory with JSON Schema contracts
-      status: Proposed
+      status: Accepted
       record: adr/ADR-0003-machine-readable-engineering-memory.md
     - id: ADR-0004
       title: Distribute the governance toolchain from tools/ until a dedicated repository exists
@@ -95,11 +95,19 @@ state:
       record: adr/ADR-0004-governance-toolchain-distribution.md
     - id: ADR-0005
       title: Agent attribution rests on disclosure, and reports print no addresses
-      status: Proposed
+      status: Accepted
       record: adr/ADR-0005-agent-attribution-by-disclosure.md
     - id: DEC-0007
       title: Strategic pivot to the governance layer, formalised through AIP-0002
       status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0008
+      title: The product is named IWOS Guard
+      status: accepted
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0009
+      title: ADR-0004 held open pending the decision on a dedicated repository
+      status: proposed
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0001
       title: Build-out incorporates drafts from pull requests 2, 3 and 4 and rejects pull request 1
@@ -111,11 +119,11 @@ state:
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0003
       title: Provisional identifier families pending AIP-0001
-      status: proposed
+      status: accepted
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0004
       title: EWP-0002 and EWP-0003 authored as Proposed work packages
-      status: proposed
+      status: accepted
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0005
       title: Remove the empty, misnamed bootstrap file
@@ -129,19 +137,19 @@ state:
 work_packages:
   - id: EWP-0001
     name: Bootstrap the Constitutional Repository
-    status: In Progress
+    status: Complete
   - id: EWP-0002
     name: Governance Processes, Decision Records and Templates
-    status: Proposed
+    status: Approved
   - id: EWP-0003
     name: Schemas, Examples, Validation Tooling and Engineering Memory
-    status: Proposed
+    status: Approved
   - id: EWP-0004
     name: IWOS Guard Reference Toolchain
     status: Approved
   - id: EWP-0005
     name: Launch Readiness for IWOS Guard
-    status: Proposed
+    status: Approved
 
 quality_gates:
   structural_checks: required

@@ -1,11 +1,11 @@
 # Naming Standard
 
 **Document ID:** STD-NAME-001  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Ratified  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-07-31
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -26,12 +26,32 @@ This standard applies to directories, files, document identifiers, schema identi
 
 ## Identifier Families
 
-- Founding Charter: `FC-###`
-- Architecture Baseline: `AB-###`
-- Standard: `STD-<AREA>-###`
-- Engineering Work Package: `EWP-####`
-- Architecture Decision Record: `ADR-####`
-- Architecture Improvement Proposal: `AIP-####`
+| Family | Pattern | Artefacts |
+| --- | --- | --- |
+| Founding Charter | `FC-###` | `engineering-charter/00_FOUNDING_CHARTER.md` |
+| Project Genesis | `PG-###` | `engineering-charter/01_PROJECT_GENESIS.md` |
+| Architecture Baseline | `AB-###` | `engineering-charter/02_ARCHITECTURE_BASELINE.md` |
+| Engineering Playbook | `EP-###` | `engineering-charter/03_ENGINEERING_PLAYBOOK.md` |
+| Code Review Playbook | `CRP-###` | `engineering-charter/04_CODE_REVIEW_PLAYBOOK.md` |
+| AI Agent Contract | `AAC-###` | `engineering-charter/05_AI_AGENT_CONTRACT.yaml` |
+| Engineering Constitution | `EC-###` | `engineering-charter/06_ENGINEERING_CONSTITUTION.md` |
+| Standard | `STD-<AREA>-###` | `standards/*-standard.md` |
+| Governance policy | `GOV-###` | `governance/*.md`, `governance/rfc/README.md` |
+| Request for Comments | `RFC-####` | `governance/rfc/RFC-####.md` |
+| Architecture Improvement Proposal | `AIP-####` | `aip/AIP-####-*.md` |
+| Architecture Decision Record | `ADR-####` | `adr/ADR-####-*.md` |
+| Architecture reference | `AS-###` | `architecture/*.md` |
+| Specification | `SPEC-<COMPONENT>-###` | Component and engine specifications published under milestone M2 |
+| Schema | `SCH-###` | `schemas/*.schema.json`, `schemas/bindings.yaml` |
+| Template | `TPL-###` | `templates/*.md` |
+| Example register | `EX-###` | `examples/README.md` |
+| Engineering Work Package | `EWP-####` | `work-packages/EWP-####.md` |
+| Root document | `ROOT-###` | `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md` |
+| AI onboarding | `AIO-###` | `CLAUDE.md`, `AGENTS.md`, `AI_BOOTSTRAP.yaml` |
+| Engineering memory | `MEM-###` | `.ai/*` |
+| Tooling | `TOOL-###` | `tools/*/README.md` |
+
+A register or index document for a family uses the family prefix with the suffix `-INDEX` in place of a number (`ADR-INDEX`, `AIP-INDEX`, `EWP-INDEX`, `STD-INDEX`).
 
 ## Ratification
 

@@ -5,7 +5,7 @@
 **Status:** Ratified  
 **Authority:** GOV-003 Decision Process  
 **Parent Document:** governance/decision-process.md  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -15,7 +15,7 @@ This index registers every Architecture Improvement Proposal (AIP) in the IWOS s
 
 | ID | Title | Affects | Status | Date |
 | --- | --- | --- | --- | --- |
-| [AIP-0001](AIP-0001-identifier-families.md) | Register additional identifier families in the Naming Standard | STD-NAME-001 | Review | 2026-10-31 |
+| [AIP-0001](AIP-0001-identifier-families.md) | Register additional identifier families in the Naming Standard | STD-NAME-001 | Accepted | 2026-11-13 |
 | [AIP-0002](AIP-0002-governance-layer-first.md) | Reframe milestone M2 toward the governance layer | PG-001 | Accepted | 2026-11-10 |
 
 The next identifier is `AIP-0003`.

@@ -2,7 +2,7 @@
 
 **Document ID:** ADR-0002  
 **Version:** 1.0.0  
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-10-31  
 **Authority:** Architecture Authority under GOV-002  
 **Parent Documents:** standards/testing-standard.md, standards/repository-standard.md  

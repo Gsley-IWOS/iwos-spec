@@ -7,7 +7,7 @@ document:
   version: 1.0.0
   status: Active
   authority: governance/change-control-policy.md
-  last_updated: '2026-11-10'
+  last_updated: '2026-11-13'
 algorithm: sha256
 generated_by: tools/validate/validate.py --write-lock
 entries:
@@ -42,7 +42,7 @@ entries:
 - path: standards/engineering-standard.md
   sha256: e493a791e871f4128a391b759fef707cb769c776644d07ed459ee215f1acc0d0
 - path: standards/naming-standard.md
-  sha256: 5ecaf2627c116b140bb39cd912bb4c06d2d48a461f7a85cdceb20e2a7e57e414
+  sha256: b11d16ae1c770186c38b686be61796547751ad11f01d7d7795cb39dd790c40ce
 - path: standards/repository-standard.md
   sha256: 0b99dffc9fd3bbe1ed2693c6442a0dbd8104b7576172452ea6acfd378f3b34af
 - path: standards/security-standard.md

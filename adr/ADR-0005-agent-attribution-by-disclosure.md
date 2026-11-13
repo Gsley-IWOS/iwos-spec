@@ -2,7 +2,7 @@
 
 **Document ID:** ADR-0005  
 **Version:** 1.0.0  
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-11-13  
 **Authority:** Architecture Authority under GOV-002  
 **Parent Documents:** architecture/engineering-governance/SPEC-ENGGOV-001.md, standards/security-standard.md, governance/decision-process.md  

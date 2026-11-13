@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-11-10"
+  last_updated: "2026-11-13"
 
 decisions:
   - id: DEC-0001
@@ -68,7 +68,7 @@ decisions:
 
   - id: DEC-0003
     date: "2026-10-31"
-    status: proposed
+    status: accepted
     title: Use provisional identifier families pending AIP-0001
     authority: standards/naming-standard.md
     context: >
@@ -93,7 +93,7 @@ decisions:
 
   - id: DEC-0004
     date: "2026-10-31"
-    status: proposed
+    status: accepted
     title: Author EWP-0002 and EWP-0003 as Proposed work packages for the build-out
     authority: engineering-charter/01_PROJECT_GENESIS.md
     context: >
@@ -179,4 +179,50 @@ decisions:
       - work-packages/EWP-0004.md
     related_records:
       - aip/AIP-0002-governance-layer-first.md
+      - adr/ADR-0004-governance-toolchain-distribution.md
+
+  - id: DEC-0008
+    date: "2026-11-13"
+    status: accepted
+    title: The product is named IWOS Guard
+    authority: aip/AIP-0002-governance-layer-first.md
+    context: >
+      AIP-0002 and EWP-0004 named the reference toolchain IWOS Guard provisionally and left
+      the final name to the repository owner.
+    decision: >
+      The repository owner confirmed the name IWOS Guard on 2026-11-13. The package is
+      iwos-guard and the command is iwos.
+    consequences:
+      - The name is no longer provisional in current documents; accepted and approved records keep their original wording.
+    related_files:
+      - tools/iwos/README.md
+    related_records:
+      - aip/AIP-0002-governance-layer-first.md
+
+  - id: DEC-0009
+    date: "2026-11-13"
+    status: proposed
+    title: Hold ADR-0004 and the first release tag until the home of IWOS Guard is decided
+    authority: governance/versioning-policy.md
+    context: >
+      The repository owner accepted every open proposal and decision on 2026-11-13 and asked how
+      the product can stand on its own. ADR-0004 keeps the toolchain in this repository
+      until a second consumer exists. Three facts weigh against launching from here. The
+      Versioning Policy reserves tags of the form v<MAJOR>.<MINOR>.<PATCH> for releases of
+      the specification, whose first release is 1.0.0 Genesis, so a tool tag v0.1.0 collides
+      with it. Consumers reference a GitHub Action by repository and tag, so moving the
+      toolchain after launch breaks every consumer. And a first-time visitor to the product
+      would land in a constitutional repository.
+    decision: >
+      Leave ADR-0004 at Proposed, do not create a release tag here yet, and put the choice
+      to the repository owner: a dedicated repository for IWOS Guard before launch
+      (recommended, recorded as a new decision record that supersedes ADR-0004), or launch
+      from this repository under ADR-0004 with a tag scheme that does not collide.
+    consequences:
+      - Every other open item was accepted or approved; only ADR-0004 and the tag wait.
+      - The launch kit's install line and Action reference change if the dedicated repository is chosen.
+    related_files:
+      - adr/ADR-0004-governance-toolchain-distribution.md
+      - governance/versioning-policy.md
+    related_records:
       - adr/ADR-0004-governance-toolchain-distribution.md

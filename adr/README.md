@@ -15,11 +15,11 @@ This index registers every Architecture Decision Record (ADR) in the IWOS specif
 
 | ID | Title | Status | Date |
 | --- | --- | --- | --- |
-| [ADR-0001](ADR-0001-architecture-decision-records.md) | Record architecture decisions as ADRs in `adr/` | Proposed | 2026-10-31 |
-| [ADR-0002](ADR-0002-repository-validation-tooling.md) | Repository validation tooling in Python under `tools/validate/` | Proposed | 2026-10-31 |
-| [ADR-0003](ADR-0003-machine-readable-engineering-memory.md) | Machine-readable engineering memory with JSON Schema contracts | Proposed | 2026-10-31 |
+| [ADR-0001](ADR-0001-architecture-decision-records.md) | Record architecture decisions as ADRs in `adr/` | Accepted | 2026-10-31 |
+| [ADR-0002](ADR-0002-repository-validation-tooling.md) | Repository validation tooling in Python under `tools/validate/` | Accepted | 2026-10-31 |
+| [ADR-0003](ADR-0003-machine-readable-engineering-memory.md) | Machine-readable engineering memory with JSON Schema contracts | Accepted | 2026-10-31 |
 | [ADR-0004](ADR-0004-governance-toolchain-distribution.md) | Distribute the governance toolchain from `tools/` until a dedicated repository exists | Proposed | 2026-11-09 |
-| [ADR-0005](ADR-0005-agent-attribution-by-disclosure.md) | Agent attribution rests on disclosure, and reports print no addresses | Proposed | 2026-11-13 |
+| [ADR-0005](ADR-0005-agent-attribution-by-disclosure.md) | Agent attribution rests on disclosure, and reports print no addresses | Accepted | 2026-11-13 |
 
 The next identifier is `ADR-0006`.
 

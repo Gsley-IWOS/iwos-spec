@@ -3,7 +3,7 @@
 **Document ID:** TOOL-003  
 **Version:** 1.0.0  
 **Status:** Active  
-**Authority:** EWP-0005 (Proposed)  
+**Authority:** EWP-0005  
 **Parent Documents:** tools/iwos/README.md, work-packages/EWP-0005.md, adr/ADR-0005-agent-attribution-by-disclosure.md  
 **Last Updated:** 2026-11-13
 

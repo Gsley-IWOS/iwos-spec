@@ -2,7 +2,7 @@
 
 **Document ID:** ADR-0003  
 **Version:** 1.0.0  
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-10-31  
 **Authority:** Architecture Authority under GOV-002  
 **Parent Documents:** engineering-charter/02_ARCHITECTURE_BASELINE.md, engineering-charter/05_AI_AGENT_CONTRACT.yaml  
