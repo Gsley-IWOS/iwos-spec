@@ -10,3 +10,8 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Python packaging output
+build/
+dist/
+*.egg-info/
