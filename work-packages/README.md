@@ -5,7 +5,7 @@
 **Status:** Ratified  
 **Authority:** PG-001 Project Genesis  
 **Parent Document:** engineering-charter/01_PROJECT_GENESIS.md  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -31,6 +31,7 @@ A package is approved by merging it to `main` with status `Approved`, or by a ma
 | [EWP-0002](EWP-0002.md) | Governance Processes, Decision Records and Templates | 1 | Proposed |
 | [EWP-0003](EWP-0003.md) | Schemas, Examples, Validation Tooling and Engineering Memory | 1 | Proposed |
 | [EWP-0004](EWP-0004.md) | IWOS Guard Reference Toolchain | 2 | Approved |
+| [EWP-0005](EWP-0005.md) | Launch Readiness for IWOS Guard | 3 | Proposed |
 
 ## Authoring
 
