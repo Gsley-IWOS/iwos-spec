@@ -1,0 +1,23 @@
+# Code owners for the IWOS specification repository.
+# Record of authority holders required by governance/roles-and-authority.md (Delegation and Record).
+# Until a second Maintainer is named here, the interim self-approval rule in that policy applies.
+# To take effect, enable "Require review from Code Owners" in the branch protection rule for main.
+
+# Protected documents: Constitutional Authority.
+/engineering-charter/                @chudeway89
+/standards/                          @chudeway89
+/governance/                         @chudeway89
+
+# The integrity lock and the rules that decide what is protected.
+/.ai/CONSTITUTION_LOCK.yaml          @chudeway89
+/iwos.yaml                           @chudeway89
+/tools/validate/config.yaml          @chudeway89
+
+# Repository automation and this file.
+/.github/                            @chudeway89
+/action.yml                          @chudeway89
+
+# Decision records and proposals: Architecture Authority.
+/adr/                                @chudeway89
+/aip/                                @chudeway89
+/architecture/                       @chudeway89

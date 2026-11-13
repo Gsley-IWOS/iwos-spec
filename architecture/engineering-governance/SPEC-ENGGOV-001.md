@@ -1,11 +1,11 @@
 # Engineering Governance Verification Specification
 
 **Document ID:** SPEC-ENGGOV-001  
-**Version:** 0.1.0-draft.1  
+**Version:** 0.1.0-draft.2  
 **Status:** Draft  
 **Authority:** AIP-0002 (Accepted); ratification by the Architecture Authority pending  
 **Parent Documents:** engineering-charter/02_ARCHITECTURE_BASELINE.md, aip/AIP-0002-governance-layer-first.md, standards/architecture-standard.md, standards/security-standard.md  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -70,7 +70,7 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 4. `gate` **must** determine the set of files changed between a base and a head revision and **must** fail when a protected artefact changed without an authority citation of the kind the constitution requires, or without the lock changing in the same revision range.
 5. `gate` **must** fail when a file matched by an architecture pattern changed without a decision-record citation.
 6. `gate` **should** fail when a change carries no traceability citation at all, where the constitution declares traceability required.
-7. `gate` **must** report every agent attribution found in the revision range: co-author trailers, session trailers and generator trailers.
+7. `gate` **must** report every agent disclosed for the change, with the source of the evidence: commit identity, commit trailers, signatures in the change description, and labels. It **must not** present the absence of disclosure as the absence of an agent, and no blocking rule may depend on attribution (ADR-0005).
 8. `check_authority` **must** answer, for any path, whether it is protected, which patterns matched, which process authorises a change, and whether the lock currently matches.
 9. `record_decision` **must** append to the decision ledger and **must not** modify or delete an existing entry.
 10. An implementation **must not** write to any protected artefact under any command.
@@ -85,7 +85,7 @@ The implementation runs with the privileges of the repository checkout and needs
 
 ## Data Handling
 
-The implementation reads repository content and git metadata only. It stores digests, not content, in the lock. Decision-ledger entries are repository content with the repository's own confidentiality. Agent attribution is taken from commit trailers the agents themselves wrote; the implementation adds no identity of its own. Nothing is retained outside the repository. Reports **must not** include secrets; the implementation **should** run the credential-pattern scan of the Security Standard on everything it reports.
+The implementation reads repository content and git metadata only. It stores digests, not content, in the lock. Decision-ledger entries are repository content with the repository's own confidentiality. Agent attribution is taken from what agents and their operators disclose in commits, descriptions and labels; the implementation adds no identity of its own. Reports **must not** print e-mail addresses (ADR-0005). Nothing is retained outside the repository. Reports **must not** include secrets; the implementation **should** run the credential-pattern scan of the Security Standard on everything it reports.
 
 ## Observability and Verification
 
@@ -100,6 +100,7 @@ This specification is versioned under the Versioning Policy. The constitution fi
 - ADR-0002 Repository validation tooling: the toolchain inherits the validator's language, dependencies and location.
 - ADR-0003 Machine-readable engineering memory: the decision ledger reuses the decision-graph schema.
 - ADR-0004 Distribution of the governance toolchain from this repository until a dedicated repository exists.
+- ADR-0005 Agent attribution rests on disclosure, and reports print no addresses.
 
 ## Ratification
 

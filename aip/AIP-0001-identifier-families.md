@@ -2,11 +2,11 @@
 
 **Document ID:** AIP-0001  
 **Version:** 1.0.0  
-**Status:** Review  
+**Status:** Accepted  
 **Date:** 2026-10-31  
 **Authority:** Constitutional Authority under GOV-002 (affects a protected document)  
 **Parent Documents:** governance/decision-process.md, standards/naming-standard.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -76,8 +76,8 @@ Additive. No existing identifier changes. MINOR increment under the Versioning P
 
 ## Governance Outcome
 
-Review. Awaiting decision by the Constitutional Authority. If accepted, the Constitutional Authority applies the Specification to the Naming Standard, regenerates the lock and sets this proposal to `Accepted` in the same change. If rejected, decision DEC-0003 is reopened and a work package re-identifies the affected documents under the Naming Standard as it stands.
+Accepted on 2026-11-13 by the Constitutional Authority (the repository owner). The Specification was applied to the Naming Standard, now version 1.1.0, and the constitutional integrity lock regenerated in the same change. The text that follows records the outcome as proposed. If accepted, the Constitutional Authority applies the Specification to the Naming Standard, regenerates the lock and sets this proposal to `Accepted` in the same change. If rejected, decision DEC-0003 is reopened and a work package re-identifies the affected documents under the Naming Standard as it stands.
 
 ## Ratification
 
-This proposal carries no authority until a holder of Constitutional Authority merges it with status `Accepted`. Its acceptance authorises exactly the change in the Specification section.
+This proposal was accepted by a holder of Constitutional Authority and merged with status `Accepted`. Its acceptance authorises exactly the change in the Specification section.

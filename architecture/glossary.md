@@ -5,7 +5,7 @@
 **Status:** Ratified  
 **Authority:** STD-ARCH-001 Architecture Standard  
 **Parent Documents:** engineering-charter/02_ARCHITECTURE_BASELINE.md, standards/naming-standard.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -48,8 +48,8 @@ The Naming Standard requires abbreviations to be defined before use unless they 
 | Architecture Authority | | The human maintainers who may accept Architecture Decision Records. | GOV-002 |
 | Maintainer | | A human contributor with write access who may approve and merge non-protected changes. | GOV-002 |
 | Standard | STD | A ratified engineering standard in `standards/`. | STD-INDEX |
-| JSON Schema | | The schema language, draft 2020-12, used for every machine-readable contract in `schemas/`. | ADR-0003 (Proposed) |
-| Continuous Integration | CI | The automated execution of the validator on every pull request, defined in `.github/workflows/validate.yml`. | ADR-0002 (Proposed) |
+| JSON Schema | | The schema language, draft 2020-12, used for every machine-readable contract in `schemas/`. | ADR-0003 |
+| Continuous Integration | CI | The automated execution of the validator on every pull request, defined in `.github/workflows/validate.yml`. | ADR-0002 |
 
 ## Adding a Term
 

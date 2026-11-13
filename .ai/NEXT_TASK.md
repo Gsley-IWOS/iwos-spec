@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** AAC-001 AI Agent Contract  
 **Parent Document:** engineering-charter/05_AI_AGENT_CONTRACT.yaml  
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-13
 
 ## Purpose
 
@@ -13,19 +13,19 @@ This document names the single recommended next task so that the next contributo
 
 ## Recommended Next Task
 
-**Launch IWOS Guard.** With AIP-0002 accepted and EWP-0004 approved:
+**Decide where IWOS Guard lives, then tag and launch.** Decision DEC-0009 records the question. The repository owner chooses one:
 
-1. name the toolchain (IWOS Guard is provisional) and tag `v0.1.0` so consumers can pin `Gsley-IWOS/iwos-spec@v0.1.0`;
-2. require the `IWOS Guard` check in branch protection and add `.github/CODEOWNERS` (RISK-0004);
-3. publish the launch: the pull request 1 story, a Show HN, and plugins for the agent ecosystems;
-4. decide the remaining open items: ADR-0001 to ADR-0004 (Proposed), AIP-0001 (Review), EWP-0002 and EWP-0003 (Proposed); and ratify SPEC-ENGGOV-001 once its Draft is complete.
+1. a dedicated repository for IWOS Guard before launch (recommended): its own README, its own version tags, its own constitution file, and the Action referenced by its own name; recorded as a decision record that supersedes ADR-0004;
+2. launch from this repository under ADR-0004, with a tag scheme for the toolchain that does not collide with releases of the specification.
+
+Then: tag the first release, enable branch protection, and publish the announcement built on `tools/iwos/CASE-STUDY.md`.
 
 ## Acceptance Criteria
 
-- A release tag `v0.1.0` exists and the README quickstart references it.
-- Branch protection requires the gate; `CODEOWNERS` names the authorities in `governance/roles-and-authority.md`.
-- The launch post is published and its traction is measured by repositories running the Action, not stars.
-- Registers and `ENGINEERING_STATE.yaml` reflect every decision taken.
+- A decision record states where the toolchain lives, and ADR-0004 is accepted or superseded accordingly.
+- A release tag exists that consumers can pin, and the quickstart references it.
+- Branch protection requires the gate; a second Maintainer is named in `CODEOWNERS`.
+- SPEC-ENGGOV-001 is ratified once its contracts name their final locations.
 
 ## After That
 

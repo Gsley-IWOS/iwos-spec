@@ -70,7 +70,10 @@ def _read_body(args) -> str:
 
 def cmd_gate(args) -> int:
     cfg = load_config(_root(args))
-    result = gate_mod.run_gate(cfg, args.base, args.head, _read_body(args))
+    labels = list(args.label or [])
+    if args.labels_env:
+        labels += [l.strip() for l in os.environ.get(args.labels_env, "").split(",") if l.strip()]
+    result = gate_mod.run_gate(cfg, args.base, args.head, _read_body(args), labels)
     md, js = result.to_markdown(), gate_mod.dumps(result)
     if args.format in ("markdown", "both"):
         print(md)
@@ -112,6 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("gate", help="evaluate a revision range against the constitution")
     s.add_argument("--base", required=True); s.add_argument("--head", default="HEAD")
     s.add_argument("--body", help="file holding the pull request description"); s.add_argument("--body-env", help="environment variable holding the pull request description")
+    s.add_argument("--label", action="append", help="pull request label (repeatable); labels matching an agent marker count as disclosure")
+    s.add_argument("--labels-env", help="environment variable holding comma-separated pull request labels")
     s.add_argument("--format", choices=["markdown", "json", "both"], default="markdown"); s.add_argument("--output", help="write the report here (.md or .json)")
     s.add_argument("--summary", action="store_true", help="append the Markdown report to $GITHUB_STEP_SUMMARY when set")
     s.set_defaults(func=cmd_gate)
