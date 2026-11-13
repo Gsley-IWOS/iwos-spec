@@ -9,7 +9,17 @@ from dataclasses import dataclass, field
 from .config import Config
 from .lock import matches_architecture, matches_protected
 
-REPORT_VERSION = "1.0.0"
+REPORT_VERSION = "1.1.0"
+
+# Disclosure signatures agents leave in a pull request description. Heuristics, not proof: an agent that
+# commits under a human identity and discloses nothing cannot be detected from repository data.
+BODY_SIGNATURES = [
+    (r"chatgpt\.com/codex", "OpenAI Codex"),
+    (r"Generated with \[Claude Code\]|claude\.ai/code/session", "Claude Code"),
+    (r"copilot-swe-agent", "GitHub Copilot coding agent"),
+    (r"app\.devin\.ai", "Devin"),
+]
+EMAIL_RE = re.compile(r"\s*<[^>]*>")
 TRAILER_RE = re.compile(r"^([A-Z][A-Za-z-]{1,40}):\s+(.+?)\s*$", re.MULTILINE)
 
 
@@ -43,6 +53,8 @@ class GateResult:
     humans: list[str]
     blocking: list[str]
     warnings: list[str]
+    base_sha: str = ""
+    head_sha: str = ""
 
     @property
     def passed(self) -> bool:
@@ -52,13 +64,14 @@ class GateResult:
         return {
             "report_version": REPORT_VERSION,
             "result": "pass" if self.passed else "fail",
-            "base": self.base, "head": self.head,
+            "base": self.base, "head": self.head, "base_sha": self.base_sha, "head_sha": self.head_sha,
             "changed": self.changed,
             "protected_changed": self.protected_changed,
             "architecture_changed": self.architecture_changed,
             "lock_changed": self.lock_changed,
             "citations": {"proposals": self.proposal_citations, "decisions": self.decision_citations, "traceability": self.traceability_citations},
-            "commits": [{"sha": c.sha, "author": c.author, "subject": c.subject, "trailers": c.trailers} for c in self.commits],
+            "commits": [{"sha": c.sha, "author": c.author, "subject": c.subject,
+                         "trailers": {k: [EMAIL_RE.sub("", v).strip() for v in vs] for k, vs in c.trailers.items()}} for c in self.commits],
             "agents": self.agents, "humans": self.humans,
             "blocking": self.blocking, "warnings": self.warnings,
         }
@@ -66,7 +79,7 @@ class GateResult:
     def to_markdown(self) -> str:
         tick = lambda ok: "pass" if ok else "FAIL"  # noqa: E731
         lines = [f"## IWOS gate report: {'PASS' if self.passed else 'FAIL'}", "",
-                 f"Range `{self.base[:12]}..{self.head[:12]}` · {len(self.changed)} file(s) changed · {len(self.commits)} commit(s) · report v{REPORT_VERSION}", "",
+                 f"Range `{(self.base_sha or self.base)[:12]}..{(self.head_sha or self.head)[:12]}` · {len(self.changed)} file(s) changed · {len(self.commits)} commit(s) · report v{REPORT_VERSION}", "",
                  "### Protected artefacts", ""]
         if self.protected_changed:
             lines += [f"- `{p}`" for p in self.protected_changed]
@@ -81,12 +94,12 @@ class GateResult:
             lines.append("None changed.")
         lines += ["", "### Authority citations", "", f"Traceability: {', '.join(self.traceability_citations) or 'none found'}", "",
                   "### Agents", "",
-                  f"Agents detected: {', '.join(self.agents) or 'none'}", f"Human authors: {', '.join(self.humans) or 'none'}", ""]
+                  f"Agents disclosed: {', '.join(self.agents) or 'none'}", f"Human commit authors: {', '.join(self.humans) or 'none'}", ""]
         if self.commits:
             lines.append("| Commit | Author | Subject | Trailers |")
             lines.append("| --- | --- | --- | --- |")
             for c in self.commits:
-                trailers = "; ".join(f"{k}: {', '.join(v)}" for k, v in c.trailers.items()) or ""
+                trailers = "; ".join(f"{k}: {', '.join(EMAIL_RE.sub('', x).strip() for x in v)}" for k, v in c.trailers.items()) or ""
                 lines.append(f"| `{c.sha[:8]}` | {c.author} | {c.subject.replace('|', '/')} | {trailers.replace('|', '/')} |")
         lines += ["", "### Result", ""]
         lines += [f"- {tick(False)}: {b}" for b in self.blocking] or ["- pass: every constitutional rule upheld"]
@@ -134,7 +147,12 @@ def find_citations(pattern: str, *texts: str) -> list[str]:
     return found
 
 
-def run_gate(cfg: Config, base: str, head: str, body: str = "") -> GateResult:
+def _display(value: str) -> str:
+    """A name without its e-mail address: reports never print addresses."""
+    return EMAIL_RE.sub("", value).strip()
+
+
+def run_gate(cfg: Config, base: str, head: str, body: str = "", labels: list[str] | None = None) -> GateResult:
     changed = changed_files(cfg, base, head)
     commits = commits_in_range(cfg, base, head)
     messages = [c.subject + "\n" + c.body for c in commits]
@@ -154,14 +172,31 @@ def run_gate(cfg: Config, base: str, head: str, body: str = "") -> GateResult:
     markers = [m.lower() for m in cfg.agent_markers]
     agents: list[str] = []
     humans: list[str] = []
+
+    def note(target: list[str], entry: str) -> None:
+        if entry and entry not in target:
+            target.append(entry)
+
     for c in commits:
-        who = f"{c.author} <{c.email}>"
-        is_agent = any(m in who.lower() for m in markers)
-        (agents if is_agent else humans).append(who) if who not in agents + humans else None
-        for key in ("Co-Authored-By", "Co-authored-by", "Generated-By", "Claude-Session", "Codex-Task"):
-            for v in c.trailers.get(key, []):
-                if any(m in v.lower() for m in markers) and v not in agents:
-                    agents.append(v)
+        identity = f"{c.author} <{c.email}>".lower()
+        if any(m in identity for m in markers):
+            note(agents, f"{c.author} (commit author)")
+        else:
+            note(humans, c.author)
+        for key, values in c.trailers.items():
+            for v in values:
+                if any(m in v.lower() for m in markers):
+                    note(agents, f"{_display(v)} ({key} trailer)")
+    disclosed_in_description = False
+    for pattern, name in BODY_SIGNATURES:
+        if re.search(pattern, body or ""):
+            note(agents, f"{name} (pull request description)")
+            disclosed_in_description = True
+    for label in labels or []:
+        if any(m in label.lower() for m in markers):
+            note(agents, f"{label} (pull request label)")
+            disclosed_in_description = True
+    agent_commits = any(a.endswith("(commit author)") or a.endswith("trailer)") for a in agents)
 
     blocking: list[str] = []
     warnings: list[str] = []
@@ -178,9 +213,21 @@ def run_gate(cfg: Config, base: str, head: str, body: str = "") -> GateResult:
         blocking.append("no authority citation found in the pull request body or commit messages (traceability required)")
     if agents and not humans:
         warnings.append("every commit in this range is attributed to an agent; a human must review and merge")
+    if disclosed_in_description and not agent_commits:
+        warnings.append("an agent is disclosed in the pull request description or labels, but every commit carries a human identity; "
+                        "attribution here rests on disclosure alone")
+    if not agents:
+        warnings.append("no agent disclosed; this does not show that no agent was involved, only that none identified itself")
+
+    def short(ref: str) -> str:
+        try:
+            return _git(cfg, "rev-parse", "--short=12", ref).strip()
+        except GateError:
+            return ""
 
     return GateResult(base, head, changed, protected_changed, architecture_changed, lock_changed, proposal_citations,
-                      decision_citations, traceability_citations, commits, agents, humans, blocking, warnings)
+                      decision_citations, traceability_citations, commits, agents, humans, blocking, warnings,
+                      base_sha=short(base), head_sha=short(head))
 
 
 def dumps(result: GateResult) -> str:

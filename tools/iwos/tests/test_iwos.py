@@ -158,9 +158,9 @@ class Gate(unittest.TestCase):
         r = gate.run_gate(self.fx.cfg(), self.base, head)
         self.assertFalse(r.passed)
         self.assertEqual(len(r.blocking), 2)
-        self.assertIn("Codex Agent <codex@example.test>", r.agents)
+        self.assertIn("Codex Agent (commit author)", r.agents)
+        self.assertNotIn("@", md := r.to_markdown())
         self.assertTrue(any("every commit in this range is attributed to an agent" in w for w in r.warnings))
-        md = r.to_markdown()
         self.assertIn("IWOS gate report: FAIL", md)
         self.assertIn("GOVERNANCE.md", md)
 
@@ -186,18 +186,43 @@ class Gate(unittest.TestCase):
         self.fx.write("README.md", "# Example\n\nAgent edit.\n")
         head = self.commit_all("Edit README (EWP-0002)\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\nClaude-Session: https://example.test/session")
         r = gate.run_gate(self.fx.cfg(), self.base, head)
-        self.assertTrue(any("Claude" in a for a in r.agents))
-        self.assertIn("Human Maintainer <maintainer@example.test>", r.humans)
+        self.assertIn("Claude Fable 5.1 (Co-Authored-By trailer)", r.agents)
+        self.assertEqual(r.humans, ["Human Maintainer"])
         self.assertIn("Claude-Session", r.commits[0].trailers)
+        self.assertNotIn("noreply@", r.to_markdown())
+        self.assertNotIn("maintainer@example.test", gate.dumps(r))
+
+    def test_agent_committing_as_a_human_is_caught_only_by_disclosure(self):
+        """The shape of the real pull request 1: human commit identity, agent named only in the description and label."""
+        self.fx.write("GOVERNANCE.md", "# Governance\n\nReplaced.\n")
+        head = self.commit_all("Add governance onboarding")
+        silent = gate.run_gate(self.fx.cfg(), self.base, head)
+        self.assertEqual(silent.agents, [])
+        self.assertTrue(any("no agent disclosed" in w for w in silent.warnings))
+        disclosed = gate.run_gate(self.fx.cfg(), self.base, head, body="Done.\n\n[Codex Task](https://chatgpt.com/codex/cloud/tasks/task_x)", labels=["codex"])
+        self.assertIn("OpenAI Codex (pull request description)", disclosed.agents)
+        self.assertIn("codex (pull request label)", disclosed.agents)
+        self.assertTrue(any("rests on disclosure alone" in w for w in disclosed.warnings))
+        self.assertFalse(disclosed.passed)
+
+    def test_report_shows_resolved_revisions(self):
+        self.fx.write("README.md", "# Example\n\nMore.\n")
+        self.commit_all("Expand README (EWP-0002)")
+        r = gate.run_gate(self.fx.cfg(), self.base, "HEAD")
+        self.assertEqual(len(r.head_sha), 12)
+        self.assertIn(r.head_sha, r.to_markdown())
+        self.assertNotIn("..HEAD", r.to_markdown())
 
     def test_cli_gate_writes_both_formats(self):
         self.fx.write("README.md", "# Example\n\nMore.\n")
         head = self.commit_all("Expand README (EWP-0002)")
         out = self.fx.root / "report.md"
-        code, printed = self.fx.run_cli("gate", "--base", self.base, "--head", head, "--format", "both", "--output", str(out))
+        code, printed = self.fx.run_cli("gate", "--base", self.base, "--head", head, "--format", "both", "--output", str(out), "--label", "codex")
         self.assertEqual(code, 0, printed)
         self.assertTrue(out.exists() and out.with_suffix(".json").exists())
-        self.assertEqual(json.loads(out.with_suffix(".json").read_text())["result"], "pass")
+        report = json.loads(out.with_suffix(".json").read_text())
+        self.assertEqual(report["result"], "pass")
+        self.assertIn("codex (pull request label)", report["agents"])
 
     def test_unknown_ref_is_exit_two(self):
         code, _ = self.fx.run_cli("gate", "--base", "no-such-ref")

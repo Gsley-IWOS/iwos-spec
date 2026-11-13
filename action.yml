@@ -39,6 +39,7 @@ runs:
       shell: bash
       env:
         PR_BODY: ${{ github.event.pull_request.body }}
+        PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         BASE: ${{ inputs.base != '' && inputs.base || github.event.pull_request.base.sha }}
         HEAD: ${{ inputs.head != '' && inputs.head || github.event.pull_request.head.sha }}
-      run: iwos gate --base "$BASE" --head "$HEAD" --body-env PR_BODY --format both --output iwos-gate-report.md --summary
+      run: iwos gate --base "$BASE" --head "$HEAD" --body-env PR_BODY --labels-env PR_LABELS --format both --output iwos-gate-report.md --summary
