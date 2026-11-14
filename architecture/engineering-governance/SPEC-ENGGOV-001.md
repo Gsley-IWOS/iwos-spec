@@ -98,9 +98,12 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 14. Every finding **must** carry a rule identifier.
 15. A waiver **must** name a waivable rule, paths, an owner, a reason and an expiry date. `gate` **must** ignore a waiver that is malformed or expired and **must** report that it did. A waived finding **must** remain in the report. The rules of items 4 and 12 **must not** be waivable.
 16. `gate` **must** be able to emit an event record for each run. An event record **must not** contain a commit subject, description text, an author name or an e-mail address.
-17. Lessons returned to an agent **must** be assembled only from rule identifiers, text held by the implementation itself, counts, and paths restricted to plain path characters and a bounded length. An implementation **must not** repeat other repository text to an agent as a lesson (ADR-0008).
+17. Lessons returned to an agent **must** be assembled only from rule identifiers, text held by the implementation itself, counts, and paths that exist in the repository and that the constitution already governs. An implementation **must not** repeat other repository text to an agent as a lesson (ADR-0008).
 18. `report_incident` **must** append to the incident ledger. An incident **must** move forward only (open, mitigated, closed) and each step **must** be appended to its history. An implementation **must** refuse incident text that matches a credential pattern and **must not** write that text anywhere.
 19. An implementation **must not** transmit event records, lessons, incidents or statistics. It **may** print an anonymous summary of rule identifiers and counts for a maintainer to share.
+20. `gate` **must** treat a moved or renamed file as changed at its old path and at its new path, and **must** match paths exactly as the repository stores them. `lock` and `gate` **must** use the same pattern matcher.
+21. `gate` **must** be given, as its base, the target branch as it stands when the change is judged; conforming automation **must not** pass a base that lags behind it.
+22. An implementation **must** remove every match of a credential pattern from each finding, report and authority answer before it is printed, written or returned.
 
 ## Context Requirements
 

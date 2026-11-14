@@ -20,6 +20,7 @@ Authorised by the repository owner's direction of 2026-11-14 to implement that d
 Security:
 
 - **Gate bypass closed (ADR-0007).** Toolchain versions before 0.2.0 read the constitution from the head of the change they judged. One change could remove a protected pattern from the constitution file, rewrite the file it had protected, regenerate the lock and pass the gate. The gate now judges against the constitution of the base revision; the constitution file, the waiver register and, in this repository, `tools/validate/config.yaml` are control files that need a proposal citation whatever the constitution says; a head constitution that fails to parse cannot disable the gate. The reproduction is kept as a regression test. No change in this repository's history used the path.
+- **Independent review of the fix, same day.** An adversarial review found that a rename or a symbolic link still hid a protected artefact or the constitution file from the gate, that paths the version-control system quotes never matched, that the lock and the gate disagreed on some globs, that a stale base could lend citations, that a secret written into a ledger by hand was echoed in findings and SARIF, and that malformed input could end the authority-interface server or crash `iwos lessons`. All are corrected and each has a regression test (59 toolchain tests).
 - `SECURITY.md` 1.1.0: vulnerabilities are reported through private vulnerability reporting, not a public issue; handling ends in a published advisory.
 
 Added:

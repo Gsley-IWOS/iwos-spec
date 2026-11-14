@@ -80,7 +80,7 @@ Point agents at the authority interface. For a Model Context Protocol client, re
 | Key | Meaning |
 | --- | --- |
 | `profile` | `generic` for any repository; `iwos-spec` for this one, which takes protected patterns and the lock location from `tools/validate/config.yaml`. |
-| `constitution.protected` | Globs of protected artefacts. `*` stays within a path segment; `**` spans segments. |
+| `constitution.protected` | Globs of protected artefacts. `*` and `?` stay within a path segment; `**` spans segments; every other character, brackets included, is literal. Hidden files match like any other. The lock and the gate use the same matcher. A symbolic link is one artefact, recorded by where it points. |
 | `constitution.architecture` | Globs whose changes require a decision-record citation. |
 | `constitution.lock_file`, `constitution.decision_ledger` | Where the lock and the ledger live. |
 | `authority.proposal_pattern`, `authority.decision_pattern` | Regular expressions a citation must match (defaults `AIP-\d{4}`, `ADR-\d{4}`). |
@@ -107,6 +107,8 @@ Every finding carries a stable rule identifier. Reports, event records, waivers 
 
 The gate judges a change against the constitution on the base revision, never against the constitution the change proposes (ADR-0007). A change cannot remove a protection and use the gap in the same step. The constitution file `iwos.yaml`, the waiver register `.iwos/waivers.yaml` and, in the `iwos-spec` profile, `tools/validate/config.yaml` are control files: a change to any of them needs a proposal citation whatever the constitution file says. Only when the base revision holds no valid constitution is the change judged against its own, and the report says so with `IWOS-W005`.
 
+Three details follow from this. A moved or renamed file counts as changed at its old path and at its new one, so moving a protected artefact away, or putting a symbolic link in its place, is a change to it. `--base` must be the target branch as it stands: a stale base lets commits already merged there lend their citations to the change, so the action uses the first parent of the pull request's merge commit when the checkout is that commit. And the gate runs only at the top of the work tree.
+
 ## Waivers
 
 A waiver is a recorded, owned and dated exception to `IWOS-G003` or `IWOS-G004`. It is read from the base revision, so a change cannot waive itself. The protection rules cannot be waived.
@@ -129,11 +131,11 @@ A waived finding stays in the report, marked with the waiver. An expired or malf
 
 Each gate run produces a structured event record: rule identifiers, levels, paths, counts and revisions. It holds no commit subject, no description text, no author name and no e-mail address. `iwos gate --record` appends it to `.iwos/events.jsonl`; the action writes it to `iwos-gate-event.json` so that a workflow can keep it as an artefact and a maintainer can fold it in with `iwos events append`.
 
-`iwos lessons` and the `read_lessons` tool turn that log into feedback for the next agent. Every string in the output is a rule identifier, advice from the tool's own rule catalogue or a path made only of plain path characters. Text found in the repository is never repeated, so the log cannot be used to plant instructions for an agent. The tool sends nothing anywhere; `iwos stats` prints an anonymous summary that a maintainer may choose to share.
+`iwos lessons` and the `read_lessons` tool turn that log into feedback for the next agent. Every string in the output is a rule identifier, advice from the tool's own rule catalogue, or a path that exists in the working tree and that the constitution already governs (a protected artefact, an architecture path or a control file). A path that a rejected change merely proposed is never repeated, and neither is any other text from the repository, so a change cannot use the log or its own file names to speak to the next agent. Malformed lines in the log are counted and skipped. The tool sends nothing anywhere; `iwos stats` prints an anonymous summary that a maintainer may choose to share.
 
 ## Incidents
 
-`iwos incident open` records a security incident in `.iwos/incidents.yaml` with the next `INC-####` identifier, a class, a severity and the affected paths, and prints the playbook for the class. Classes: `secret-exposure`, `integrity-violation`, `unauthorised-protected-change`, `gate-bypass`, `agent-misattribution`, `other`. An incident moves forward only (open, mitigated, closed); each step is appended to its history, and closing it can name the decision record that prevents a repeat. The ledger never holds the sensitive value: text that matches a credential pattern is refused.
+`iwos incident open` records a security incident in `.iwos/incidents.yaml` with the next `INC-####` identifier, a class, a severity and the affected paths, and prints the playbook for the class. Classes: `secret-exposure`, `integrity-violation`, `unauthorised-protected-change`, `gate-bypass`, `agent-misattribution`, `other`. An incident moves forward only (open, mitigated, closed); each step is appended to its history, and closing it can name the decision record that prevents a repeat. The ledger never holds the sensitive value: text that matches a credential pattern is refused. Every finding, report, SARIF file and tool answer is passed through the same patterns on the way out, so a value that someone wrote into a ledger by hand is replaced by `[redacted]` and never printed.
 
 To show findings in GitHub code scanning, upload the SARIF file the action writes. This needs `security-events: write`, so it is a step in your workflow and not part of the action:
 
@@ -162,7 +164,7 @@ Eight tools, defined in SPEC-ENGGOV-001:
 | `validate()` | The findings of `iwos validate`. |
 | `read_lessons(limit?)` | The lessons of the event log, as structured fields. |
 | `report_incident(incident_class, severity, summary, paths?)` | Opens an incident and returns the playbook for its class. Refuses text that matches a credential pattern. |
-| `list_incidents()` | The incidents that are not closed. |
+| `list_incidents()` | The identifier, class, severity and status of each incident that is not closed. The free-text summary stays in the ledger file and is not relayed. |
 
 The server speaks JSON-RPC 2.0, one message per line, protocol versions 2025-06-18, 2025-03-26 and 2024-11-05. It never listens on a network port.
 

@@ -39,7 +39,7 @@ Option 1.
 
 1. **Rule identifiers.** Every finding carries a stable identifier. Reports, event records, waivers and lessons refer to it.
 2. **Event record.** Each gate run can emit a structured record: rule identifiers, levels, paths, counts and the two revisions. It contains no commit subject, no description text, no author name and no e-mail address. Records are appended to an event log in the repository; existing lines are never rewritten.
-3. **Lessons.** The toolchain summarises the event log for agents, through the command line and the authority interface. Every string in a lesson is a rule identifier, advice held in the toolchain's own rule catalogue, or a path made only of plain path characters. Nothing else from the repository is repeated.
+3. **Lessons.** The toolchain summarises the event log for agents, through the command line and the authority interface. Every string in a lesson is a rule identifier, advice held in the toolchain's own rule catalogue, or a path that exists in the working tree and that the constitution already governs. Nothing else from the repository is repeated, and a path that a rejected change merely proposed never qualifies. The summary of an incident is free text in an unprotected file and is not relayed through the authority interface.
 4. **Waivers.** An exception names a waivable rule, the paths it covers, an owner, a reason and an expiry date, and is read from the base revision. The rules that protect artefacts and control files cannot be waived. A waived finding stays in the report. An expired or malformed waiver is ignored by the gate and fails validation.
 5. **Incident ledger.** An incident has an identifier, a class, a severity, a status, a summary, the affected paths and a history. It moves forward only, each step is appended, and closing it may name the decision record that prevents a repeat. The toolchain refuses any text that matches a credential pattern, and prints a fixed playbook for the incident's class.
 6. **Reporting outward.** Findings can be written as SARIF 2.1.0 so that a maintainer may upload them to a code-scanning service. The upload is a step the maintainer adds; the action does not request the permission it needs.
@@ -52,7 +52,8 @@ Option 1.
 - Positive: exceptions and incidents become reviewable records with owners and dates.
 - Positive: the specification's statement that nothing leaves the repository stays true.
 - Negative: the event log grows only where someone records events. On a hosted runner the record is a file in the run's workspace; keeping it means storing it as an artefact and appending it, or recording locally. Nothing learns across repositories unless maintainers share the anonymous summary by hand.
-- Negative: a path can still carry words. The character and length limits reduce what a path can say; they do not make a path meaningless.
+- Negative: lessons name only governed paths, so they say which rule is broken most often but not which ordinary files attract uncited changes.
+- Neutral: every finding, report and tool answer is redacted against the credential patterns on the way out, so that a value written into a ledger by hand is not printed by the check that finds it.
 - Neutral: incident identifiers of the form `INC-####` and waiver identifiers of the form `WVR-####` are record identifiers inside a governed repository's own ledgers, in the same way as `DEC-####`. They are not document identifier families of this repository, and the Naming Standard is not amended.
 
 ## Ratification

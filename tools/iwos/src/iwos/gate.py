@@ -218,6 +218,16 @@ class GateResult:
         }
 
 
+def require_top_level(root) -> None:
+    """Paths in a range are relative to the top of the work tree, so the gate must run from there."""
+    import os
+    proc = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=False)
+    if proc.returncode != 0:
+        raise GateError(f"{root} is not a git work tree")
+    if os.path.realpath(proc.stdout.strip()) != os.path.realpath(str(root)):
+        raise GateError(f"the gate must run at the top of the work tree ({proc.stdout.strip()}), not in {root}")
+
+
 def _git(cfg: Config, *args: str) -> str:
     proc = subprocess.run(["git", "-C", str(cfg.root), *args], capture_output=True, text=True, check=False)
     if proc.returncode != 0:
@@ -227,8 +237,10 @@ def _git(cfg: Config, *args: str) -> str:
 
 def changed_files(cfg: Config, base: str, head: str) -> list[str]:
     merge_base = _git(cfg, "merge-base", base, head).strip() or base
-    out = _git(cfg, "diff", "--name-only", merge_base, head)
-    return sorted(p for p in out.splitlines() if p.strip())
+    # --no-renames: a moved file is reported at its old path and its new one, so moving a protected
+    # artefact or a control file away is seen as a change to it. -z: paths arrive unquoted.
+    out = _git(cfg, "diff", "--name-only", "--no-renames", "-z", merge_base, head)
+    return sorted(p for p in out.split("\x00") if p)
 
 
 def commits_in_range(cfg: Config, base: str, head: str) -> list[Commit]:
@@ -381,6 +393,9 @@ def constitution_for(root, base: str) -> tuple[Config, bool]:
     constitution or an invalid one. Returns (config, adoption).
     """
     from .config import ConfigError, load_config, load_config_at
+    require_top_level(root)
+    if subprocess.run(["git", "-C", str(root), "rev-parse", "-q", "--verify", f"{base}^{{commit}}"], capture_output=True, check=False).returncode != 0:
+        raise GateError(f"base revision {base} is not a commit in this repository")
     try:
         cfg = load_config_at(root, base)
     except ConfigError:

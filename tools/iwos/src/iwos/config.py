@@ -95,7 +95,8 @@ def _parse_yaml(text: str, label: str) -> dict:
     try:
         return yaml.safe_load(text) or {}
     except yaml.YAMLError as exc:
-        raise ConfigError(f"{label} is not valid YAML: {exc}") from exc
+        from .redact import describe_yaml_error
+        raise ConfigError(f"{label}: {describe_yaml_error(exc)}") from exc
 
 
 def load_config(root: Path) -> Config:

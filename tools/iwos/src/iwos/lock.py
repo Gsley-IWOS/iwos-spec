@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 import datetime as _dt
-import glob
 import hashlib
+import os
 import re
 from pathlib import Path
 
@@ -15,17 +15,30 @@ LOCK_SCHEMA_VERSION = "1.0.0"
 
 
 def protected_files(cfg: Config) -> list[Path]:
-    found: set[Path] = set()
-    for pattern in cfg.protected:
-        for rel in glob.glob(pattern, root_dir=cfg.root, recursive=True):
-            path = cfg.root / rel
-            if path.is_file():
-                found.add(path)
+    """Every file or symbolic link the protected patterns match.
+
+    The lock and the gate use the same matcher (`glob_to_regex`), so a path the gate treats as protected
+    is always a path the lock records. Symbolic links to directories are not followed: a link is one
+    artefact, recorded by its target path.
+    """
+    regexes = [glob_to_regex(p) for p in cfg.protected]
+    found: list[Path] = []
+    for directory, dirnames, filenames in os.walk(cfg.root):
+        if directory == str(cfg.root) and ".git" in dirnames:
+            dirnames.remove(".git")
+        links = [d for d in dirnames if os.path.islink(os.path.join(directory, d))]
+        for name in filenames + links:
+            path = Path(directory) / name
+            rel_path = str(path.relative_to(cfg.root)).replace("\\", "/")
+            if any(rx.match(rel_path) for rx in regexes):
+                found.append(path)
     return sorted(found)
 
 
 def glob_to_regex(pattern: str) -> "re.Pattern[str]":
     """Translate a path glob to a regular expression: `*` and `?` stay within one path segment, `**` spans segments."""
+    while pattern.startswith("./"):
+        pattern = pattern[2:]
     out, i = "", 0
     while i < len(pattern):
         c = pattern[i]
@@ -57,6 +70,8 @@ def matches_architecture(cfg: Config, rel_path: str) -> list[str]:
 
 
 def sha256_of(path: Path) -> str:
+    if path.is_symlink():  # a link is recorded by where it points, so retargeting it is a change
+        return hashlib.sha256(("symlink:" + os.readlink(path)).encode("utf-8")).hexdigest()
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
@@ -82,7 +97,11 @@ def read_lock(cfg: Config) -> dict | None:
     path = cfg.root / cfg.lock_file
     if not path.exists():
         return None
-    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (yaml.YAMLError, UnicodeDecodeError) as exc:
+        from .redact import describe_yaml_error
+        raise ValueError(f"{cfg.lock_file} is not a lock: {describe_yaml_error(exc)}") from exc
     if not isinstance(data, dict) or not isinstance(data.get("entries"), list):
         raise ValueError(f"{cfg.lock_file} is not a lock: expected a mapping with an entries list")
     return data

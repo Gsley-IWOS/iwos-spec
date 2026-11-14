@@ -78,10 +78,14 @@ def load(cfg: Config) -> dict:
     path = ledger_path(cfg)
     if not path.exists():
         return {"schema_version": "1.0.0", "incidents": []}
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    if not isinstance(data, dict) or not isinstance(data.get("incidents", []), list):
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (yaml.YAMLError, UnicodeDecodeError) as exc:
+        from .redact import describe_yaml_error
+        raise IncidentError(f"{cfg.incident_ledger}: {describe_yaml_error(exc)}") from exc
+    if not isinstance(data, dict) or not isinstance(data.get("incidents") or [], list):
         raise IncidentError(f"{cfg.incident_ledger} is not an incident ledger")
-    data.setdefault("incidents", [])
+    data["incidents"] = data.get("incidents") or []
     return data
 
 
@@ -93,10 +97,13 @@ def _save(cfg: Config, data: dict) -> None:
 
 
 def _refuse_secrets(cfg: Config, *texts: str) -> None:
+    """Refuse a credential shape in the text as given and as it will be stored (whitespace collapsed)."""
     for text in texts:
-        for pattern in cfg.secret_patterns:
-            if re.search(pattern, text or ""):
-                raise IncidentError("the text matches a credential pattern; describe the incident without the sensitive value")
+        raw = str(text or "")
+        for candidate in (raw, " ".join(raw.split())):
+            for pattern in cfg.secret_patterns:
+                if re.search(pattern, candidate):
+                    raise IncidentError("the text matches a credential pattern; describe the incident without the sensitive value")
 
 
 def _clean(text: str, limit: int = 500) -> str:
@@ -115,7 +122,7 @@ def open_incident(cfg: Config, incident_class: str, severity: str, summary: str,
     paths = [_clean(p, 200) for p in (paths or [])]
     _refuse_secrets(cfg, summary, detected_by, *paths)
     data = load(cfg)
-    numbers = [int(m.group(1)) for i in data["incidents"] if isinstance(i, dict) for m in [re.fullmatch(r"INC-(\d{4})", str(i.get("id", "")))] if m]
+    numbers = [int(m.group(1)) for i in data["incidents"] if isinstance(i, dict) for m in [re.fullmatch(r"INC-(\d{4,9})", str(i.get("id", "")))] if m]
     date = (today or _dt.date.today()).isoformat()
     entry = {"id": f"INC-{(max(numbers) + 1) if numbers else 1:04d}", "opened": date, "class": incident_class, "severity": severity,
              "status": "open", "summary": summary, "paths": paths, "detected_by": _clean(detected_by, 80),
@@ -135,11 +142,16 @@ def update_incident(cfg: Config, incident_id: str, status: str, note: str, decis
     data = load(cfg)
     for entry in data["incidents"]:
         if isinstance(entry, dict) and entry.get("id") == incident_id:
-            if STATUSES.index(status) < STATUSES.index(entry.get("status", "open")):
-                raise IncidentError(f"{incident_id} is {entry.get('status')}; an incident does not move backwards. Open a new incident if it recurred.")
+            current = entry.get("status") if entry.get("status") in STATUSES else "open"
+            if current == "closed":
+                raise IncidentError(f"{incident_id} is closed and is not changed again. Open a new incident if it recurred.")
+            if STATUSES.index(status) < STATUSES.index(current):
+                raise IncidentError(f"{incident_id} is {current}; an incident does not move backwards. Open a new incident if it recurred.")
+            if not isinstance(entry.get("history"), list):
+                entry["history"] = []
             date = (today or _dt.date.today()).isoformat()
             entry["status"] = status
-            entry.setdefault("history", []).append({"date": date, "status": status, "note": note})
+            entry["history"].append({"date": date, "status": status, "note": note})
             if decision:
                 entry["decision"] = _clean(decision, 120)
             if status == "closed":
@@ -156,14 +168,14 @@ def check(cfg: Config) -> list[str]:
         return []
     try:
         data = load(cfg)
-    except (IncidentError, yaml.YAMLError) as exc:
+    except IncidentError as exc:
         return [str(exc)]
     problems, seen = [], set()
     for i, entry in enumerate(data["incidents"]):
         if not isinstance(entry, dict):
             problems.append(f"incidents[{i}] is not a mapping"); continue
         ident = str(entry.get("id", f"incidents[{i}]"))
-        if not re.fullmatch(r"INC-\d{4}", ident):
+        if not re.fullmatch(r"INC-\d{4,9}", ident):
             problems.append(f"{ident}: identifier must match INC-####")
         if ident in seen:
             problems.append(f"duplicate incident id {ident}")
@@ -184,5 +196,5 @@ def check(cfg: Config) -> list[str]:
 def open_incidents(cfg: Config) -> list[dict]:
     try:
         return [i for i in load(cfg)["incidents"] if isinstance(i, dict) and i.get("status") != "closed"]
-    except (IncidentError, yaml.YAMLError):
+    except IncidentError:
         return []

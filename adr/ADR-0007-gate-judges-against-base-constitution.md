@@ -16,6 +16,8 @@ This record decides which copy of the constitution the gate applies to a propose
 
 Until this record, the gate read the constitution file from the working tree, which on a pull request is the head of the change. A single change could therefore remove a pattern from `iwos.yaml`, rewrite the file that pattern had protected, regenerate the lock and the agent block, and pass. The working tree was consistent with itself, so `iwos validate` passed; the rewritten file was no longer protected under the constitution the gate read, so `iwos gate` passed with one warning about the lock. The steps were reproduced in a throwaway repository on 2026-11-14 with toolchain version 0.1.0 and are kept as a regression test. In this repository the same exposure existed through `tools/validate/config.yaml`, where the `iwos-spec` profile reads its protected patterns.
 
+An independent adversarial review of the first fix, on the same day, found that a rename or a symbolic link could still hide a protected artefact from the gate, that paths the version-control system quotes never matched a pattern, and that the lock and the gate disagreed on some globs. Items 6 and 7 of the decision answer those findings, and each has a regression test.
+
 No change that used this path was merged here. The history of `iwos.yaml` and `tools/validate/config.yaml` holds two commits, made under EWP-0003 and EWP-0004, and the protected patterns are the same in both: `engineering-charter/*`, `standards/*-standard.md` and `governance/*.md`. No pattern has ever been removed.
 
 ## Decision Drivers
@@ -41,7 +43,9 @@ Option 1.
 3. When the base revision holds no constitution, or one that does not parse or validate, the gate judges the change against the constitution the change proposes and says so in the report. This is the adoption case. A constitution that fails to parse at the head never disables the gate while the base holds a valid one.
 4. Waivers are read from the base revision, so a change cannot waive itself.
 5. The gate reports, as a warning, any change to the automation that runs it: workflow files, and in this repository the toolchain, the validator and the action definition. A result produced by a changed gate is not independent, and the report says so.
-6. The gate checks that a citation is present. It does not check that the cited proposal exists or was accepted. That remains a reviewer's check, and conforming documentation says so.
+6. A moved or renamed file is a change at its old path and at its new one. The gate does not follow renames, so moving a protected artefact or a control file away, or replacing it with a symbolic link, is judged as a change to it. The lock and the gate use one matcher, so a path the gate protects is a path the lock records.
+7. The base revision is the target branch as it stands. A stale base lets commits already merged there lend their citations to the change, so the action judges against the first parent of the pull request's merge commit when the checkout is that commit. The gate runs only at the top of the work tree.
+8. The gate checks that a citation is present. It does not check that the cited proposal exists or was accepted. That remains a reviewer's check, and conforming documentation says so.
 
 ## Consequences
 

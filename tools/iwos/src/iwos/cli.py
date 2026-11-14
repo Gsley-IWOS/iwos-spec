@@ -9,6 +9,7 @@ from pathlib import Path
 
 from . import __version__, agents_block, checks, events, gate as gate_mod, incidents, lock as lock_mod, mcp_server, sarif
 from .config import CONFIG_NAME, ConfigError, default_config_text, load_config
+from .redact import redact
 
 
 def _root(args) -> Path:
@@ -39,7 +40,7 @@ def cmd_validate(args) -> int:
         print(str(f))
     print(summary)
     if args.sarif:
-        Path(args.sarif).write_text(json.dumps(sarif.from_validation(findings, cfg.lock_file), indent=2), encoding="utf-8")
+        Path(args.sarif).write_text(json.dumps(sarif.from_validation(findings, cfg.lock_file, cfg.secret_patterns), indent=2), encoding="utf-8")
     if any(f.category == "integrity" or "credential pattern" in f.message for f in findings):
         print("A finding above is a security incident. Record it with `iwos incident open` and follow `iwos incident playbook <class>`.")
     return 0 if not findings else 1
@@ -99,7 +100,7 @@ def cmd_gate(args) -> int:
     if args.record:
         events.append_event(load_config(_root(args)), event)
     if args.sarif:
-        Path(args.sarif).write_text(json.dumps(sarif.from_gate(result), indent=2), encoding="utf-8")
+        Path(args.sarif).write_text(json.dumps(sarif.from_gate(result, cfg.secret_patterns), indent=2), encoding="utf-8")
     return 0 if result.passed else 1
 
 
@@ -109,7 +110,11 @@ def cmd_events(args) -> int:
     for name in args.files:
         for line in Path(name).read_text(encoding="utf-8").splitlines():
             if line.strip():
-                events.append_event(cfg, json.loads(line))
+                try:
+                    record = json.loads(line)
+                except (ValueError, RecursionError) as exc:
+                    raise ValueError(f"{name} holds a line that is not a JSON event record") from exc
+                events.append_event(cfg, record)
                 added += 1
     print(f"appended {added} event(s) to {cfg.events_file}")
     return 0
@@ -153,7 +158,9 @@ def cmd_incident(args) -> int:
     else:
         entries = incidents.load(cfg)["incidents"]
         for e in entries:
-            print(f"{e.get('id')}  {e.get('status'):<9}  {e.get('severity'):<8}  {e.get('class')}  {e.get('summary')}")
+            if isinstance(e, dict):
+                line = f"{e.get('id')!s}  {e.get('status')!s:<9}  {e.get('severity')!s:<8}  {e.get('class')!s}  {e.get('summary')!s}"
+                print(redact(line, cfg.secret_patterns))
         if not entries:
             print("No incident recorded.")
     return 0
