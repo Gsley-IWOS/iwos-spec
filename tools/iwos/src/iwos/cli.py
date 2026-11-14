@@ -1,13 +1,15 @@
-"""Command-line interface: iwos init | validate | lock | gate | agents | mcp."""
+"""Command-line interface: iwos init | validate | lock | gate | agents | events | lessons | stats | incident | mcp."""
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
 
-from . import __version__, agents_block, checks, gate as gate_mod, lock as lock_mod, mcp_server
+from . import __version__, agents_block, checks, events, gate as gate_mod, incidents, lock as lock_mod, mcp_server, sarif
 from .config import CONFIG_NAME, ConfigError, default_config_text, load_config
+from .redact import redact
 
 
 def _root(args) -> Path:
@@ -27,7 +29,7 @@ def cmd_init(args) -> int:
     for f in cfg.agent_files:
         agents_block.apply(cfg, root / f)
     print(f"wrote {CONFIG_NAME}, {lock_path.relative_to(root)} and {', '.join(cfg.agent_files)}")
-    print("Next: commit these files, add `uses: Gsley-IWOS/iwos-spec@main` to a pull-request workflow, and point agents at `iwos mcp`.")
+    print("Next: commit these files, add `uses: Gsley-IWOS/iwos-spec@<commit>` to a pull-request workflow, and point agents at `iwos mcp`.")
     return 0
 
 
@@ -37,6 +39,10 @@ def cmd_validate(args) -> int:
     for f in findings:
         print(str(f))
     print(summary)
+    if args.sarif:
+        Path(args.sarif).write_text(json.dumps(sarif.from_validation(findings, cfg.lock_file, cfg.secret_patterns), indent=2), encoding="utf-8")
+    if any(f.category == "integrity" or "credential pattern" in f.message for f in findings):
+        print("A finding above is a security incident. Record it with `iwos incident open` and follow `iwos incident playbook <class>`.")
     return 0 if not findings else 1
 
 
@@ -69,11 +75,11 @@ def _read_body(args) -> str:
 
 
 def cmd_gate(args) -> int:
-    cfg = load_config(_root(args))
+    cfg, adoption = gate_mod.constitution_for(_root(args), args.base)
     labels = list(args.label or [])
     if args.labels_env:
         labels += [l.strip() for l in os.environ.get(args.labels_env, "").split(",") if l.strip()]
-    result = gate_mod.run_gate(cfg, args.base, args.head, _read_body(args), labels)
+    result = gate_mod.run_gate(cfg, args.base, args.head, _read_body(args), labels, adoption=adoption)
     md, js = result.to_markdown(), gate_mod.dumps(result)
     if args.format in ("markdown", "both"):
         print(md)
@@ -88,7 +94,76 @@ def cmd_gate(args) -> int:
     if args.summary and summary_path:
         with open(summary_path, "a", encoding="utf-8") as handle:
             handle.write(md)
+    event = result.to_event(__version__)
+    if args.event_out:
+        Path(args.event_out).write_text(json.dumps(event, sort_keys=True) + "\n", encoding="utf-8")
+    if args.record:
+        events.append_event(load_config(_root(args)), event)
+    if args.sarif:
+        Path(args.sarif).write_text(json.dumps(sarif.from_gate(result, cfg.secret_patterns), indent=2), encoding="utf-8")
     return 0 if result.passed else 1
+
+
+def cmd_events(args) -> int:
+    cfg = load_config(_root(args))
+    added = 0
+    for name in args.files:
+        for line in Path(name).read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                try:
+                    record = json.loads(line)
+                except (ValueError, RecursionError) as exc:
+                    raise ValueError(f"{name} holds a line that is not a JSON event record") from exc
+                events.append_event(cfg, record)
+                added += 1
+    print(f"appended {added} event(s) to {cfg.events_file}")
+    return 0
+
+
+def cmd_lessons(args) -> int:
+    cfg = load_config(_root(args))
+    data = events.lessons(cfg, args.limit)
+    if args.format == "json":
+        print(json.dumps(data, indent=2))
+        return 0
+    print(f"{data['gate_runs']} gate run(s) recorded, {data['failed_runs']} failed.")
+    for item in data["lessons"]:
+        where = f" Most affected: {', '.join(item['most_affected_paths'])}." if item["most_affected_paths"] else ""
+        print(f"- {item['rule']} x{item['occurrences']}: {item['title']}. {item['advice']}{where}")
+    if not data["lessons"]:
+        print("No blocking finding recorded yet.")
+    return 0
+
+
+def cmd_stats(args) -> int:
+    print(json.dumps(events.stats(load_config(_root(args))), indent=2))
+    return 0
+
+
+def cmd_incident(args) -> int:
+    cfg = load_config(_root(args))
+    if args.action == "open":
+        entry = incidents.open_incident(cfg, args.incident_class, args.severity, args.summary, args.path or [], args.detected_by)
+        print(f"opened {entry['id']} ({entry['class']}, {entry['severity']}) in {cfg.incident_ledger}")
+        for i, step in enumerate(incidents.PLAYBOOKS[entry["class"]], 1):
+            print(f"  {i}. {step}")
+    elif args.action == "update":
+        entry = incidents.update_incident(cfg, args.id, args.status, args.note, args.decision or "")
+        print(f"{entry['id']} is now {entry['status']}")
+    elif args.action == "playbook":
+        if args.incident_class not in incidents.PLAYBOOKS:
+            raise incidents.IncidentError(f"unknown class '{args.incident_class}'; one of {', '.join(incidents.CLASSES)}")
+        for i, step in enumerate(incidents.PLAYBOOKS[args.incident_class], 1):
+            print(f"{i}. {step}")
+    else:
+        entries = incidents.load(cfg)["incidents"]
+        for e in entries:
+            if isinstance(e, dict):
+                line = f"{e.get('id')!s}  {e.get('status')!s:<9}  {e.get('severity')!s:<8}  {e.get('class')!s}  {e.get('summary')!s}"
+                print(redact(line, cfg.secret_patterns))
+        if not entries:
+            print("No incident recorded.")
+    return 0
 
 
 def cmd_mcp(args) -> int:
@@ -108,7 +183,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--architecture", action="append", help="architecture glob (repeatable)"); s.add_argument("--force", action="store_true")
     s.set_defaults(func=cmd_init)
 
-    s = sub.add_parser("validate", help="check integrity, ledger, content and agent files"); s.set_defaults(func=cmd_validate)
+    s = sub.add_parser("validate", help="check integrity, ledgers, content and agent files")
+    s.add_argument("--sarif", help="also write the findings as SARIF 2.1.0 to this file"); s.set_defaults(func=cmd_validate)
     s = sub.add_parser("lock", help="regenerate the integrity lock (constitutional changes only)"); s.set_defaults(func=cmd_lock)
     s = sub.add_parser("agents", help="regenerate the generated block in agent files"); s.add_argument("--check", action="store_true"); s.set_defaults(func=cmd_agents)
 
@@ -119,7 +195,27 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--labels-env", help="environment variable holding comma-separated pull request labels")
     s.add_argument("--format", choices=["markdown", "json", "both"], default="markdown"); s.add_argument("--output", help="write the report here (.md or .json)")
     s.add_argument("--summary", action="store_true", help="append the Markdown report to $GITHUB_STEP_SUMMARY when set")
+    s.add_argument("--event-out", help="write the structured event record of this run to this file")
+    s.add_argument("--record", action="store_true", help="append the event record to the local event log")
+    s.add_argument("--sarif", help="also write the findings as SARIF 2.1.0 to this file")
     s.set_defaults(func=cmd_gate)
+
+    s = sub.add_parser("events", help="append event records produced by `iwos gate --event-out` to the event log")
+    s.add_argument("action", choices=["append"]); s.add_argument("files", nargs="+"); s.set_defaults(func=cmd_events)
+    s = sub.add_parser("lessons", help="what the event log says agents get wrong here, as structured fields")
+    s.add_argument("--limit", type=int, default=5); s.add_argument("--format", choices=["text", "json"], default="text"); s.set_defaults(func=cmd_lessons)
+    s = sub.add_parser("stats", help="print an anonymous summary of the event log (rule identifiers and counts only)"); s.set_defaults(func=cmd_stats)
+
+    s = sub.add_parser("incident", help="record and track security incidents in the incident ledger")
+    isub = s.add_subparsers(dest="action", required=True)
+    o = isub.add_parser("open"); o.add_argument("--class", dest="incident_class", required=True, choices=sorted(incidents.CLASSES))
+    o.add_argument("--severity", required=True, choices=incidents.SEVERITIES); o.add_argument("--summary", required=True)
+    o.add_argument("--path", action="append"); o.add_argument("--detected-by", default="maintainer")
+    u = isub.add_parser("update"); u.add_argument("id"); u.add_argument("--status", required=True, choices=incidents.STATUSES)
+    u.add_argument("--note", required=True); u.add_argument("--decision", help="decision record that closes the loop")
+    isub.add_parser("list")
+    b = isub.add_parser("playbook"); b.add_argument("incident_class")
+    s.set_defaults(func=cmd_incident)
 
     s = sub.add_parser("mcp", help="serve the authority interface over standard input and output"); s.set_defaults(func=cmd_mcp)
     return p
@@ -134,6 +230,9 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     except gate_mod.GateError as exc:
         print(f"gate error: {exc}", file=sys.stderr)
+        return 2
+    except (incidents.IncidentError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
         return 2
 
 

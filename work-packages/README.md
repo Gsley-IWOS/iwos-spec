@@ -32,6 +32,7 @@ A package is approved by merging it to `main` with status `Approved`, or by a ma
 | [EWP-0003](EWP-0003.md) | Schemas, Examples, Validation Tooling and Engineering Memory | 1 | Approved |
 | [EWP-0004](EWP-0004.md) | IWOS Guard Reference Toolchain | 2 | Approved |
 | [EWP-0005](EWP-0005.md) | Launch Readiness for IWOS Guard | 3 | Approved |
+| [EWP-0006](EWP-0006.md) | Gate Hardening, Learning Loop and Incident Handling | 4 | Approved |
 
 ## Authoring
 

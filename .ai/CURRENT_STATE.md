@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** AAC-001 AI Agent Contract  
 **Parent Document:** engineering-charter/05_AI_AGENT_CONTRACT.yaml  
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
@@ -21,13 +21,15 @@ The founding release was merged on 2026-10-31 (pull request 6). On 2026-11-09 th
 
 On 2026-11-13 the repository owner confirmed the product name IWOS Guard, approved EWP-0002, EWP-0003 and EWP-0005, accepted ADR-0001, ADR-0002, ADR-0003 and ADR-0005, and accepted AIP-0001, which amended the Naming Standard to version 1.1.0. Launch readiness was delivered under EWP-0005. Replaying pull request 1 through the gate produced the case study in `tools/iwos/CASE-STUDY.md` and showed that the agent had committed under the owner's identity, which led to ADR-0005: attribution rests on disclosure and reports print no addresses. `.github/CODEOWNERS` now names the owner for protected paths, continuous integration runs the composite action from the working tree, and `.mcp.json` registers the authority interface for agents working here.
 
+On 2026-11-14 a review of the toolchain found that the gate read the constitution from the head of the change it judged, so one change could remove a protected pattern, rewrite the file and pass. The owner directed that every correction and recommendation of the review be implemented, and EWP-0006 delivered them. ADR-0007: the gate judges a change against the constitution of its base revision, and the files that define the rules are protected whatever they say. ADR-0008: each gate run can leave a structured event record, agents can read lessons assembled only from rule identifiers and the toolchain's own advice, exceptions are recorded as owned and dated waivers, and security incidents are recorded in an append-only ledger that refuses secrets. `SECURITY.md` now asks for vulnerabilities to be reported privately. ADR-0006 decides that IWOS Guard is developed and released from a dedicated repository and supersedes ADR-0004; the hosting platform refused the automation permission to create that repository, so the toolchain, at version 0.2.0, remains in `tools/iwos/` without a release tag until the owner creates it. SPEC-ENGGOV-001 is at Draft revision 3 and carries the three decisions.
+
 ## Protected Documents
 
 The Founding Charter, Architecture Baseline and AI Agent Contract are unchanged from their ratified versions. Project Genesis was amended once, to 1.1.0, under AIP-0002, and the Naming Standard once, to 1.1.0, under AIP-0001. The constitutional integrity lock covers every file in `engineering-charter/`, every standard matching `standards/*-standard.md` and every governance policy matching `governance/*.md`.
 
 ## Open Risks
 
-See `current_risks` in `ENGINEERING_STATE.yaml`. In summary: ADR-0004 and the first release tag are held until the home of IWOS Guard is decided (DEC-0009); SPEC-ENGGOV-001 is a Draft; branch protection does not yet require the gate; agent attribution rests on disclosure; IWOS Guard enters a field where GitHub Spec Kit and AGENTS.md already have adoption; pull requests 1 to 4 overlap with the build-out and pull request 1 must not be merged; no CODEOWNERS file exists yet.
+See `current_risks` in `ENGINEERING_STATE.yaml`. In summary: the dedicated repository for IWOS Guard does not exist yet, so the published address will change once (RISK-0010); a pull request can edit the workflow that runs the gate, and the gate checks that a citation is present rather than that the cited proposal was accepted (RISK-0009); branch protection does not yet require the gate, and a single owner cannot review their own change; private vulnerability reporting must be enabled in the repository settings before the security policy's channel works; SPEC-ENGGOV-001 is a Draft; agent attribution rests on disclosure; IWOS Guard enters a field where GitHub Spec Kit and AGENTS.md already have adoption.
 
 ## Validation State
 

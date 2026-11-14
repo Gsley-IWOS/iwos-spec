@@ -6,7 +6,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/02_ARCHITECTURE_BASELINE.md
-  last_updated: "2026-11-13"
+  last_updated: "2026-11-14"
 
 repository:
   name: iwos-spec
@@ -24,21 +24,21 @@ state:
     name: Specification (governance layer first, per AIP-0002)
     status: in-progress
   current_sprint:
-    number: 3
-    name: Launch readiness for IWOS Guard
+    number: 4
+    name: Gate hardening, learning loop and incident handling
     status: in-progress
   current_epic:
     id: EPIC-0001
     name: Constitutional repository build-out
     status: in-progress
   current_story:
-    id: STORY-0003
-    name: Launch readiness (case study, disclosure-based attribution, code owners, action dogfood)
-    work_package: EWP-0005
+    id: STORY-0004
+    name: Gate hardening (base constitution, control files), learning loop, incident ledger and security policy
+    work_package: EWP-0006
     status: complete
   current_task:
-    id: TASK-0003-01
-    name: Decide where IWOS Guard lives before the first release tag (DEC-0009)
+    id: TASK-0004-01
+    name: Owner creates the iwos-guard repository so the toolchain can move and be tagged (ADR-0006)
     status: awaiting-review
   current_risks:
     - id: RISK-0001
@@ -76,6 +76,21 @@ state:
       description: Agent attribution rests on disclosure. The agent in pull request 1 committed under the owner's identity; had it disclosed nothing, the report would have named no agent.
       mitigation: ADR-0005 makes the report state its evidence and its limits; blocking rules never depend on attribution. Revisit when a cross-provider agent identity standard exists.
       status: open
+    - id: RISK-0008
+      severity: high
+      description: Until toolchain version 0.2.0 the gate read the constitution from the head of the change it judged, so one change could remove a protected pattern, rewrite the file and regenerate the lock, and pass. Reproduced on 2026-11-14. No change in this repository's history used the path.
+      mitigation: ADR-0007. The gate judges against the constitution of the base revision, control files need a proposal citation whatever the constitution says, and the reproduction is a regression test.
+      status: closed
+    - id: RISK-0009
+      severity: medium
+      description: A pull request can edit the workflow that runs the gate so that the gate never runs, and the gate checks that a citation is present, not that the cited proposal was accepted. Neither can be closed from inside the toolchain.
+      mitigation: The gate warns when its automation changes (ADR-0007). Owner requires both checks by name in branch protection and keeps .github/ under code-owner review; reviewers confirm cited proposals.
+      status: open
+    - id: RISK-0010
+      severity: medium
+      description: ADR-0006 moves IWOS Guard to a dedicated repository, but the repository does not exist yet and the published address is still this repository. Consumers who reference a branch here will break at the move.
+      mitigation: Documentation asks consumers to pin a commit. Owner creates Gsley-IWOS/iwos-guard; the toolchain moves and is tagged there, and this repository pins the release.
+      status: open
   current_decisions:
     - id: ADR-0001
       title: Record architecture decisions as ADRs in adr/
@@ -91,12 +106,24 @@ state:
       record: adr/ADR-0003-machine-readable-engineering-memory.md
     - id: ADR-0004
       title: Distribute the governance toolchain from tools/ until a dedicated repository exists
-      status: Proposed
+      status: Superseded
       record: adr/ADR-0004-governance-toolchain-distribution.md
     - id: ADR-0005
       title: Agent attribution rests on disclosure, and reports print no addresses
       status: Accepted
       record: adr/ADR-0005-agent-attribution-by-disclosure.md
+    - id: ADR-0006
+      title: IWOS Guard is developed and released from a dedicated repository
+      status: Accepted
+      record: adr/ADR-0006-iwos-guard-dedicated-repository.md
+    - id: ADR-0007
+      title: The gate judges a change against the constitution of its base
+      status: Accepted
+      record: adr/ADR-0007-gate-judges-against-base-constitution.md
+    - id: ADR-0008
+      title: Learning from gate history and recording incidents, without telemetry
+      status: Accepted
+      record: adr/ADR-0008-learning-loop-and-incident-ledger.md
     - id: DEC-0007
       title: Strategic pivot to the governance layer, formalised through AIP-0002
       status: accepted
@@ -107,7 +134,11 @@ state:
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0009
       title: ADR-0004 held open pending the decision on a dedicated repository
-      status: proposed
+      status: superseded
+      record: .ai/DECISION_GRAPH.yaml
+    - id: DEC-0010
+      title: Implement the review of 2026-11-14 in this repository; the move to iwos-guard waits on the owner creating it
+      status: accepted
       record: .ai/DECISION_GRAPH.yaml
     - id: DEC-0001
       title: Build-out incorporates drafts from pull requests 2, 3 and 4 and rejects pull request 1
@@ -149,6 +180,9 @@ work_packages:
     status: Approved
   - id: EWP-0005
     name: Launch Readiness for IWOS Guard
+    status: Approved
+  - id: EWP-0006
+    name: Gate Hardening, Learning Loop and Incident Handling
     status: Approved
 
 quality_gates:

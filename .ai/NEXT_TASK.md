@@ -5,7 +5,7 @@
 **Status:** Active  
 **Authority:** AAC-001 AI Agent Contract  
 **Parent Document:** engineering-charter/05_AI_AGENT_CONTRACT.yaml  
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
@@ -13,19 +13,23 @@ This document names the single recommended next task so that the next contributo
 
 ## Recommended Next Task
 
-**Decide where IWOS Guard lives, then tag and launch.** Decision DEC-0009 records the question. The repository owner chooses one:
+**Create the `iwos-guard` repository, move the toolchain into it, tag it and launch.** ADR-0006 records the decision. The first step is the owner's: create an empty public repository named `iwos-guard` in the `Gsley-IWOS` organisation. The hosting platform refuses that act to automation.
 
-1. a dedicated repository for IWOS Guard before launch (recommended): its own README, its own version tags, its own constitution file, and the Action referenced by its own name; recorded as a decision record that supersedes ADR-0004;
-2. launch from this repository under ADR-0004, with a tag scheme for the toolchain that does not collide with releases of the specification.
+Then, under a new work package:
 
-Then: tag the first release, enable branch protection, and publish the announcement built on `tools/iwos/CASE-STUDY.md`.
+1. move `tools/iwos/` and `action.yml` to the root of the dedicated repository, with its own README built on the case study, its own `iwos.yaml`, lock, security policy, code owners and continuous integration that runs the action from the working tree;
+2. tag the first release there;
+3. in this repository, replace `uses: ./` with a pinned commit of the dedicated repository and remove `tools/iwos/` and `action.yml` in the same change;
+4. keep `schemas/iwos-config.schema.json` here as the canonical contract.
+
+Three settings on the hosting platform are also the owner's, and none needs the move: enable private vulnerability reporting (Settings, then the security section), require the two checks of the `validate` workflow by name in branch protection for `main`, and leave "Require review from Code Owners" off until a second Maintainer is named, because every pull request is opened under the owner's account.
 
 ## Acceptance Criteria
 
-- A decision record states where the toolchain lives, and ADR-0004 is accepted or superseded accordingly.
-- A release tag exists that consumers can pin, and the quickstart references it.
-- Branch protection requires the gate; a second Maintainer is named in `CODEOWNERS`.
-- SPEC-ENGGOV-001 is ratified once its contracts name their final locations.
+- `Gsley-IWOS/iwos-guard` exists, passes its own gate and holds a release tag that consumers can pin.
+- This repository consumes that release by commit and no longer contains the toolchain.
+- The **Report a vulnerability** button is shown on this repository and on the dedicated one.
+- Branch protection requires the gate.
 
 ## After That
 

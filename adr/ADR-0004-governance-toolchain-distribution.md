@@ -2,11 +2,12 @@
 
 **Document ID:** ADR-0004  
 **Version:** 1.0.0  
-**Status:** Proposed  
+**Status:** Superseded  
+**Superseded By:** ADR-0006  
 **Date:** 2026-11-09  
 **Authority:** Architecture Authority under GOV-002  
 **Parent Documents:** standards/repository-standard.md, adr/ADR-0002-repository-validation-tooling.md, governance/decision-process.md  
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
@@ -42,4 +43,4 @@ Option 1. The toolchain lives at `tools/iwos/` as a Python package with a `pypro
 
 ## Ratification
 
-This record is accepted by the Architecture Authority on merge to `main`. It is immutable thereafter except as the Decision Process permits.
+This record was never accepted. It was held at `Proposed` under DEC-0009 and is superseded by [ADR-0006](ADR-0006-iwos-guard-dedicated-repository.md), accepted on 2026-11-14. It is retained as the Decision Process requires.

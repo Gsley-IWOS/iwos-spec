@@ -3,4 +3,4 @@
 Reference implementation of SPEC-ENGGOV-001 (Engineering Governance Verification).
 Every command verifies or records; none executes work or writes to a protected artefact.
 """
-__version__ = "0.1.0"
+__version__ = "0.2.0"

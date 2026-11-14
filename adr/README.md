@@ -18,10 +18,13 @@ This index registers every Architecture Decision Record (ADR) in the IWOS specif
 | [ADR-0001](ADR-0001-architecture-decision-records.md) | Record architecture decisions as ADRs in `adr/` | Accepted | 2026-10-31 |
 | [ADR-0002](ADR-0002-repository-validation-tooling.md) | Repository validation tooling in Python under `tools/validate/` | Accepted | 2026-10-31 |
 | [ADR-0003](ADR-0003-machine-readable-engineering-memory.md) | Machine-readable engineering memory with JSON Schema contracts | Accepted | 2026-10-31 |
-| [ADR-0004](ADR-0004-governance-toolchain-distribution.md) | Distribute the governance toolchain from `tools/` until a dedicated repository exists | Proposed | 2026-11-09 |
+| [ADR-0004](ADR-0004-governance-toolchain-distribution.md) | Distribute the governance toolchain from `tools/` until a dedicated repository exists | Superseded by ADR-0006 | 2026-11-09 |
 | [ADR-0005](ADR-0005-agent-attribution-by-disclosure.md) | Agent attribution rests on disclosure, and reports print no addresses | Accepted | 2026-11-13 |
+| [ADR-0006](ADR-0006-iwos-guard-dedicated-repository.md) | IWOS Guard is developed and released from a dedicated repository | Accepted | 2026-11-14 |
+| [ADR-0007](ADR-0007-gate-judges-against-base-constitution.md) | The gate judges a change against the constitution of its base | Accepted | 2026-11-14 |
+| [ADR-0008](ADR-0008-learning-loop-and-incident-ledger.md) | Learning from gate history and recording incidents, without telemetry | Accepted | 2026-11-14 |
 
-The next identifier is `ADR-0006`.
+The next identifier is `ADR-0009`.
 
 ## Authoring
 
