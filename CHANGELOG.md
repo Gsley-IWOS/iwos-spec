@@ -5,13 +5,45 @@
 **Status:** Active  
 **Authority:** IWOS Engineering Constitution  
 **Parent Document:** engineering-charter/06_ENGINEERING_CONSTITUTION.md  
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
 This log records every artefact added, changed, superseded or removed in the IWOS specification repository, grouped by release and by the work package, decision record or proposal that authorised it. It is the Release Memory required by the Architecture Baseline and the Changelog named in the AI Agent Contract. Entries follow the class of change defined in `governance/change-control-policy.md`.
 
 ## Unreleased (target: 1.0.0 Genesis)
+
+### EWP-0006 Gate Hardening, Learning Loop and Incident Handling (Normative; security correction)
+
+Authorised by the repository owner's direction of 2026-11-14 to implement that day's review. No protected document, `iwos.yaml` or `tools/validate/config.yaml` changed.
+
+Security:
+
+- **Gate bypass closed (ADR-0007).** Toolchain versions before 0.2.0 read the constitution from the head of the change they judged. One change could remove a protected pattern from the constitution file, rewrite the file it had protected, regenerate the lock and pass the gate. The gate now judges against the constitution of the base revision; the constitution file, the waiver register and, in this repository, `tools/validate/config.yaml` are control files that need a proposal citation whatever the constitution says; a head constitution that fails to parse cannot disable the gate. The reproduction is kept as a regression test. No change in this repository's history used the path.
+- `SECURITY.md` 1.1.0: vulnerabilities are reported through private vulnerability reporting, not a public issue; handling ends in a published advisory.
+
+Added:
+
+- `adr/ADR-0006-iwos-guard-dedicated-repository.md` (Accepted; supersedes ADR-0004), `adr/ADR-0007-gate-judges-against-base-constitution.md` (Accepted), `adr/ADR-0008-learning-loop-and-incident-ledger.md` (Accepted).
+- `work-packages/EWP-0006.md` (Approved).
+- `tools/iwos/src/iwos/rules.py`: stable rule identifiers `IWOS-G001` to `IWOS-G005`, `IWOS-W001` to `IWOS-W007`, `IWOS-V001` to `IWOS-V003`, each with the toolchain's own advice.
+- `tools/iwos/src/iwos/events.py`: event log, lessons and anonymous statistics. `tools/iwos/src/iwos/incidents.py`: incident ledger and playbooks. `tools/iwos/src/iwos/sarif.py`: SARIF 2.1.0 output.
+- Commands `iwos lessons`, `iwos stats`, `iwos events append`, `iwos incident open|update|list|playbook`; options `--event-out`, `--record` and `--sarif` on `iwos gate`, `--sarif` on `iwos validate`.
+- Authority-interface tools `read_lessons`, `report_incident` and `list_incidents`.
+- Waivers: recorded, owned and dated exceptions to `IWOS-G003` and `IWOS-G004`, read from the base revision.
+
+Changed:
+
+- `tools/iwos/`: version 0.2.0; gate report version 1.2.0 states which constitution was applied, lists control files and carries rule identifiers; the gate warns when the automation that runs it changes; `check_authority` reports control files.
+- `action.yml`: writes the event record and the SARIF file and exposes their paths as outputs.
+- `architecture/engineering-governance/SPEC-ENGGOV-001.md`: Draft revision 3 with behaviours 11 to 19, new definitions and contracts.
+- `AGENTS.md`: generated block regenerated with the control-file and learn-and-report rules.
+- `adr/ADR-0004-governance-toolchain-distribution.md`: status `Superseded`, never accepted.
+- `tools/iwos/README.md`, `README.md`, registers and engineering memory (DEC-0010; DEC-0009 superseded; RISK-0008 closed; RISK-0009 and RISK-0010 opened).
+
+Not done:
+
+- The dedicated repository was not created: the hosting platform refused the automation that permission. The toolchain has not moved and no release tag exists.
 
 ### Owner decisions of 2026-11-13 (Constitutional and Normative)
 

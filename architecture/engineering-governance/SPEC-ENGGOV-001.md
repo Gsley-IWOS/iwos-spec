@@ -1,15 +1,15 @@
 # Engineering Governance Verification Specification
 
 **Document ID:** SPEC-ENGGOV-001  
-**Version:** 0.1.0-draft.2  
+**Version:** 0.1.0-draft.3  
 **Status:** Draft  
 **Authority:** AIP-0002 (Accepted); ratification by the Architecture Authority pending  
 **Parent Documents:** engineering-charter/02_ARCHITECTURE_BASELINE.md, aip/AIP-0002-governance-layer-first.md, standards/architecture-standard.md, standards/security-standard.md  
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
-The Architecture Baseline requires every compliant implementation to include a Verification Engine and a Decision Ledger. This specification defines both for the domain of AI-assisted engineering: a repository in which humans and AI agents change governed documents and code. It defines what a conforming toolchain must verify, what it must record, and how any agent may consult it. The reference implementation is the IWOS Guard toolchain built under EWP-0004.
+The Architecture Baseline requires every compliant implementation to include a Verification Engine and a Decision Ledger. This specification defines both for the domain of AI-assisted engineering: a repository in which humans and AI agents change governed documents and code. It defines what a conforming toolchain must verify, what it must record, and how any agent may consult it. The reference implementation is the IWOS Guard toolchain built under EWP-0004 and extended under EWP-0006.
 
 This is a Draft authorised by AIP-0002. It becomes normative when the Architecture Authority ratifies it.
 
@@ -21,7 +21,8 @@ This specification defines:
 - the verification checks a conforming implementation performs on a repository and on a proposed change;
 - the decision ledger: the record of decisions that constrain future work;
 - the authority interface through which an agent asks, before acting, what it may change and under what process;
-- the accountability report a conforming implementation produces for a proposed change.
+- the accountability report a conforming implementation produces for a proposed change;
+- the records through which a governed repository learns from the changes it has judged, grants exceptions and works security incidents.
 
 It does not define how agents are built or run, which model provider executes them, or how code is reviewed for correctness. Those remain with the agent runtimes and the Code Review Playbook.
 
@@ -41,6 +42,18 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 
 **Gate.** The evaluation of a proposed change against the constitution, producing an accountability report and a pass or fail result.
 
+**Control file.** A file that defines the rules: the constitution file, the waiver register and any file from which the implementation reads protected patterns. A control file is protected whatever the constitution file says.
+
+**Base constitution.** The constitution file as it stands on the base revision of a proposed change.
+
+**Rule identifier.** The stable identifier of a rule the implementation checks, carried by every finding.
+
+**Waiver.** A recorded exception to a waivable rule, with an identifier, the paths it covers, an owner, a reason and an expiry date.
+
+**Event record.** A structured record of one gate run: rule identifiers, levels, paths, counts and revisions.
+
+**Incident ledger.** The append-only record of security incidents in a governed repository.
+
 **Decision ledger.** The append-only record of decisions, each with identifier, date, status, title, context, decision, consequences, authority and related files.
 
 ## Boundary
@@ -48,8 +61,8 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 | Aspect | Definition |
 | --- | --- |
 | Owner | The repository's maintainers, acting as Constitutional Authority for their repository. |
-| Inputs | The repository tree; the constitution file; the git history of a proposed change; the change's description; agent attribution carried in commit trailers. |
-| Outputs | A validation result; a lock; an accountability report; decision-ledger entries; authority answers to agents. |
+| Inputs | The repository tree; the constitution file and waiver register on the base revision; the git history of a proposed change; the change's description and labels; agent attribution disclosed in commits, the description and labels; the event log. |
+| Outputs | A validation result; a lock; an accountability report; an event record; lessons; decision-ledger and incident-ledger entries; authority answers to agents. |
 | Failure expectations | Every check fails closed: a missing constitution file, an unreadable lock or an unparseable decision ledger is a failure, not a pass. A failure names the artefact, the rule and the authority for the rule. The implementation never modifies a protected artefact. |
 
 ## Contracts
@@ -59,8 +72,13 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 | Constitution file | `iwos.yaml` validated by `schemas/iwos-config.schema.json` | Versioned by `schema_version` |
 | Lock | YAML, `schema_version`, `algorithm`, `generated_by`, `entries[{path, sha256}]` | Versioned by `schema_version` |
 | Decision ledger entry | The `decisions[]` item of `schemas/decision-graph.schema.json` | Versioned with that schema |
-| Accountability report | Markdown with a fixed heading set (Change, Protected artefacts, Authority citations, Decision records, Agents, Result) and a JSON form with the same fields | Versioned by `report_version` |
-| Authority interface | Model Context Protocol tools `check_authority`, `list_protected`, `read_state`, `record_decision`, `validate` over standard input and output | Versioned by the server's declared version |
+| Accountability report | Markdown with a fixed heading set (Protected artefacts, Control files, Architecture, Authority citations, Agents, Result), a statement of which constitution was applied, and a JSON form with the same fields | Versioned by `report_version` |
+| Authority interface | Model Context Protocol tools `check_authority`, `list_protected`, `read_state`, `record_decision`, `validate`, `read_lessons`, `report_incident`, `list_incidents` over standard input and output | Versioned by the server's declared version |
+| Rule identifiers | `IWOS-G###` for gate rules that block, `IWOS-W###` for gate warnings, `IWOS-V###` for validation findings | An identifier is never reused for a different rule |
+| Waiver register | YAML, `schema_version`, `waivers[{id, rule, paths, owner, reason, expires}]` | Versioned by `schema_version` |
+| Event record | JSON object, `schema_version`, `kind`, `at`, `result`, revisions, counts and `findings[{rule, level, paths, waived_by}]`; one record per line in the event log | Versioned by `schema_version` |
+| Incident ledger entry | YAML, `id`, `opened`, `class`, `severity`, `status`, `summary`, `paths`, `detected_by`, `history[{date, status, note}]`, and on closing `closed` and optionally `decision` | Versioned by `schema_version` |
+| Findings for code scanning | SARIF 2.1.0 | Versioned by SARIF |
 
 ## Behaviour
 
@@ -74,6 +92,15 @@ Architecture Baseline AB-1.0 names the Verification Engine among the core intell
 8. `check_authority` **must** answer, for any path, whether it is protected, which patterns matched, which process authorises a change, and whether the lock currently matches.
 9. `record_decision` **must** append to the decision ledger and **must not** modify or delete an existing entry.
 10. An implementation **must not** write to any protected artefact under any command.
+11. `gate` **must** judge a change against the base constitution, and **must** read the waiver register from the base revision. Only when the base revision holds no valid constitution **may** it judge the change against the constitution the change proposes, and it **must** then say so in the report (ADR-0007).
+12. `gate` **must** fail when a control file changed without the authority citation the base constitution requires for a protected artefact. This rule **must not** be waivable.
+13. `gate` **should** report a change to the automation that runs it, and **must not** present a result produced by changed automation as independent.
+14. Every finding **must** carry a rule identifier.
+15. A waiver **must** name a waivable rule, paths, an owner, a reason and an expiry date. `gate` **must** ignore a waiver that is malformed or expired and **must** report that it did. A waived finding **must** remain in the report. The rules of items 4 and 12 **must not** be waivable.
+16. `gate` **must** be able to emit an event record for each run. An event record **must not** contain a commit subject, description text, an author name or an e-mail address.
+17. Lessons returned to an agent **must** be assembled only from rule identifiers, text held by the implementation itself, counts, and paths restricted to plain path characters and a bounded length. An implementation **must not** repeat other repository text to an agent as a lesson (ADR-0008).
+18. `report_incident` **must** append to the incident ledger. An incident **must** move forward only (open, mitigated, closed) and each step **must** be appended to its history. An implementation **must** refuse incident text that matches a credential pattern and **must not** write that text anywhere.
+19. An implementation **must not** transmit event records, lessons, incidents or statistics. It **may** print an anonymous summary of rule identifiers and counts for a maintainer to share.
 
 ## Context Requirements
 
@@ -81,15 +108,15 @@ Of the seven context categories of the Architecture Baseline, a conforming imple
 
 ## Trust Boundaries and Authority
 
-The implementation runs with the privileges of the repository checkout and needs no network access. The authority interface is exposed only over standard input and output to a locally launched agent; it **must not** listen on a network port. Authority answers are advisory to the agent and binding at the gate: an agent that ignores `check_authority` still fails the gate. The gate's result is enforced by branch protection configured by the maintainers; the implementation cannot enforce it alone, and conforming documentation **must** say so.
+The implementation runs with the privileges of the repository checkout and needs no network access. The authority interface is exposed only over standard input and output to a locally launched agent; it **must not** listen on a network port. Authority answers are advisory to the agent and binding at the gate: an agent that ignores `check_authority` still fails the gate. The gate's result is enforced by branch protection configured by the maintainers; the implementation cannot enforce it alone, and conforming documentation **must** say so. The gate checks that a citation is present, not that the cited artefact exists or was accepted; that is a reviewer's check. A change can alter the workflow that invokes the gate so that the gate never runs, and the gate cannot report on a run that did not happen; conforming documentation **must** state both limits.
 
 ## Data Handling
 
-The implementation reads repository content and git metadata only. It stores digests, not content, in the lock. Decision-ledger entries are repository content with the repository's own confidentiality. Agent attribution is taken from what agents and their operators disclose in commits, descriptions and labels; the implementation adds no identity of its own. Reports **must not** print e-mail addresses (ADR-0005). Nothing is retained outside the repository. Reports **must not** include secrets; the implementation **should** run the credential-pattern scan of the Security Standard on everything it reports.
+The implementation reads repository content and git metadata only. It stores digests, not content, in the lock. Decision-ledger entries are repository content with the repository's own confidentiality. Agent attribution is taken from what agents and their operators disclose in commits, descriptions and labels; the implementation adds no identity of its own. Reports **must not** print e-mail addresses (ADR-0005). Event records, the waiver register and the incident ledger are repository content. The incident ledger records what happened, where and how it was mitigated, and never the sensitive value. Nothing is retained outside the repository, and nothing is transmitted. Reports **must not** include secrets; the implementation **should** run the credential-pattern scan of the Security Standard on everything it reports.
 
 ## Observability and Verification
 
-Every gate run produces the accountability report and a machine-readable JSON form. Every `record_decision` call is visible as a diff to the ledger. Conformance is tested by the reference toolchain's unit tests and by running the toolchain against this repository, whose constitution it must pass.
+Every gate run produces the accountability report, a machine-readable JSON form and, on request, an event record and a SARIF file. Every `report_incident` call is visible as a diff to the incident ledger. Every `record_decision` call is visible as a diff to the ledger. Conformance is tested by the reference toolchain's unit tests and by running the toolchain against this repository, whose constitution it must pass.
 
 ## Compatibility
 
@@ -99,8 +126,10 @@ This specification is versioned under the Versioning Policy. The constitution fi
 
 - ADR-0002 Repository validation tooling: the toolchain inherits the validator's language, dependencies and location.
 - ADR-0003 Machine-readable engineering memory: the decision ledger reuses the decision-graph schema.
-- ADR-0004 Distribution of the governance toolchain from this repository until a dedicated repository exists.
 - ADR-0005 Agent attribution rests on disclosure, and reports print no addresses.
+- ADR-0006 IWOS Guard is developed and released from a dedicated repository (supersedes ADR-0004).
+- ADR-0007 The gate judges a change against the constitution of its base.
+- ADR-0008 Learning from gate history and recording incidents, without telemetry.
 
 ## Ratification
 

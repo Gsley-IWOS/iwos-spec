@@ -1,11 +1,11 @@
 # Case Study: The Pull Request That Replaced the Constitution
 
 **Document ID:** TOOL-003  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Active  
 **Authority:** EWP-0005  
 **Parent Documents:** tools/iwos/README.md, work-packages/EWP-0005.md, adr/ADR-0005-agent-attribution-by-disclosure.md  
-**Last Updated:** 2026-11-13
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
@@ -43,7 +43,7 @@ Three things were missing, and each is one rule in a constitution file:
 
 ## The Replay
 
-The repository now has a constitution. Running the gate over the same revision range, with the same description and label, gives this report.
+The repository now has a constitution. Running the gate over the same revision range, with the same description and label, gives this report. The base of that pull request predates the constitution, so the gate applies the constitution of the checkout it runs in and says so in the report (ADR-0007).
 
 ```bash
 git fetch origin pull/1/head
@@ -56,7 +56,9 @@ iwos gate --base c912ed32f308 --head 92fa42e5458a --body-env PR_BODY --label cod
 ```text
 ## IWOS gate report: FAIL
 
-Range `c912ed32f308..92fa42e5458a` · 22 file(s) changed · 1 commit(s) · report v1.1.0
+Range `c912ed32f308..92fa42e5458a` · 22 file(s) changed · 1 commit(s) · report v1.2.0
+
+The base revision holds no valid constitution: judged against the constitution in the working tree (on a pull request, the one the change proposes).
 
 ### Protected artefacts
 
@@ -70,6 +72,10 @@ Range `c912ed32f308..92fa42e5458a` · 22 file(s) changed · 1 commit(s) · repor
 - `engineering-charter/Repository bootstrap (README.md, CLAUDE.md, AGENTS.md, AI_BOOTSTRAP.yaml)`
 
 Proposal citation: none · lock regenerated: no
+
+### Control files
+
+None changed.
 
 ### Architecture
 
@@ -92,11 +98,12 @@ Human commit authors: chudeway89
 
 ### Result
 
-- FAIL: 8 protected artefact(s) changed without an accepted-proposal citation matching AIP-\d{4}
-- FAIL: protected artefact(s) changed but the lock .ai/CONSTITUTION_LOCK.yaml was not regenerated in the same change
-- FAIL: 1 architecture file(s) changed without a decision-record citation matching ADR-\d{4}
-- FAIL: no authority citation found in the pull request body or commit messages (traceability required)
-- warning: an agent is disclosed in the pull request description or labels, but every commit carries a human identity; attribution here rests on disclosure alone
+- FAIL `IWOS-G001`: 8 protected artefact(s) changed without an accepted-proposal citation matching AIP-\d{4}
+- FAIL `IWOS-G002`: protected artefact(s) changed but the lock .ai/CONSTITUTION_LOCK.yaml was not regenerated in the same change
+- FAIL `IWOS-G003`: 1 architecture file(s) changed without a decision-record citation matching ADR-\d{4}
+- FAIL `IWOS-G004`: no authority citation found in the pull request body or commit messages (traceability required)
+- warning `IWOS-W005`: the base revision holds no valid constitution, so this change was judged against the constitution in the working tree, which on a pull request is the one the change proposes; review the constitution file by hand
+- warning `IWOS-W003`: an agent is disclosed in the pull request description or labels, but every commit carries a human identity; attribution here rests on disclosure alone
 ```
 
 The command exits with status 1. On a pull request, the check is red before a reviewer opens the diff.

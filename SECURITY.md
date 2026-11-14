@@ -1,11 +1,11 @@
 # Security Policy
 
 **Document ID:** ROOT-003  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Ratified  
 **Authority:** STD-SEC-001 Security Standard  
 **Parent Document:** standards/security-standard.md  
-**Last Updated:** 2026-10-31
+**Last Updated:** 2026-11-14
 
 ## Purpose
 
@@ -15,11 +15,29 @@ This policy states how security concerns in the IWOS specification repository ar
 
 This policy covers the contents of `iwos-spec`: documents, schemas, examples, templates, validation tooling and repository automation. Security of IWOS implementations is governed by the specifications those implementations conform to and is reported to the implementation repository.
 
-## Reporting a Concern
+## Reporting a Vulnerability
 
-Report a security concern by opening an issue with the `Defect` form in `.github/ISSUE_TEMPLATE/` and selecting the security classification. Do not include secrets, exploit payloads or personal data in the report. If the concern involves a committed secret, say only which file and commit are affected; maintainers will rotate and purge.
+Report a vulnerability privately. Open the repository's **Security** tab, choose **Advisories** and select **Report a vulnerability**. The report is visible only to the maintainers and to you. This channel covers a defect in IWOS Guard (`tools/iwos`, `action.yml`), in the repository validator or in the repository automation, and any weakness in a ratified document that would let a change evade the rules the document states.
 
-Maintainers acknowledge security reports within five working days and record the disposition in the issue.
+You **must not** report a vulnerability in a public issue, pull request or discussion. A public report of a way round the gate tells every reader how to use it before a fix exists.
+
+A report **should** state the affected version or commit, the steps that reproduce the problem in a throwaway repository and the impact. A report **must not** contain a live credential or personal data. If the concern is a committed secret, say only which file and commit are affected; maintainers rotate and purge.
+
+If the **Report a vulnerability** button is not shown, private reporting is not enabled. Open an issue that says only that you have a security report and asks for a private channel. Do not describe the problem in that issue.
+
+## Handling
+
+1. Maintainers acknowledge a report within five working days.
+2. Maintainers reproduce the problem and record a regression test that fails before the fix and passes after it.
+3. The fix follows the decision process: a defect in tooling is corrected under a work package, and a change to a rule is recorded in an Architecture Decision Record.
+4. Maintainers publish a repository security advisory with the fix. The advisory states the affected versions, the fixed version and the reporter's credit where the reporter wants it.
+5. A fix that changes what the gate accepts is listed in `CHANGELOG.md` under the release that carries it.
+
+A security concern that is not a vulnerability, such as a question about a rule below, **may** be raised with the `Defect` form in `.github/ISSUE_TEMPLATE/`.
+
+## Incidents in Governed Repositories
+
+A repository governed by IWOS Guard records its own security incidents in its incident ledger with `iwos incident open`, and follows the playbook the tool prints for the incident class. The ledger records what happened, where and how it was mitigated. It never records the sensitive value: the tool refuses text that matches a credential pattern. Incidents in a governed repository are reported to that repository's maintainers, not here, unless the cause is a defect in IWOS Guard.
 
 ## Rules That Bind Every Change
 
@@ -32,7 +50,7 @@ Maintainers acknowledge security reports within five working days and record the
 
 ## Supported Versions
 
-Only the content of `main` is supported. Historical tags remain available for traceability but are not maintained.
+Only the content of `main` is supported. Historical tags remain available for traceability but are not maintained. A consumer of the IWOS Guard action **should** pin a commit and move the pin when an advisory is published.
 
 ## Ratification
 

@@ -21,6 +21,16 @@ inputs:
     description: "Python version to set up"
     required: false
     default: "3.12"
+outputs:
+  report:
+    description: "Path of the Markdown gate report (pull requests only)"
+    value: iwos-gate-report.md
+  event:
+    description: "Path of the structured event record of the gate run, for the learning loop (pull requests only)"
+    value: iwos-gate-event.json
+  sarif:
+    description: "Path of the SARIF 2.1.0 file holding the gate findings, for upload to code scanning (pull requests only)"
+    value: iwos-gate.sarif
 runs:
   using: composite
   steps:
@@ -42,4 +52,4 @@ runs:
         PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         BASE: ${{ inputs.base != '' && inputs.base || github.event.pull_request.base.sha }}
         HEAD: ${{ inputs.head != '' && inputs.head || github.event.pull_request.head.sha }}
-      run: iwos gate --base "$BASE" --head "$HEAD" --body-env PR_BODY --labels-env PR_LABELS --format both --output iwos-gate-report.md --summary
+      run: iwos gate --base "$BASE" --head "$HEAD" --body-env PR_BODY --labels-env PR_LABELS --format both --output iwos-gate-report.md --summary --event-out iwos-gate-event.json --sarif iwos-gate.sarif

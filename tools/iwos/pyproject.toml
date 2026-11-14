@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "iwos-guard"
-version = "0.1.0"
+version = "0.2.0"
 description = "IWOS Guard: constitution-as-code for repositories changed by AI agents. Lock protected documents, gate agent pull requests, record decisions, and let any agent ask for authority before acting."
 readme = "README.md"
 requires-python = ">=3.10"

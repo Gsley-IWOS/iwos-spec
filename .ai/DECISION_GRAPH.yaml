@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-11-13"
+  last_updated: "2026-11-14"
 
 decisions:
   - id: DEC-0001
@@ -201,7 +201,7 @@ decisions:
 
   - id: DEC-0009
     date: "2026-11-13"
-    status: proposed
+    status: superseded
     title: Hold ADR-0004 and the first release tag until the home of IWOS Guard is decided
     authority: governance/versioning-policy.md
     context: >
@@ -225,4 +225,38 @@ decisions:
       - adr/ADR-0004-governance-toolchain-distribution.md
       - governance/versioning-policy.md
     related_records:
+      - adr/ADR-0004-governance-toolchain-distribution.md
+
+  - id: DEC-0010
+    date: "2026-11-14"
+    status: accepted
+    title: Implement the review of 2026-11-14 in this repository; the move to iwos-guard waits on the owner creating it
+    authority: adr/ADR-0006-iwos-guard-dedicated-repository.md
+    context: >
+      On 2026-11-14 the repository owner directed that every correction and recommendation
+      from that day's review be implemented: close the gate bypass, report vulnerabilities
+      privately, build the learning loop and incident handling, and give IWOS Guard its own
+      repository. This resolves DEC-0009 in favour of a dedicated repository. The hosting
+      platform refused the automation permission to create a repository in the organisation,
+      so the move itself could not be carried out in the same change.
+    decision: >
+      Record the dedicated repository as ADR-0006, superseding ADR-0004, and deliver
+      everything else in this repository under EWP-0006: ADR-0007 for the gate and ADR-0008
+      for the learning loop and the incident ledger. Create no release tag for the toolchain
+      here. The toolchain moves, and its first release is tagged, when the owner has created
+      Gsley-IWOS/iwos-guard. No Architecture Improvement Proposal was raised, because no
+      protected document, control file or governance policy changes; the Decision Process
+      requires only decision records for these changes.
+    consequences:
+      - DEC-0009 is superseded by this decision and ADR-0004 by ADR-0006.
+      - Toolchain version 0.2.0 exists in tools/iwos/ without a tag; consumers pin a commit of this repository until the move.
+      - Incident and waiver identifiers are record identifiers inside governed repositories; the Naming Standard is unchanged.
+    related_files:
+      - adr/ADR-0006-iwos-guard-dedicated-repository.md
+      - adr/ADR-0007-gate-judges-against-base-constitution.md
+      - adr/ADR-0008-learning-loop-and-incident-ledger.md
+      - work-packages/EWP-0006.md
+      - SECURITY.md
+    related_records:
+      - adr/ADR-0006-iwos-guard-dedicated-repository.md
       - adr/ADR-0004-governance-toolchain-distribution.md

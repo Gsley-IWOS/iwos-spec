@@ -14,7 +14,7 @@ from pathlib import Path
 
 import yaml
 
-from . import __version__, checks
+from . import __version__, checks, events, incidents
 from .config import Config
 from .lock import check_lock, matches_architecture, matches_protected, protected_files, rel
 
@@ -41,6 +41,19 @@ TOOLS = [
     {"name": "validate",
      "description": "Run every constitutional check on the repository and return the findings.",
      "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "read_lessons",
+     "description": "Read what this repository's gate history says agents most often get wrong: rule identifiers, counts, the tool's own advice and the most affected paths. Call this before starting work.",
+     "inputSchema": {"type": "object", "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 20}}, "additionalProperties": False}},
+    {"name": "report_incident",
+     "description": "Open a security incident in the incident ledger and receive the playbook for its class. Describe what happened and where; never include the sensitive value itself.",
+     "inputSchema": {"type": "object", "required": ["incident_class", "severity", "summary"],
+                     "properties": {"incident_class": {"type": "string", "enum": sorted(incidents.CLASSES)},
+                                    "severity": {"type": "string", "enum": list(incidents.SEVERITIES)},
+                                    "summary": {"type": "string"}, "paths": {"type": "array", "items": {"type": "string"}}},
+                     "additionalProperties": False}},
+    {"name": "list_incidents",
+     "description": "List the incidents that are not yet closed, so that work can avoid or address them.",
+     "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
 ]
 
 
@@ -50,11 +63,18 @@ class Server:
 
     # ----- tool implementations
     def check_authority(self, path: str) -> dict:
-        path = path.strip().lstrip("./")
+        path = path.strip()
+        while path.startswith("./"):
+            path = path[2:]
         protected = matches_protected(self.cfg, path)
         architecture = matches_architecture(self.cfg, path)
         lock_findings = check_lock(self.cfg)
-        if protected:
+        control = path in self.cfg.control_files
+        if control:
+            process = (f"Control file: it defines the rules, so it is protected whatever the constitution file says. A change requires an accepted "
+                       f"proposal cited in the pull request or commit message (pattern {self.cfg.proposal_pattern}). "
+                       f"An AI agent must not make this change unless a human maintainer directed it under that proposal.")
+        elif protected:
             process = (f"Protected artefact. A change requires an accepted proposal cited in the pull request or commit message "
                        f"(pattern {self.cfg.proposal_pattern}) and `iwos lock` regenerated in the same change. "
                        f"An AI agent must not make this change unless a human maintainer directed it under that proposal.")
@@ -63,7 +83,7 @@ class Server:
         else:
             process = ("Ordinary artefact. A change requires an authority citation for traceability "
                        f"({', '.join(self.cfg.traceability_patterns)}) and must pass `iwos validate`.")
-        return {"path": path, "exists": (self.cfg.root / path).exists(), "protected": bool(protected), "protected_by": protected,
+        return {"path": path, "exists": (self.cfg.root / path).exists(), "protected": bool(protected) or control, "protected_by": protected, "control_file": control,
                 "architecture": bool(architecture), "architecture_by": architecture, "required_process": process,
                 "lock_matches": not lock_findings, "lock_findings": lock_findings}
 
@@ -121,6 +141,18 @@ class Server:
         path.write_text(head + yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=100), encoding="utf-8")
         return {"recorded": entry, "ledger": self.cfg.decision_ledger, "note": "Status is 'proposed'. A maintainer accepts it by review."}
 
+    def read_lessons(self, limit: int = 5) -> dict:
+        return events.lessons(self.cfg, int(limit))
+
+    def report_incident(self, incident_class: str, severity: str, summary: str, paths: list[str] | None = None) -> dict:
+        entry = incidents.open_incident(self.cfg, incident_class, severity, summary, paths, detected_by="agent via MCP")
+        return {"recorded": entry, "ledger": self.cfg.incident_ledger, "playbook": incidents.PLAYBOOKS[incident_class],
+                "note": "Status is 'open'. A maintainer mitigates and closes it; tell the user now."}
+
+    def list_incidents(self) -> dict:
+        return {"ledger": self.cfg.incident_ledger,
+                "open": [{k: i.get(k) for k in ("id", "opened", "class", "severity", "status", "summary", "paths")} for i in incidents.open_incidents(self.cfg)]}
+
     def validate(self) -> dict:
         findings, summary = checks.validate(self.cfg)
         return {"passed": not findings, "summary": summary.splitlines()[0], "findings": [str(f) for f in findings]}
@@ -133,7 +165,7 @@ class Server:
             version = requested if requested in PROTOCOL_VERSIONS else PROTOCOL_VERSIONS[0]
             return self._result(msg_id, {"protocolVersion": version, "capabilities": {"tools": {"listChanged": False}},
                                          "serverInfo": {"name": "iwos", "version": __version__},
-                                         "instructions": "Call check_authority with a path before editing it. Protected artefacts require an accepted proposal and a regenerated lock; architecture requires a decision record. Record decisions with record_decision."})
+                                         "instructions": "Call check_authority with a path before editing it. Protected artefacts require an accepted proposal and a regenerated lock; architecture requires a decision record. Record decisions with record_decision. Call read_lessons before starting work and report_incident when you find a security problem."})
         if method == "notifications/initialized" or (method or "").startswith("notifications/"):
             return None
         if method == "ping":
@@ -144,7 +176,8 @@ class Server:
             name, args = params.get("name"), params.get("arguments") or {}
             try:
                 fn = {"check_authority": self.check_authority, "list_protected": self.list_protected, "read_state": self.read_state,
-                      "record_decision": self.record_decision, "validate": self.validate}.get(name)
+                      "record_decision": self.record_decision, "validate": self.validate, "read_lessons": self.read_lessons,
+                      "report_incident": self.report_incident, "list_incidents": self.list_incidents}.get(name)
                 if fn is None:
                     return self._error(msg_id, -32602, f"unknown tool {name}")
                 payload = fn(**args)

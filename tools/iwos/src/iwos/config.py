@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -10,6 +11,10 @@ import yaml
 from jsonschema import Draft202012Validator
 
 CONFIG_NAME = "iwos.yaml"
+SPEC_VALIDATOR_CONFIG = "tools/validate/config.yaml"
+EVENTS_FILE = ".iwos/events.jsonl"
+WAIVERS_FILE = ".iwos/waivers.yaml"
+INCIDENT_LEDGER = ".iwos/incidents.yaml"
 SCHEMA_PATH = Path(__file__).with_name("iwos_config.schema.json")
 
 DEFAULT_DRAFTING_MARKERS = ["TODO", "TBD", "FIXME", "XXX", "lorem ipsum", "PLACEHOLDER"]
@@ -51,11 +56,30 @@ class Config:
     exclude_dirs: list[str]
     exclude_files: list[str]
     raw: dict = field(default_factory=dict)
+    events_file: str = EVENTS_FILE
+    waivers_file: str = WAIVERS_FILE
+    incident_ledger: str = INCIDENT_LEDGER
 
     @property
     def spec_validator_config(self) -> Path | None:
-        path = self.root / "tools" / "validate" / "config.yaml"
+        path = self.root / SPEC_VALIDATOR_CONFIG
         return path if self.profile == "iwos-spec" and path.exists() else None
+
+    @property
+    def control_files(self) -> list[str]:
+        """Files that define the rules. They are protected whatever the constitution file says (ADR-0007)."""
+        files = [CONFIG_NAME, self.waivers_file]
+        if self.profile == "iwos-spec":
+            files.append(SPEC_VALIDATOR_CONFIG)
+        return files
+
+    @property
+    def automation_paths(self) -> list[str]:
+        """Paths holding the automation that runs the gate. A change here makes the gate result non-independent."""
+        paths = [".github/workflows/**"]
+        if self.profile == "iwos-spec":
+            paths += ["action.yml", "tools/iwos/**", "tools/validate/**"]
+        return paths
 
 
 def schema() -> dict:
@@ -67,18 +91,52 @@ def validate_document(data) -> list[str]:
     return [f"{'/'.join(str(p) for p in e.path) or '<root>'}: {e.message}" for e in errors]
 
 
+def _parse_yaml(text: str, label: str) -> dict:
+    try:
+        return yaml.safe_load(text) or {}
+    except yaml.YAMLError as exc:
+        raise ConfigError(f"{label} is not valid YAML: {exc}") from exc
+
+
 def load_config(root: Path) -> Config:
+    """The constitution as it stands in the working tree."""
     root = Path(root).resolve()
     path = root / CONFIG_NAME
     if not path.exists():
         raise ConfigError(f"{CONFIG_NAME} not found in {root}. Run `iwos init` to create a constitution.")
-    try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except yaml.YAMLError as exc:
-        raise ConfigError(f"{CONFIG_NAME} is not valid YAML: {exc}") from exc
+    spec_path = root / SPEC_VALIDATOR_CONFIG
+    spec_text = spec_path.read_text(encoding="utf-8") if spec_path.exists() else None
+    return parse_config(root, path.read_text(encoding="utf-8"), spec_text, CONFIG_NAME)
+
+
+def _show(root: Path, revision: str, rel_path: str) -> str | None:
+    """The content of a file at a revision, or None when the revision does not hold it."""
+    proc = subprocess.run(["git", "-C", str(root), "show", f"{revision}:{rel_path}"], capture_output=True, text=True, check=False)
+    return proc.stdout if proc.returncode == 0 else None
+
+
+def load_config_at(root: Path, revision: str) -> Config | None:
+    """The constitution in force at a revision, or None when that revision has none (an adoption change).
+
+    The gate judges a change against the constitution of its base, never against the constitution the
+    change itself proposes: otherwise a change could unprotect a file and rewrite it in one step.
+    """
+    root = Path(root).resolve()
+    text = _show(root, revision, CONFIG_NAME)
+    if text is None:
+        return None
+    return parse_config(root, text, _show(root, revision, SPEC_VALIDATOR_CONFIG), f"{CONFIG_NAME} at {revision[:12]}")
+
+
+def read_at(root: Path, revision: str, rel_path: str) -> str | None:
+    return _show(Path(root).resolve(), revision, rel_path)
+
+
+def parse_config(root: Path, text: str, spec_text: str | None, label: str = CONFIG_NAME) -> Config:
+    data = _parse_yaml(text, label)
     problems = validate_document(data)
     if problems:
-        raise ConfigError(f"{CONFIG_NAME} does not conform to the constitution schema: " + "; ".join(problems))
+        raise ConfigError(f"{label} does not conform to the constitution schema: " + "; ".join(problems))
 
     profile = data["profile"]
     constitution = data.get("constitution", {}) or {}
@@ -91,10 +149,9 @@ def load_config(root: Path) -> Config:
     ledger = constitution.get("decision_ledger")
 
     if profile == "iwos-spec":
-        spec_cfg_path = root / "tools" / "validate" / "config.yaml"
-        if not spec_cfg_path.exists():
-            raise ConfigError("profile iwos-spec requires tools/validate/config.yaml in the repository")
-        spec_cfg = yaml.safe_load(spec_cfg_path.read_text(encoding="utf-8"))
+        if spec_text is None:
+            raise ConfigError(f"profile iwos-spec requires {SPEC_VALIDATOR_CONFIG} in the repository")
+        spec_cfg = _parse_yaml(spec_text, SPEC_VALIDATOR_CONFIG)
         protected = protected or list(spec_cfg["protected_documents"]["patterns"])
         lock_file = lock_file or spec_cfg["protected_documents"]["lock_file"]
         ledger = ledger or spec_cfg.get("cross_references", {}).get("decision_graph", ".ai/DECISION_GRAPH.yaml")

@@ -7,9 +7,11 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+import datetime as _dt
+
 import yaml
 
-from . import agents_block
+from . import agents_block, incidents
 from .config import Config
 from .lock import check_lock
 
@@ -91,6 +93,16 @@ def check_content(cfg: Config) -> list[Finding]:
     return findings
 
 
+def check_waivers(cfg: Config) -> list[Finding]:
+    """A waiver that the gate would ignore is a finding: a register must not hold dead entries."""
+    from .gate import parse_waivers
+    path = cfg.root / cfg.waivers_file
+    if not path.exists():
+        return []
+    _, ignored = parse_waivers(path.read_text(encoding="utf-8"), _dt.date.today())
+    return [Finding("waivers", cfg.waivers_file, reason) for reason in ignored]
+
+
 def run_spec_validator(cfg: Config) -> tuple[int, str]:
     """iwos-spec profile: the repository's own validator is the engine; run it and relay its output."""
     proc = subprocess.run([sys.executable, str(cfg.root / "tools" / "validate" / "validate.py"), "--root", str(cfg.root)],
@@ -105,6 +117,8 @@ def validate(cfg: Config) -> tuple[list[Finding], str]:
         findings.append(Finding("constitution", "iwos.yaml", "no protected patterns declared; a constitution that protects nothing verifies nothing"))
     findings += [Finding("integrity", cfg.lock_file, m) for m in check_lock(cfg)]
     findings += check_ledger(cfg)
+    findings += check_waivers(cfg)
+    findings += [Finding("incidents", cfg.incident_ledger, m) for m in incidents.check(cfg)]
     stale = agents_block.stale_files(cfg)
     findings += [Finding("agents", f, "generated block is missing or stale; run `iwos agents`") for f in stale]
     extra = ""

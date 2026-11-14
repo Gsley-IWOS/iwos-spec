@@ -7,7 +7,7 @@ document:
   version: "1.0.0"
   status: Active
   authority: engineering-charter/05_AI_AGENT_CONTRACT.yaml
-  last_updated: "2026-11-13"
+  last_updated: "2026-11-14"
 
 nodes:
   - id: iwos
@@ -245,6 +245,26 @@ nodes:
     label: ADR-0005 Agent attribution by disclosure
     document_id: ADR-0005
     path: adr/ADR-0005-agent-attribution-by-disclosure.md
+  - id: adr_0006
+    type: decision_record
+    label: ADR-0006 IWOS Guard dedicated repository
+    document_id: ADR-0006
+    path: adr/ADR-0006-iwos-guard-dedicated-repository.md
+  - id: adr_0007
+    type: decision_record
+    label: ADR-0007 Gate judges against the base constitution
+    document_id: ADR-0007
+    path: adr/ADR-0007-gate-judges-against-base-constitution.md
+  - id: adr_0008
+    type: decision_record
+    label: ADR-0008 Learning loop and incident ledger
+    document_id: ADR-0008
+    path: adr/ADR-0008-learning-loop-and-incident-ledger.md
+  - id: ewp_0006
+    type: work_package
+    label: EWP-0006 Gate Hardening, Learning Loop and Incident Handling
+    document_id: EWP-0006
+    path: work-packages/EWP-0006.md
   - id: guard_case_study
     type: tooling
     label: Case study of pull request 1
@@ -395,6 +415,15 @@ edges:
   - { from: ewp_0005, to: ewp_0004, relationship: depends_on }
   - { from: adr_0005, to: spec_enggov, relationship: derives_from }
   - { from: adr_0005, to: std_security, relationship: derives_from }
+  - { from: adr_0006, to: architecture_baseline, relationship: derives_from }
+  - { from: adr_0006, to: adr_0004, relationship: derives_from }
+  - { from: security_policy, to: adr_0008, relationship: depends_on }
+  - { from: adr_0007, to: spec_enggov, relationship: derives_from }
+  - { from: adr_0007, to: std_security, relationship: derives_from }
+  - { from: adr_0008, to: spec_enggov, relationship: derives_from }
+  - { from: adr_0008, to: std_security, relationship: derives_from }
+  - { from: ewp_0006, to: ewp_index, relationship: part_of }
+  - { from: ewp_0006, to: ewp_0005, relationship: depends_on }
   - { from: guard_case_study, to: iwos_guard, relationship: part_of }
   - { from: guard_case_study, to: adr_0005, relationship: depends_on }
   - { from: code_owners, to: roles_and_authority, relationship: implements }

@@ -97,4 +97,12 @@ appending to `.ai/DECISION_GRAPH.yaml`. Never edit or delete an existing entry.
 **Verify.** Run `iwos validate` before and after your change. If the integrity check fails before you
 start, stop and report: a protected artefact and the lock disagree, and you must not regenerate the lock
 to make it pass.
+
+**Control files.** `iwos.yaml` and `.iwos/waivers.yaml` define these rules. They are protected whatever
+they say, and the gate judges your change against the constitution of the base branch, not your copy.
+
+**Learn and report.** Call the `read_lessons` tool (or run `iwos lessons`) before you start: it lists the
+rules that changes in this repository break most often. If you find a committed secret, an integrity
+failure or a way round the gate, open an incident with `report_incident` (or `iwos incident open`) and
+tell the user. Never copy a secret into a report.
 <!-- iwos:end -->
